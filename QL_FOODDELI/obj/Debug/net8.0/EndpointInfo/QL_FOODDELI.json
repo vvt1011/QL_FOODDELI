@@ -1,0 +1,1828 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "QL_FOODDELI",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/CuaHang": {
+      "get": {
+        "tags": [
+          "CuaHang"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CuaHang"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuaHang"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuaHang"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuaHang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CuaHang/{id}": {
+      "get": {
+        "tags": [
+          "CuaHang"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CuaHang"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuaHang"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuaHang"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CuaHang"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CuaHang"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DanhMuc": {
+      "get": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhMuc"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhMuc"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhMuc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DanhMuc/{id}": {
+      "get": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhMuc"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhMuc"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DanhMuc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GioHang/nguoidung/{maNguoiDung}": {
+      "get": {
+        "tags": [
+          "GioHang"
+        ],
+        "parameters": [
+          {
+            "name": "maNguoiDung",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GioHang/them": {
+      "post": {
+        "tags": [
+          "GioHang"
+        ],
+        "parameters": [
+          {
+            "name": "maNguoiDung",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "maMonAn",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "soLuong",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GioHang/capnhat": {
+      "put": {
+        "tags": [
+          "GioHang"
+        ],
+        "parameters": [
+          {
+            "name": "maNguoiDung",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "maMonAn",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "soLuong",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GioHang/xoa": {
+      "delete": {
+        "tags": [
+          "GioHang"
+        ],
+        "parameters": [
+          {
+            "name": "maNguoiDung",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "maMonAn",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/GioHang/xoa-tat-ca/{maNguoiDung}": {
+      "delete": {
+        "tags": [
+          "GioHang"
+        ],
+        "parameters": [
+          {
+            "name": "maNguoiDung",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MonAn": {
+      "get": {
+        "tags": [
+          "MonAn"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "MonAn"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonAn"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonAn"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonAn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MonAn/{id}": {
+      "get": {
+        "tags": [
+          "MonAn"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "MonAn"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonAn"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonAn"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MonAn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MonAn"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MonAn/DanhMuc/{maDanhMuc}": {
+      "get": {
+        "tags": [
+          "MonAn"
+        ],
+        "parameters": [
+          {
+            "name": "maDanhMuc",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/MonAn/CuaHang/{maCuaHang}": {
+      "get": {
+        "tags": [
+          "MonAn"
+        ],
+        "parameters": [
+          {
+            "name": "maCuaHang",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/NguoiDung": {
+      "get": {
+        "tags": [
+          "NguoiDung"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NguoiDung"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NguoiDung"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NguoiDung"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NguoiDung"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NguoiDung"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NguoiDung"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NguoiDung"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NguoiDung/{id}": {
+      "get": {
+        "tags": [
+          "NguoiDung"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "NguoiDung"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NguoiDung"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NguoiDung"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/NguoiDung"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NguoiDung"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/NguoiDung/Email": {
+      "get": {
+        "tags": [
+          "NguoiDung"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NguoiDung"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/WeatherForecast": {
+      "get": {
+        "tags": [
+          "WeatherForecast"
+        ],
+        "operationId": "GetWeatherForecast",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WeatherForecast"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChiTietDonHang": {
+        "type": "object",
+        "properties": {
+          "maChiTietDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maMonAn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenMonAn": {
+            "type": "string",
+            "nullable": true
+          },
+          "soLuong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gia": {
+            "type": "number",
+            "format": "double"
+          },
+          "thanhTien": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "maDonHangNavigation": {
+            "$ref": "#/components/schemas/DonHang"
+          },
+          "maMonAnNavigation": {
+            "$ref": "#/components/schemas/MonAn"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChiTietGioHang": {
+        "type": "object",
+        "properties": {
+          "maChiTietGioHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maGioHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maMonAn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "soLuong": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gia": {
+            "type": "number",
+            "format": "double"
+          },
+          "maGioHangNavigation": {
+            "$ref": "#/components/schemas/GioHang"
+          },
+          "maMonAnNavigation": {
+            "$ref": "#/components/schemas/MonAn"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CuaHang": {
+        "type": "object",
+        "properties": {
+          "maCuaHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maChuShop": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenCuaHang": {
+            "type": "string",
+            "nullable": true
+          },
+          "moTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "diaChi": {
+            "type": "string",
+            "nullable": true
+          },
+          "anhCuaHang": {
+            "type": "string",
+            "nullable": true
+          },
+          "danhGia": {
+            "type": "number",
+            "format": "double"
+          },
+          "trangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "danhGiaNavigation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DanhGium"
+            },
+            "nullable": true
+          },
+          "maChuShopNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "monAns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonAn"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DanhGium": {
+        "type": "object",
+        "properties": {
+          "maDanhGia": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maMonAn": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maCuaHang": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "soSao": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "binhLuan": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayDanhGia": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "maCuaHangNavigation": {
+            "$ref": "#/components/schemas/CuaHang"
+          },
+          "maDonHangNavigation": {
+            "$ref": "#/components/schemas/DonHang"
+          },
+          "maMonAnNavigation": {
+            "$ref": "#/components/schemas/MonAn"
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DanhMuc": {
+        "type": "object",
+        "properties": {
+          "maDanhMuc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenDanhMuc": {
+            "type": "string",
+            "nullable": true
+          },
+          "moTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "anhDanhMuc": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThai": {
+            "type": "boolean"
+          },
+          "monAns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonAn"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DiaChi": {
+        "type": "object",
+        "properties": {
+          "maDiaChi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenNguoiNhan": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "diaChiChiTiet": {
+            "type": "string",
+            "nullable": true
+          },
+          "phuong": {
+            "type": "string",
+            "nullable": true
+          },
+          "quan": {
+            "type": "string",
+            "nullable": true
+          },
+          "tinhThanhPho": {
+            "type": "string",
+            "nullable": true
+          },
+          "laDiaChiMacDinh": {
+            "type": "boolean"
+          },
+          "donHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DonHang"
+            },
+            "nullable": true
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DonHang": {
+        "type": "object",
+        "properties": {
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDiaChi": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tongTien": {
+            "type": "number",
+            "format": "double"
+          },
+          "phiVanChuyen": {
+            "type": "number",
+            "format": "double"
+          },
+          "tienGiam": {
+            "type": "number",
+            "format": "double"
+          },
+          "phuongThucThanhToan": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThaiThanhToan": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThaiDonHang": {
+            "type": "string",
+            "nullable": true
+          },
+          "ghiChu": {
+            "type": "string",
+            "nullable": true
+          },
+          "ngayDat": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chiTietDonHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChiTietDonHang"
+            },
+            "nullable": true
+          },
+          "danhGia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DanhGium"
+            },
+            "nullable": true
+          },
+          "donHangMaGiamGia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DonHangMaGiamGium"
+            },
+            "nullable": true
+          },
+          "giaoHang": {
+            "$ref": "#/components/schemas/GiaoHang"
+          },
+          "lichSuTrangThaiDonHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LichSuTrangThaiDonHang"
+            },
+            "nullable": true
+          },
+          "maDiaChiNavigation": {
+            "$ref": "#/components/schemas/DiaChi"
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "thanhToan": {
+            "$ref": "#/components/schemas/ThanhToan"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DonHangMaGiamGium": {
+        "type": "object",
+        "properties": {
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maMaGiamGia": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tienGiam": {
+            "type": "number",
+            "format": "double"
+          },
+          "maDonHangNavigation": {
+            "$ref": "#/components/schemas/DonHang"
+          },
+          "maMaGiamGiaNavigation": {
+            "$ref": "#/components/schemas/MaGiamGium"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GiaoHang": {
+        "type": "object",
+        "properties": {
+          "maGiaoHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiGiaoHang": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "trangThaiGiaoHang": {
+            "type": "string",
+            "nullable": true
+          },
+          "thoiGianNhan": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "thoiGianGiao": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ghiChu": {
+            "type": "string",
+            "nullable": true
+          },
+          "maDonHangNavigation": {
+            "$ref": "#/components/schemas/DonHang"
+          },
+          "maNguoiGiaoHangNavigation": {
+            "$ref": "#/components/schemas/NguoiGiaoHang"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GioHang": {
+        "type": "object",
+        "properties": {
+          "maGioHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ngayCapNhat": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chiTietGioHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChiTietGioHang"
+            },
+            "nullable": true
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HinhAnhMonAn": {
+        "type": "object",
+        "properties": {
+          "maHinhAnh": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maMonAn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "duongDanAnh": {
+            "type": "string",
+            "nullable": true
+          },
+          "laAnhChinh": {
+            "type": "boolean"
+          },
+          "maMonAnNavigation": {
+            "$ref": "#/components/schemas/MonAn"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LichSuTrangThaiDonHang": {
+        "type": "object",
+        "properties": {
+          "maLichSu": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "trangThaiCu": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThaiMoi": {
+            "type": "string",
+            "nullable": true
+          },
+          "nguoiThayDoi": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "thoiGianThayDoi": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ghiChu": {
+            "type": "string",
+            "nullable": true
+          },
+          "maDonHangNavigation": {
+            "$ref": "#/components/schemas/DonHang"
+          },
+          "nguoiThayDoiNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MaGiamGium": {
+        "type": "object",
+        "properties": {
+          "maMaGiamGia": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "moTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "loaiGiamGia": {
+            "type": "string",
+            "nullable": true
+          },
+          "giaTriGiam": {
+            "type": "number",
+            "format": "double"
+          },
+          "donToiThieu": {
+            "type": "number",
+            "format": "double"
+          },
+          "giamToiDa": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "soLuong": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ngayBatDau": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ngayKetThuc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trangThai": {
+            "type": "boolean"
+          },
+          "donHangMaGiamGia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DonHangMaGiamGium"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonAn": {
+        "type": "object",
+        "properties": {
+          "maMonAn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maCuaHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDanhMuc": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenMonAn": {
+            "type": "string",
+            "nullable": true
+          },
+          "moTa": {
+            "type": "string",
+            "nullable": true
+          },
+          "gia": {
+            "type": "number",
+            "format": "double"
+          },
+          "anhMonAn": {
+            "type": "string",
+            "nullable": true
+          },
+          "danhGia": {
+            "type": "number",
+            "format": "double"
+          },
+          "trangThai": {
+            "type": "boolean"
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "chiTietDonHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChiTietDonHang"
+            },
+            "nullable": true
+          },
+          "chiTietGioHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChiTietGioHang"
+            },
+            "nullable": true
+          },
+          "danhGiaNavigation": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DanhGium"
+            },
+            "nullable": true
+          },
+          "hinhAnhMonAns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HinhAnhMonAn"
+            },
+            "nullable": true
+          },
+          "maCuaHangNavigation": {
+            "$ref": "#/components/schemas/CuaHang"
+          },
+          "maDanhMucNavigation": {
+            "$ref": "#/components/schemas/DanhMuc"
+          },
+          "monAnYeuThiches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonAnYeuThich"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MonAnYeuThich": {
+        "type": "object",
+        "properties": {
+          "maYeuThich": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maMonAn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ngayThem": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "maMonAnNavigation": {
+            "$ref": "#/components/schemas/MonAn"
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NguoiDung": {
+        "type": "object",
+        "properties": {
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hoTen": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "matKhau": {
+            "type": "string",
+            "nullable": true
+          },
+          "soDienThoai": {
+            "type": "string",
+            "nullable": true
+          },
+          "anhDaiDien": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThai": {
+            "type": "boolean"
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cuaHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CuaHang"
+            },
+            "nullable": true
+          },
+          "danhGia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DanhGium"
+            },
+            "nullable": true
+          },
+          "diaChis": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiaChi"
+            },
+            "nullable": true
+          },
+          "donHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DonHang"
+            },
+            "nullable": true
+          },
+          "gioHang": {
+            "$ref": "#/components/schemas/GioHang"
+          },
+          "lichSuTrangThaiDonHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LichSuTrangThaiDonHang"
+            },
+            "nullable": true
+          },
+          "monAnYeuThiches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonAnYeuThich"
+            },
+            "nullable": true
+          },
+          "nguoiGiaoHang": {
+            "$ref": "#/components/schemas/NguoiGiaoHang"
+          },
+          "phienChats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhienChat"
+            },
+            "nullable": true
+          },
+          "maVaiTros": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VaiTro"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "NguoiGiaoHang": {
+        "type": "object",
+        "properties": {
+          "maNguoiGiaoHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phuongTien": {
+            "type": "string",
+            "nullable": true
+          },
+          "bienSoXe": {
+            "type": "string",
+            "nullable": true
+          },
+          "trangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "giaoHangs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GiaoHang"
+            },
+            "nullable": true
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PhienChat": {
+        "type": "object",
+        "properties": {
+          "maPhienChat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maNguoiDung": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ngayCapNhat": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "maNguoiDungNavigation": {
+            "$ref": "#/components/schemas/NguoiDung"
+          },
+          "tinNhanChats": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TinNhanChat"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ThanhToan": {
+        "type": "object",
+        "properties": {
+          "maThanhToan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maDonHang": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phuongThucThanhToan": {
+            "type": "string",
+            "nullable": true
+          },
+          "soTien": {
+            "type": "number",
+            "format": "double"
+          },
+          "trangThai": {
+            "type": "string",
+            "nullable": true
+          },
+          "maGiaoDich": {
+            "type": "string",
+            "nullable": true
+          },
+          "thoiGianThanhToan": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ngayTao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "maDonHangNavigation": {
+            "$ref": "#/components/schemas/DonHang"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TinNhanChat": {
+        "type": "object",
+        "properties": {
+          "maTinNhan": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maPhienChat": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nguoiGui": {
+            "type": "string",
+            "nullable": true
+          },
+          "noiDung": {
+            "type": "string",
+            "nullable": true
+          },
+          "thoiGianGui": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "maPhienChatNavigation": {
+            "$ref": "#/components/schemas/PhienChat"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VaiTro": {
+        "type": "object",
+        "properties": {
+          "maVaiTro": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tenVaiTro": {
+            "type": "string",
+            "nullable": true
+          },
+          "maNguoiDungs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NguoiDung"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WeatherForecast": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
