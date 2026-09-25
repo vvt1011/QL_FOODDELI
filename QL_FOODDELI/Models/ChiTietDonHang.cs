@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QL_FOODDELI.Models;
-
-public partial class ChiTietDonHang
+namespace QL_FOODDELI.Models
 {
-    public int MaChiTietDonHang { get; set; }
-
-    public int MaDonHang { get; set; }
-
-    public int MaMonAn { get; set; }
-
-    public string TenMonAn { get; set; } = null!;
-
-    public int SoLuong { get; set; }
-
-    public decimal Gia { get; set; }
-
-    public decimal? ThanhTien { get; set; }
-
-    public virtual DonHang MaDonHangNavigation { get; set; } = null!;
-
-    public virtual MonAn MaMonAnNavigation { get; set; } = null!;
+    public class ChiTietDonHang
+    {
+        public string MaChiTietDonHang { get; set; } = string.Empty;
+        public string? MaDonHang { get; set; }
+        public string? MaMonAn { get; set; }
+        public string? TenMonAn { get; set; }
+        public string? AnhMonAn { get; set; }
+        public int? SoLuong { get; set; }
+        public double? DonGia { get; set; }
+        public double? ThanhTien { get; set; }
+        public string? status { get; set; } // Dùng khi update chi tiết đơn hàng: 1 - Thêm, 2 - Sửa, 3 - Xóa
+    }
 }

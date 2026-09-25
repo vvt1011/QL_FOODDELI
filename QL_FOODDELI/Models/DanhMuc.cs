@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QL_FOODDELI.Models;
-
-public partial class DanhMuc
+namespace QL_FOODDELI.Models
 {
-    public int MaDanhMuc { get; set; }
-
-    public string TenDanhMuc { get; set; } = null!;
-
-    public string? MoTa { get; set; }
-
-    public string? AnhDanhMuc { get; set; }
-
-    public bool TrangThai { get; set; }
-
-    public virtual ICollection<MonAn> MonAns { get; set; } = new List<MonAn>();
+    public class DanhMuc
+    {
+        public string MaDanhMuc { get; set; } = string.Empty;
+        public string? TenDanhMuc { get; set; }
+        public string? MoTa { get; set; }
+        public int? TrangThai { get; set; }
+    }
 }
