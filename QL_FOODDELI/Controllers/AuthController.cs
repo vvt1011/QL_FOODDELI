@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using QL_FOODDELI.DTOs;
 using QL_FOODDELI.Models;
+using QL_FOODDELI.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
 
 namespace QL_FOODDELI.Controllers
 {
@@ -13,22 +13,22 @@ namespace QL_FOODDELI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly QLFoodDeliContext _context;
+        private readonly INguoiDungRepository _nguoiDungRepo;
         private readonly IConfiguration _configuration;
 
         public AuthController(
-            QLFoodDeliContext context,
+            INguoiDungRepository nguoiDungRepo,
             IConfiguration configuration)
         {
-            _context = context;
+            _nguoiDungRepo = nguoiDungRepo;
             _configuration = configuration;
         }
 
-
         // =========================
-        // DANG KY
+        // POST: api/Auth/dang-ky (or /register)
         // =========================
         [HttpPost("dang-ky")]
+        [HttpPost("register")]
         public async Task<IActionResult> DangKy([FromBody] DangKyRequest request)
         {
             if (request == null)
@@ -43,30 +43,30 @@ namespace QL_FOODDELI.Controllers
             if (string.IsNullOrWhiteSpace(request.MatKhau))
                 return BadRequest(new { message = "Mat khau khong duoc de trong" });
 
-            var daTonTai = await _context.NguoiDungs
-                .AnyAsync(x => x.Email == request.Email);
-
+            var daTonTai = await _nguoiDungRepo.ExistsEmailAsync(request.Email);
             if (daTonTai)
             {
-                return BadRequest(new
-                {
-                    message = "Email da ton tai"
-                });
+                return BadRequest(new { message = "Email da ton tai" });
             }
 
+            var maNguoiDung = "ND" + Guid.NewGuid().ToString("N")[..10];
             var nguoiDung = new NguoiDung
             {
+                MaNguoiDung = maNguoiDung,
                 HoTen = request.HoTen,
                 Email = request.Email,
                 MatKhau = request.MatKhau,
                 SoDienThoai = request.SoDienThoai,
                 AnhDaiDien = request.AnhDaiDien,
-                TrangThai = true,
+                TrangThai = 1,
                 NgayTao = DateTime.Now
             };
 
-            _context.NguoiDungs.Add(nguoiDung);
-            await _context.SaveChangesAsync();
+            var vaiTro = string.IsNullOrEmpty(request.MaVaiTro)
+                ? "KhachHang"
+                : request.MaVaiTro;
+
+            await _nguoiDungRepo.CreateAsync(nguoiDung, vaiTro);
 
             return Ok(new
             {
@@ -78,92 +78,65 @@ namespace QL_FOODDELI.Controllers
         }
 
         // =========================
-        // DANG NHAP
+        // POST: api/Auth/dang-nhap (or /login)
         // =========================
         [HttpPost("dang-nhap")]
-        public async Task<IActionResult> DangNhap(
-            [FromBody] DangNhapRequest request)
+        [HttpPost("login")]
+        public async Task<IActionResult> DangNhap([FromBody] DangNhapRequest request)
         {
             if (request == null)
                 return BadRequest(new { message = "Du lieu khong hop le" });
 
-            var user = await _context.NguoiDungs
-                .Include(x => x.MaVaiTros)
-                .FirstOrDefaultAsync(x =>
-                    x.Email == request.Email &&
-                    x.MatKhau == request.MatKhau);
-
-            if (user == null)
+            var user = await _nguoiDungRepo.GetByEmailAsync(request.Email);
+            if (user == null || user.MatKhau != request.MatKhau)
             {
-                return Unauthorized(new
-                {
-                    message = "Email hoac mat khau khong dung"
-                });
+                return Unauthorized(new { message = "Email hoac mat khau khong dung" });
             }
 
-            if (!user.TrangThai)
+            if (user.TrangThai == 0)
             {
-                return Unauthorized(new
-                {
-                    message = "Tai khoan da bi khoa"
-                });
+                return Unauthorized(new { message = "Tai khoan da bi khoa" });
             }
 
-            // Lay danh sach role
-            var roles = user.MaVaiTros
-                .Select(x => x.TenVaiTro)
-                .ToList();
+            var roles = (await _nguoiDungRepo.GetRolesByUserIdAsync(user.MaNguoiDung)).ToList();
+            if (roles.Count == 0 && !string.IsNullOrEmpty(user.TenVaiTro))
+            {
+                roles.Add(user.TenVaiTro);
+            }
 
-            // Tao Claims
+           
+
             var claims = new List<Claim>
-    {
-        new Claim(
-            ClaimTypes.NameIdentifier,
-            user.MaNguoiDung.ToString()
-        ),
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.MaNguoiDung),
+                new Claim(JwtRegisteredClaimNames.Sub, user.MaNguoiDung),
+                new Claim("nameid", user.MaNguoiDung),
+                new Claim("id", user.MaNguoiDung),
+                new Claim("MaNguoiDung", user.MaNguoiDung),
+                new Claim(ClaimTypes.Name, user.HoTen ?? string.Empty),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+            };
 
-        new Claim(
-            ClaimTypes.Name,
-            user.HoTen
-        ),
-
-        new Claim(
-            ClaimTypes.Email,
-            user.Email
-        )
-    };
-
-            // Them Role vao Claims
             foreach (var role in roles)
             {
-                claims.Add(
-                    new Claim(ClaimTypes.Role, role)
-                );
+                claims.Add(new Claim("role", role));
             }
 
-            // Lay cau hinh JWT
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    _configuration["Jwt:Key"]!
-                )
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)
             );
 
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256
-            );
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Tao Token
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddHours(4),
                 signingCredentials: credentials
             );
 
-            var tokenString = new JwtSecurityTokenHandler()
-                .WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
             return Ok(new
             {
@@ -174,31 +147,6 @@ namespace QL_FOODDELI.Controllers
                 email = user.Email,
                 vaiTro = roles
             });
-        }
-        // =========================
-        // REQUEST DANG KY
-        // =========================
-        public class DangKyRequest
-        {
-            public string HoTen { get; set; } = null!;
-
-            public string Email { get; set; } = null!;
-
-            public string MatKhau { get; set; } = null!;
-
-            public string? SoDienThoai { get; set; }
-
-            public string? AnhDaiDien { get; set; }
-        }
-
-        // =========================
-        // REQUEST DANG NHAP
-        // =========================
-        public class DangNhapRequest
-        {
-            public string Email { get; set; } = null!;
-
-            public string MatKhau { get; set; } = null!;
         }
     }
 }
