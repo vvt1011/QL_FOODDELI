@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý cửa hàng - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                FoodDeli
+                <span>ADMIN</span>
+            </div>
+
+            <nav class="admin-menu">
+
+                <a href="index.html" class="admin-menu-item">
+                    <span>▣</span>
+                    Dashboard
+                </a>
+
+                <a href="cua-hang.html" class="admin-menu-item active">
+                    <span>⌂</span>
+                    Cửa hàng
+                </a>
+
+                <a href="danh-muc.html" class="admin-menu-item">
+                    <span>☷</span>
+                    Danh mục
+                </a>
+
+                <a href="mon-an.html" class="admin-menu-item">
+                    <span>🍔</span>
+                    Món ăn
+                </a>
+
+                <a href="don-hang.html" class="admin-menu-item">
+                    <span>▤</span>
+                    Đơn hàng
+                </a>
+
+                <a href="giao-hang.html" class="admin-menu-item">
+                    <span>🚚</span>
+                    Giao hàng
+                </a>
+
+                <a href="nguoi-dung.html" class="admin-menu-item">
+                    <span>👤</span>
+                    Người dùng
+                </a>
+
+                <a href="voucher.html" class="admin-menu-item">
+                    <span>🎟</span>
+                    Voucher
+                </a>
+
+                <a href="thong-ke.html" class="admin-menu-item">
+                    <span>▥</span>
+                    Thống kê
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+
+                <a href="../index.html" class="back-home">
+                    ← Về trang chủ
+                </a>
+
+                <button type="button" class="admin-logout">
+                    Đăng xuất
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <!-- HEADER -->
+            <header class="admin-header">
+
+                <div>
+                    <h1>Quản lý cửa hàng</h1>
+
+                    <p>
+                        Quản lý toàn bộ cửa hàng trên hệ thống FoodDeli
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn"
+                >
+                    + Thêm cửa hàng
+                </button>
+
+            </header>
+
+
+            <!-- BỘ LỌC -->
+            <section class="admin-panel">
+
+                <div class="admin-filter">
+
+                    <div class="filter-group">
+
+                        <label for="searchShop">
+                            Tìm kiếm cửa hàng
+                        </label>
+
+                        <input
+                            type="text"
+                            id="searchShop"
+                            class="admin-input"
+                            placeholder="Nhập tên cửa hàng..."
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label for="shopStatus">
+                            Trạng thái
+                        </label>
+
+                        <select
+                            id="shopStatus"
+                            class="admin-input"
+                        >
+                            <option value="">
+                                Tất cả
+                            </option>
+
+                            <option value="1">
+                                Hoạt động
+                            </option>
+
+                            <option value="0">
+                                Ngừng hoạt động
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn"
+                    >
+                        Tìm kiếm
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- DANH SÁCH CỬA HÀNG -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+                        <h2>Danh sách cửa hàng</h2>
+
+                        <p>
+                            Quản lý các cửa hàng FoodDeli
+                        </p>
+                    </div>
+
+                    <span class="record-count">
+                        3 cửa hàng
+                    </span>
+
+                </div>
+
+
+                <div class="admin-table-wrapper">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Mã cửa hàng</th>
+
+                                <th>Tên cửa hàng</th>
+
+                                <th>Chủ shop</th>
+
+                                <th>Số điện thoại</th>
+
+                                <th>Địa chỉ</th>
+
+                                <th>Trạng thái</th>
+
+                                <th>Thao tác</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <!-- CỬA HÀNG 1 -->
+                            <tr>
+
+                                <td>
+                                    CH_ADMIN01
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        FoodDeli Express
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ND_CHUSHOP01
+                                </td>
+
+                                <td>
+                                    0908888999
+                                </td>
+
+                                <td>
+                                    Thanh Xuân, Hà Nội
+                                </td>
+
+                                <td>
+                                    <span class="status-badge status-active">
+                                        Hoạt động
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <div class="table-actions">
+
+                                        <button
+                                            type="button"
+                                            class="action-btn edit"
+                                        >
+                                            Sửa
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="action-btn delete"
+                                        >
+                                            Xóa
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- CỬA HÀNG 2 -->
+                            <tr>
+
+                                <td>
+                                    CH002
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        Pizza House
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ND_CHUSHOP02
+                                </td>
+
+                                <td>
+                                    0912345678
+                                </td>
+
+                                <td>
+                                    Cầu Giấy, Hà Nội
+                                </td>
+
+                                <td>
+                                    <span class="status-badge status-active">
+                                        Hoạt động
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <div class="table-actions">
+
+                                        <button
+                                            type="button"
+                                            class="action-btn edit"
+                                        >
+                                            Sửa
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="action-btn delete"
+                                        >
+                                            Xóa
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- CỬA HÀNG 3 -->
+                            <tr>
+
+                                <td>
+                                    CH003
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        Chicken Corner
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    ND_CHUSHOP03
+                                </td>
+
+                                <td>
+                                    0923456789
+                                </td>
+
+                                <td>
+                                    Đống Đa, Hà Nội
+                                </td>
+
+                                <td>
+                                    <span class="status-badge status-inactive">
+                                        Ngừng hoạt động
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <div class="table-actions">
+
+                                        <button
+                                            type="button"
+                                            class="action-btn edit"
+                                        >
+                                            Sửa
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="action-btn delete"
+                                        >
+                                            Xóa
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- FORM CỬA HÀNG -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>Thông tin cửa hàng</h2>
+
+                        <p>
+                            Thêm mới hoặc cập nhật thông tin cửa hàng
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="shopForm" class="admin-form">
+
+                    <div class="form-grid">
+
+                        <!-- Mã cửa hàng -->
+                        <div class="filter-group">
+
+                            <label for="maCuaHang">
+                                Mã cửa hàng
+                            </label>
+
+                            <input
+                                type="text"
+                                id="maCuaHang"
+                                name="maCuaHang"
+                                class="admin-input"
+                                placeholder="VD: CH001"
+                            >
+
+                        </div>
+
+
+                        <!-- Mã chủ shop -->
+                        <div class="filter-group">
+
+                            <label for="maChuShop">
+                                Mã chủ shop
+                            </label>
+
+                            <input
+                                type="text"
+                                id="maChuShop"
+                                name="maChuShop"
+                                class="admin-input"
+                                placeholder="VD: ND_CHUSHOP01"
+                            >
+
+                        </div>
+
+
+                        <!-- Tên cửa hàng -->
+                        <div class="filter-group">
+
+                            <label for="tenCuaHang">
+                                Tên cửa hàng
+                            </label>
+
+                            <input
+                                type="text"
+                                id="tenCuaHang"
+                                name="tenCuaHang"
+                                class="admin-input"
+                                placeholder="Nhập tên cửa hàng"
+                            >
+
+                        </div>
+
+
+                        <!-- Số điện thoại -->
+                        <div class="filter-group">
+
+                            <label for="soDienThoai">
+                                Số điện thoại
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="soDienThoai"
+                                name="soDienThoai"
+                                class="admin-input"
+                                placeholder="Nhập số điện thoại"
+                            >
+
+                        </div>
+
+
+                        <!-- Địa chỉ -->
+                        <div class="filter-group full-width">
+
+                            <label for="diaChi">
+                                Địa chỉ
+                            </label>
+
+                            <input
+                                type="text"
+                                id="diaChi"
+                                name="diaChi"
+                                class="admin-input"
+                                placeholder="Nhập địa chỉ cửa hàng"
+                            >
+
+                        </div>
+
+
+                        <!-- Mô tả -->
+                        <div class="filter-group full-width">
+
+                            <label for="moTa">
+                                Mô tả
+                            </label>
+
+                            <textarea
+                                id="moTa"
+                                name="moTa"
+                                class="admin-input"
+                                rows="4"
+                                placeholder="Nhập mô tả cửa hàng"
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- Ảnh cửa hàng -->
+                        <div class="filter-group full-width">
+
+                            <label for="anhCuaHang">
+                                Link ảnh cửa hàng
+                            </label>
+
+                            <input
+                                type="url"
+                                id="anhCuaHang"
+                                name="anhCuaHang"
+                                class="admin-input"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+
+                        <!-- Trạng thái -->
+                        <div class="filter-group">
+
+                            <label for="trangThai">
+                                Trạng thái
+                            </label>
+
+                            <select
+                                id="trangThai"
+                                name="trangThai"
+                                class="admin-input"
+                            >
+
+                                <option value="1">
+                                    Hoạt động
+                                </option>
+
+                                <option value="0">
+                                    Ngừng hoạt động
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FORM BUTTON -->
+                    <div class="form-actions">
+
+                        <button
+                            type="reset"
+                            class="btn btn-outline"
+                        >
+                            Hủy
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="btn"
+                        >
+                            Lưu cửa hàng
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

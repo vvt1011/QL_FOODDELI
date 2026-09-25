@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard - FoodDeli</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                FoodDeli
+                <span>ADMIN</span>
+            </div>
+
+            <nav class="admin-menu">
+
+                <a
+                    href="index.html"
+                    class="admin-menu-item active"
+                >
+                    <span>▣</span>
+                    Dashboard
+                </a>
+
+                <a
+                    href="cua-hang.html"
+                    class="admin-menu-item"
+                >
+                    <span>⌂</span>
+                    Cửa hàng
+                </a>
+
+                <a
+                    href="danh-muc.html"
+                    class="admin-menu-item"
+                >
+                    <span>☷</span>
+                    Danh mục
+                </a>
+
+                <a
+                    href="mon-an.html"
+                    class="admin-menu-item"
+                >
+                    <span>🍔</span>
+                    Món ăn
+                </a>
+
+                <a
+                    href="don-hang.html"
+                    class="admin-menu-item"
+                >
+                    <span>▤</span>
+                    Đơn hàng
+                </a>
+
+                <a
+                    href="giao-hang.html"
+                    class="admin-menu-item"
+                >
+                    <span>🚚</span>
+                    Giao hàng
+                </a>
+
+                <a
+                    href="nguoi-dung.html"
+                    class="admin-menu-item"
+                >
+                    <span>👤</span>
+                    Người dùng
+                </a>
+
+                <a
+                    href="voucher.html"
+                    class="admin-menu-item"
+                >
+                    <span>🎟</span>
+                    Voucher
+                </a>
+
+                <a
+                    href="thong-ke.html"
+                    class="admin-menu-item"
+                >
+                    <span>▥</span>
+                    Thống kê
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="back-home"
+                >
+                    ← Về trang chủ
+                </a>
+
+                <button
+                    type="button"
+                    id="adminLogout"
+                    class="admin-logout"
+                >
+                    Đăng xuất
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <!-- HEADER -->
+            <header class="admin-header">
+
+                <div>
+                    <h1>Dashboard</h1>
+
+                    <p>
+                        Tổng quan hoạt động của FoodDeli
+                    </p>
+                </div>
+
+                <div class="admin-user">
+
+                    <div class="admin-user-avatar">
+                        A
+                    </div>
+
+                    <div>
+                        <strong id="adminUserName">
+                            Admin
+                        </strong>
+
+                        <span>
+                            Quản trị viên
+                        </span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- STAT CARDS -->
+            <section class="admin-stat-grid">
+
+                <div class="admin-stat-card">
+
+                    <div class="stat-icon orange">
+                        🛒
+                    </div>
+
+                    <div>
+                        <p>Tổng đơn hàng</p>
+                        <h2>1,250</h2>
+                        <span class="stat-growth">
+                            +12.5% tháng này
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="stat-icon green">
+                        ₫
+                    </div>
+
+                    <div>
+                        <p>Doanh thu</p>
+                        <h2>85.2M</h2>
+                        <span class="stat-growth">
+                            +8.2% tháng này
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="stat-icon blue">
+                        👥
+                    </div>
+
+                    <div>
+                        <p>Người dùng</p>
+                        <h2>850</h2>
+                        <span class="stat-growth">
+                            +5.4% tháng này
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="stat-icon purple">
+                        🏪
+                    </div>
+
+                    <div>
+                        <p>Cửa hàng</p>
+                        <h2>35</h2>
+                        <span class="stat-growth">
+                            +3 cửa hàng mới
+                        </span>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- DASHBOARD CONTENT -->
+            <section class="admin-dashboard-grid">
+
+
+                <!-- DOANH THU -->
+                <div class="admin-panel revenue-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>Doanh thu</h2>
+
+                            <p>
+                                Thống kê doanh thu theo thời gian
+                            </p>
+                        </div>
+
+                        <select>
+                            <option>7 ngày qua</option>
+                            <option>30 ngày qua</option>
+                            <option>6 tháng</option>
+                            <option>1 năm</option>
+                        </select>
+
+                    </div>
+
+                    <div class="chart-placeholder">
+
+                        <div class="chart-line">
+                            <span>85M</span>
+                            <span>70M</span>
+                            <span>55M</span>
+                            <span>40M</span>
+                            <span>25M</span>
+                            <span>10M</span>
+                        </div>
+
+                        <div class="chart-area">
+
+                            <div class="chart-bars">
+                                <div style="height: 35%;"></div>
+                                <div style="height: 48%;"></div>
+                                <div style="height: 42%;"></div>
+                                <div style="height: 60%;"></div>
+                                <div style="height: 52%;"></div>
+                                <div style="height: 75%;"></div>
+                                <div style="height: 68%;"></div>
+                            </div>
+
+                            <div class="chart-labels">
+                                <span>T2</span>
+                                <span>T3</span>
+                                <span>T4</span>
+                                <span>T5</span>
+                                <span>T6</span>
+                                <span>T7</span>
+                                <span>CN</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ĐƠN HÀNG GẦN ĐÂY -->
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>Đơn hàng gần đây</h2>
+
+                            <p>
+                                Các đơn hàng mới nhất
+                            </p>
+                        </div>
+
+                        <a
+                            href="don-hang.html"
+                            class="view-all"
+                        >
+                            Xem tất cả
+                        </a>
+
+                    </div>
+
+
+                    <div class="recent-orders">
+
+                        <div class="recent-order">
+
+                            <div>
+                                <strong>
+                                    DH00125
+                                </strong>
+
+                                <span>
+                                    Nguyễn Văn A
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    168.000đ
+                                </strong>
+
+                                <span class="status-delivering">
+                                    Đang giao
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="recent-order">
+
+                            <div>
+                                <strong>
+                                    DH00124
+                                </strong>
+
+                                <span>
+                                    Trần Văn B
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    95.000đ
+                                </strong>
+
+                                <span class="status-completed">
+                                    Hoàn thành
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="recent-order">
+
+                            <div>
+                                <strong>
+                                    DH00123
+                                </strong>
+
+                                <span>
+                                    Lê Văn C
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    125.000đ
+                                </strong>
+
+                                <span class="status-pending">
+                                    Chờ xác nhận
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="recent-order">
+
+                            <div>
+                                <strong>
+                                    DH00122
+                                </strong>
+
+                                <span>
+                                    Phạm Văn D
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>
+                                    210.000đ
+                                </strong>
+
+                                <span class="status-completed">
+                                    Hoàn thành
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TOP FOOD -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+                        <h2>Món ăn bán chạy</h2>
+
+                        <p>
+                            Các món được đặt nhiều nhất
+                        </p>
+                    </div>
+
+                    <a
+                        href="mon-an.html"
+                        class="view-all"
+                    >
+                        Quản lý món ăn
+                    </a>
+
+                </div>
+
+
+                <div class="top-food-grid">
+
+                    <div class="top-food-item">
+
+                        <span class="rank">
+                            01
+                        </span>
+
+                        <div class="food-placeholder-small">
+                            🍔
+                        </div>
+
+                        <div class="food-info">
+
+                            <strong>
+                                Burger Bò Phô Mai
+                            </strong>
+
+                            <span>
+                                245 lượt đặt
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            59.000đ
+                        </strong>
+
+                    </div>
+
+
+                    <div class="top-food-item">
+
+                        <span class="rank">
+                            02
+                        </span>
+
+                        <div class="food-placeholder-small">
+                            🍗
+                        </div>
+
+                        <div class="food-info">
+
+                            <strong>
+                                Gà Rán Giòn Cay
+                            </strong>
+
+                            <span>
+                                198 lượt đặt
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            65.000đ
+                        </strong>
+
+                    </div>
+
+
+                    <div class="top-food-item">
+
+                        <span class="rank">
+                            03
+                        </span>
+
+                        <div class="food-placeholder-small">
+                            🍕
+                        </div>
+
+                        <div class="food-info">
+
+                            <strong>
+                                Pizza Hải Sản
+                            </strong>
+
+                            <span>
+                                156 lượt đặt
+                            </span>
+
+                        </div>
+
+                        <strong>
+                            129.000đ
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="../js/admin.js"></script>
+
+</body>
+
+</html>
