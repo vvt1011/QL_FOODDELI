@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QL_FOODDELI.DTOs;
 using QL_FOODDELI.Models;
+using QL_FOODDELI.Repositories;
+using System.Security.Claims;
 
 namespace QL_FOODDELI.Controllers
 {
@@ -8,31 +11,69 @@ namespace QL_FOODDELI.Controllers
     [ApiController]
     public class MonAnController : ControllerBase
     {
-        private readonly QLFoodDeliContext _context;
+        private readonly IMonAnRepository _monAnRepo;
+        private readonly ICuaHangRepository _cuaHangRepo;
 
-        public MonAnController(QLFoodDeliContext context)
+        public MonAnController(
+            IMonAnRepository monAnRepo,
+            ICuaHangRepository cuaHangRepo)
         {
-            _context = context;
+            _monAnRepo = monAnRepo;
+            _cuaHangRepo = cuaHangRepo;
         }
 
+        // ==========================================
+        // POST: api/MonAn/search
+        // Public
+        // ==========================================
+        [HttpPost("search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(
+            [FromBody] MonAnSearchRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Du lieu khong hop le"
+                });
+            }
+
+            var result = await _monAnRepo.SearchAsync(request);
+
+            return Ok(result);
+        }
+
+        // ==========================================
         // GET: api/MonAn
+        // Public
+        // ==========================================
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetMonAns()
         {
-            var monAns = await _context.MonAns
-                .AsNoTracking()
-                .ToListAsync();
+            var monAns = await _monAnRepo.GetAllAsync();
 
             return Ok(monAns);
         }
 
-        // GET: api/MonAn/1
+        // ==========================================
+        // GET: api/MonAn/{id}
+        // Public
+        // ==========================================
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMonAn(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMonAn(string id)
         {
-            var monAn = await _context.MonAns
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.MaMonAn == id);
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(new
+                {
+                    message = "Ma mon an khong hop le"
+                });
+            }
+
+            var monAn = await _monAnRepo.GetByIdAsync(id);
 
             if (monAn == null)
             {
@@ -45,33 +86,36 @@ namespace QL_FOODDELI.Controllers
             return Ok(monAn);
         }
 
-        // GET: api/MonAn/DanhMuc/1
-        [HttpGet("DanhMuc/{maDanhMuc}")]
-        public async Task<IActionResult> GetMonAnTheoDanhMuc(int maDanhMuc)
-        {
-            var monAns = await _context.MonAns
-                .AsNoTracking()
-                .Where(x => x.MaDanhMuc == maDanhMuc)
-                .ToListAsync();
-
-            return Ok(monAns);
-        }
-
-        // GET: api/MonAn/CuaHang/1
+        // ==========================================
+        // GET: api/MonAn/CuaHang/{maCuaHang}
+        // Public
+        // ==========================================
         [HttpGet("CuaHang/{maCuaHang}")]
-        public async Task<IActionResult> GetMonAnTheoCuaHang(int maCuaHang)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMonAnTheoCuaHang(
+            string maCuaHang)
         {
-            var monAns = await _context.MonAns
-                .AsNoTracking()
-                .Where(x => x.MaCuaHang == maCuaHang)
-                .ToListAsync();
+            if (string.IsNullOrWhiteSpace(maCuaHang))
+            {
+                return BadRequest(new
+                {
+                    message = "Ma cua hang khong hop le"
+                });
+            }
+
+            var monAns =
+                await _monAnRepo.GetByCuaHangAsync(maCuaHang);
 
             return Ok(monAns);
         }
 
+        // ==========================================
         // POST: api/MonAn
+        // ==========================================
         [HttpPost]
-        public async Task<IActionResult> CreateMonAn(MonAn monAn)
+        [Authorize(Roles = "ChuShop,QuanLy,Admin")]
+        public async Task<IActionResult> CreateMonAn(
+            [FromBody] MonAn monAn)
         {
             if (monAn == null)
             {
@@ -81,62 +125,121 @@ namespace QL_FOODDELI.Controllers
                 });
             }
 
-            // Kiem tra cua hang
-            var cuaHangTonTai = await _context.CuaHangs
-                .AnyAsync(x => x.MaCuaHang == monAn.MaCuaHang);
+            var userId = GetUserId();
 
-            if (!cuaHangTonTai)
+            if (string.IsNullOrEmpty(userId))
             {
-                return BadRequest(new
+                return Unauthorized(new
                 {
-                    message = "Cua hang khong ton tai"
+                    message = "Khong xac dinh duoc nguoi dung"
                 });
             }
 
-            // Kiem tra danh muc
-            var danhMucTonTai = await _context.DanhMucs
-                .AnyAsync(x => x.MaDanhMuc == monAn.MaDanhMuc);
-
-            if (!danhMucTonTai)
+            // ==========================================
+            // Kiem tra MaCuaHang
+            // ==========================================
+            if (string.IsNullOrWhiteSpace(monAn.MaCuaHang))
             {
                 return BadRequest(new
                 {
-                    message = "Danh muc khong ton tai"
+                    message = "MaCuaHang khong duoc de trong"
                 });
             }
 
-            monAn.MaMonAn = 0;
+            var cuaHang =
+                await _cuaHangRepo.GetByIdAsync(monAn.MaCuaHang);
+
+            if (cuaHang == null)
+            {
+                return NotFound(new
+                {
+                    message = "Khong tim thay cua hang"
+                });
+            }
+
+            // ==========================================
+            // CHUSHOP:
+            // Chi duoc tao mon trong cua hang cua minh
+            // ==========================================
+            if (User.IsInRole("ChuShop"))
+            {
+                if (!string.Equals(
+                        cuaHang.MaChuShop,
+                        userId,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(monAn.MaMonAn))
+            {
+                monAn.MaMonAn =
+                    "MA" + Guid.NewGuid().ToString("N")[..10];
+            }
+
             monAn.NgayTao = DateTime.Now;
 
-            _context.MonAns.Add(monAn);
+            var success =
+                await _monAnRepo.CreateAsync(monAn);
 
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetMonAn),
-                new { id = monAn.MaMonAn },
-                monAn
-            );
-        }
-
-        // PUT: api/MonAn/1
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMonAn(
-            int id,
-            MonAn monAn)
-        {
-            if (id != monAn.MaMonAn)
+            if (!success)
             {
                 return BadRequest(new
                 {
-                    message = "Ma mon an khong khop"
+                    message = "Khong the tao mon an"
                 });
             }
 
-            var monAnCu = await _context.MonAns
-                .FirstOrDefaultAsync(x => x.MaMonAn == id);
+            return Ok(new
+            {
+                message = "Tao mon an thanh cong",
+                maMonAn = monAn.MaMonAn
+            });
+        }
 
-            if (monAnCu == null)
+        // ==========================================
+        // PUT: api/MonAn/{id}
+        // ==========================================
+        [HttpPut("{id}")]
+        [Authorize(Roles = "ChuShop,QuanLy,Admin")]
+        public async Task<IActionResult> UpdateMonAn(
+            string id,
+            [FromBody] MonAn monAn)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(new
+                {
+                    message = "Ma mon an khong hop le"
+                });
+            }
+
+            if (monAn == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Du lieu khong hop le"
+                });
+            }
+
+            var userId = GetUserId();
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new
+                {
+                    message = "Khong xac dinh duoc nguoi dung"
+                });
+            }
+
+            // ==========================================
+            // Lay mon an hien tai
+            // ==========================================
+            var monAnHienTai =
+                await _monAnRepo.GetByIdAsync(id);
+
+            if (monAnHienTai == null)
             {
                 return NotFound(new
                 {
@@ -144,71 +247,165 @@ namespace QL_FOODDELI.Controllers
                 });
             }
 
-            // Kiem tra cua hang
-            var cuaHangTonTai = await _context.CuaHangs
-                .AnyAsync(x => x.MaCuaHang == monAn.MaCuaHang);
-
-            if (!cuaHangTonTai)
+            // ==========================================
+            // CHUSHOP:
+            // Chi duoc sua mon thuoc cua hang cua minh
+            // ==========================================
+            if (User.IsInRole("ChuShop"))
             {
-                return BadRequest(new
+                if (string.IsNullOrWhiteSpace(
+                        monAnHienTai.MaCuaHang))
                 {
-                    message = "Cua hang khong ton tai"
-                });
+                    return Forbid();
+                }
+
+                var cuaHang =
+                    await _cuaHangRepo.GetByIdAsync(
+                        monAnHienTai.MaCuaHang);
+
+                if (cuaHang == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Khong tim thay cua hang cua mon an"
+                    });
+                }
+
+                if (!string.Equals(
+                        cuaHang.MaChuShop,
+                        userId,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid();
+                }
             }
 
-            // Kiem tra danh muc
-            var danhMucTonTai = await _context.DanhMucs
-                .AnyAsync(x => x.MaDanhMuc == monAn.MaDanhMuc);
+            // ==========================================
+            // Khong cho thay doi MaMonAn
+            // ==========================================
+            monAn.MaMonAn = id;
 
-            if (!danhMucTonTai)
+            // ==========================================
+            // ChuShop khong duoc chuyen mon sang
+            // cua hang khac
+            // ==========================================
+            if (User.IsInRole("ChuShop"))
             {
-                return BadRequest(new
-                {
-                    message = "Danh muc khong ton tai"
-                });
+                monAn.MaCuaHang = monAnHienTai.MaCuaHang;
             }
 
-            monAnCu.MaCuaHang = monAn.MaCuaHang;
-            monAnCu.MaDanhMuc = monAn.MaDanhMuc;
-            monAnCu.TenMonAn = monAn.TenMonAn;
-            monAnCu.MoTa = monAn.MoTa;
-            monAnCu.Gia = monAn.Gia;
-            monAnCu.AnhMonAn = monAn.AnhMonAn;
-            monAnCu.DanhGia = monAn.DanhGia;
-            monAnCu.TrangThai = monAn.TrangThai;
+            var success =
+                await _monAnRepo.UpdateAsync(monAn);
 
-            await _context.SaveChangesAsync();
+            if (!success)
+            {
+                return NotFound(new
+                {
+                    message = "Khong tim thay hoac cap nhat that bai"
+                });
+            }
 
             return Ok(new
             {
-                message = "Cap nhat mon an thanh cong",
-                data = monAnCu
+                message = "Cap nhat mon an thanh cong"
             });
         }
 
-        // DELETE: api/MonAn/1
+        // ==========================================
+        // DELETE: api/MonAn/{id}
+        // ==========================================
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMonAn(int id)
+        [Authorize(Roles = "ChuShop,QuanLy,Admin")]
+        public async Task<IActionResult> DeleteMonAn(string id)
         {
-            var monAn = await _context.MonAns
-                .FirstOrDefaultAsync(x => x.MaMonAn == id);
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(new
+                {
+                    message = "Ma mon an khong hop le"
+                });
+            }
+
+            var userId = GetUserId();
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new
+                {
+                    message = "Khong xac dinh duoc nguoi dung"
+                });
+            }
+
+            // ==========================================
+            // Lay mon an hien tai
+            // ==========================================
+            var monAn =
+                await _monAnRepo.GetByIdAsync(id);
 
             if (monAn == null)
             {
                 return NotFound(new
                 {
-                    message = "Khong tim thay mon an"
+                    message = "Khong tim thay mon an de xoa"
                 });
             }
 
-            _context.MonAns.Remove(monAn);
+            // ==========================================
+            // CHUSHOP:
+            // Chi duoc xoa mon cua cua hang cua minh
+            // ==========================================
+            if (User.IsInRole("ChuShop"))
+            {
+                if (string.IsNullOrWhiteSpace(monAn.MaCuaHang))
+                {
+                    return Forbid();
+                }
 
-            await _context.SaveChangesAsync();
+                var cuaHang =
+                    await _cuaHangRepo.GetByIdAsync(
+                        monAn.MaCuaHang);
+
+                if (cuaHang == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Khong tim thay cua hang cua mon an"
+                    });
+                }
+
+                if (!string.Equals(
+                        cuaHang.MaChuShop,
+                        userId,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return Forbid();
+                }
+            }
+
+            var success =
+                await _monAnRepo.DeleteAsync(id);
+
+            if (!success)
+            {
+                return NotFound(new
+                {
+                    message = "Khong tim thay mon an de xoa"
+                });
+            }
 
             return Ok(new
             {
                 message = "Xoa mon an thanh cong"
             });
+        }
+
+        // ==========================================
+        // GET USER ID FROM JWT
+        // ==========================================
+        private string? GetUserId()
+        {
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? User.FindFirst("MaNguoiDung")?.Value;
         }
     }
 }

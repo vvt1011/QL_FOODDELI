@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QL_FOODDELI.Models;
+using QL_FOODDELI.Repositories;
 
 namespace QL_FOODDELI.Controllers
 {
@@ -8,130 +9,87 @@ namespace QL_FOODDELI.Controllers
     [ApiController]
     public class DanhMucController : ControllerBase
     {
-        private readonly QLFoodDeliContext _context;
+        private readonly IDanhMucRepository _danhMucRepo;
 
-        public DanhMucController(QLFoodDeliContext context)
+        public DanhMucController(IDanhMucRepository danhMucRepo)
         {
-            _context = context;
+            _danhMucRepo = danhMucRepo;
         }
 
+        // =========================
         // GET: api/DanhMuc
+        // =========================
         [HttpGet]
         public async Task<IActionResult> GetDanhMucs()
         {
-            var danhMucs = await _context.DanhMucs
-                .AsNoTracking()
-                .ToListAsync();
-
+            var danhMucs = await _danhMucRepo.GetAllAsync();
             return Ok(danhMucs);
         }
 
-        // GET: api/DanhMuc/1
+        // =========================
+        // GET: api/DanhMuc/{id}
+        // =========================
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDanhMuc(int id)
+        public async Task<IActionResult> GetDanhMuc(string id)
         {
-            var danhMuc = await _context.DanhMucs
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.MaDanhMuc == id);
-
+            var danhMuc = await _danhMucRepo.GetByIdAsync(id);
             if (danhMuc == null)
             {
-                return NotFound(new
-                {
-                    message = "Khong tim thay danh muc"
-                });
+                return NotFound(new { message = "Khong tim thay danh muc" });
             }
-
             return Ok(danhMuc);
         }
 
+        // =========================
         // POST: api/DanhMuc
+        // =========================
         [HttpPost]
-        public async Task<IActionResult> CreateDanhMuc(DanhMuc danhMuc)
+        [Authorize(Roles = "QuanLy,Admin")]
+        public async Task<IActionResult> CreateDanhMuc([FromBody] DanhMuc danhMuc)
         {
             if (danhMuc == null)
-            {
-                return BadRequest(new
-                {
-                    message = "Du lieu khong hop le"
-                });
-            }
+                return BadRequest(new { message = "Du lieu khong hop le" });
 
-            danhMuc.MaDanhMuc = 0;
+            if (string.IsNullOrEmpty(danhMuc.MaDanhMuc))
+                danhMuc.MaDanhMuc = "DM" + Guid.NewGuid().ToString("N")[..10];
 
-            _context.DanhMucs.Add(danhMuc);
+            var success = await _danhMucRepo.CreateAsync(danhMuc);
+            if (!success)
+                return BadRequest(new { message = "Khong the tao danh muc" });
 
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetDanhMuc),
-                new { id = danhMuc.MaDanhMuc },
-                danhMuc
-            );
+            return Ok(new { message = "Tao danh muc thanh cong", maDanhMuc = danhMuc.MaDanhMuc });
         }
 
-        // PUT: api/DanhMuc/1
+        // =========================
+        // PUT: api/DanhMuc/{id}
+        // =========================
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDanhMuc(
-            int id,
-            DanhMuc danhMuc)
+        [Authorize(Roles = "QuanLy,Admin")]
+        public async Task<IActionResult> UpdateDanhMuc(string id, [FromBody] DanhMuc danhMuc)
         {
-            if (id != danhMuc.MaDanhMuc)
-            {
-                return BadRequest(new
-                {
-                    message = "Ma danh muc khong khop"
-                });
-            }
+            if (danhMuc == null)
+                return BadRequest(new { message = "Du lieu khong hop le" });
 
-            var danhMucCu = await _context.DanhMucs
-                .FirstOrDefaultAsync(x => x.MaDanhMuc == id);
+            danhMuc.MaDanhMuc = id;
+            var success = await _danhMucRepo.UpdateAsync(danhMuc);
+            if (!success)
+                return NotFound(new { message = "Khong tim thay hoac cap nhat that bai" });
 
-            if (danhMucCu == null)
-            {
-                return NotFound(new
-                {
-                    message = "Khong tim thay danh muc"
-                });
-            }
-
-            danhMucCu.TenDanhMuc = danhMuc.TenDanhMuc;
-            danhMucCu.MoTa = danhMuc.MoTa;
-            danhMucCu.AnhDanhMuc = danhMuc.AnhDanhMuc;
-            danhMucCu.TrangThai = danhMuc.TrangThai;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Cap nhat danh muc thanh cong",
-                data = danhMucCu
-            });
+            return Ok(new { message = "Cap nhat danh muc thanh cong" });
         }
 
-        // DELETE: api/DanhMuc/1
+        // =========================
+        // DELETE: api/DanhMuc/{id}
+        // =========================
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDanhMuc(int id)
+        [Authorize(Roles = "QuanLy,Admin")]
+        public async Task<IActionResult> DeleteDanhMuc(string id)
         {
-            var danhMuc = await _context.DanhMucs
-                .FirstOrDefaultAsync(x => x.MaDanhMuc == id);
+            var success = await _danhMucRepo.DeleteAsync(id);
+            if (!success)
+                return NotFound(new { message = "Khong tim thay danh muc de xoa" });
 
-            if (danhMuc == null)
-            {
-                return NotFound(new
-                {
-                    message = "Khong tim thay danh muc"
-                });
-            }
-
-            _context.DanhMucs.Remove(danhMuc);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Xoa danh muc thanh cong"
-            });
+            return Ok(new { message = "Xoa danh muc thanh cong" });
         }
     }
 }

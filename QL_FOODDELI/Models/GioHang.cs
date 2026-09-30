@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QL_FOODDELI.Models;
-
-public partial class GioHang
+namespace QL_FOODDELI.Models
 {
-    public int MaGioHang { get; set; }
-
-    public int MaNguoiDung { get; set; }
-
-    public DateTime NgayTao { get; set; }
-
-    public DateTime NgayCapNhat { get; set; }
-
-    public virtual ICollection<ChiTietGioHang> ChiTietGioHangs { get; set; } = new List<ChiTietGioHang>();
-
-    public virtual NguoiDung MaNguoiDungNavigation { get; set; } = null!;
+    public class GioHang
+    {
+        public string MaGioHang { get; set; } = string.Empty;
+        public string? MaNguoiDung { get; set; }
+        public DateTime? NgayTao { get; set; }
+        public DateTime? NgayCapNhat { get; set; }
+        public List<ChiTietGioHang>? Items { get; set; }
+    }
 }

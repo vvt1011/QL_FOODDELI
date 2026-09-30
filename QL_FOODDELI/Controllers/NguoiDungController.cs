@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using QL_FOODDELI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QL_FOODDELI.Repositories;
+using System.Security.Claims;
 
 namespace QL_FOODDELI.Controllers
 {
@@ -8,147 +9,71 @@ namespace QL_FOODDELI.Controllers
     [ApiController]
     public class NguoiDungController : ControllerBase
     {
-        private readonly QLFoodDeliContext _context;
+        private readonly INguoiDungRepository _nguoiDungRepo;
 
-        public NguoiDungController(QLFoodDeliContext context)
+        public NguoiDungController(INguoiDungRepository nguoiDungRepo)
         {
-            _context = context;
+            _nguoiDungRepo = nguoiDungRepo;
         }
 
         // GET: api/NguoiDung
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NguoiDung>>> GetNguoiDung()
+        [Authorize(Roles = "QuanLy,Admin")]
+        public async Task<IActionResult> GetNguoiDungs()
         {
-            return await _context.NguoiDungs
-                .ToListAsync();
+            var users = await _nguoiDungRepo.GetAllAsync();
+            return Ok(users);
         }
 
-        // GET: api/NguoiDung/1
+        // GET: api/NguoiDung/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<NguoiDung>> GetNguoiDung(int id)
+        [Authorize]
+        public async Task<IActionResult> GetNguoiDung(string id)
         {
-            var nguoiDung = await _context.NguoiDungs
-                .FirstOrDefaultAsync(x => x.MaNguoiDung == id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                        ?? User.FindFirst("MaNguoiDung")?.Value;
 
-            if (nguoiDung == null)
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "Chua xac dinh nguoi dung" });
+
+            var isAdminOrQuanLy =
+                User.IsInRole("Admin") ||
+                User.IsInRole("QuanLy");
+
+            if (!isAdminOrQuanLy && userId != id)
+            {
+                return Forbid();
+            }
+
+            var user = await _nguoiDungRepo.GetByIdAsync(id);
+
+            if (user == null)
             {
                 return NotFound(new
                 {
-                    message = "Không tìm thấy người dùng"
+                    message = "Khong tim thay nguoi dung"
                 });
             }
 
-            return nguoiDung;
+            return Ok(user);
         }
 
         // GET: api/NguoiDung/Email?email=abc@gmail.com
         [HttpGet("Email")]
-        public async Task<ActionResult<NguoiDung>> GetTheoEmail(
-            [FromQuery] string email)
+        [Authorize(Roles = "QuanLy,Admin")]
+        public async Task<IActionResult> GetTheoEmail([FromQuery] string email)
         {
-            var nguoiDung = await _context.NguoiDungs
-                .FirstOrDefaultAsync(x => x.Email == email);
+            var user = await _nguoiDungRepo.GetByEmailAsync(email);
 
-            if (nguoiDung == null)
+            if (user == null)
             {
                 return NotFound(new
                 {
-                    message = "Không tìm thấy người dùng với email này"
+                    message = "Khong tim thay nguoi dung voi email nay"
                 });
             }
 
-            return nguoiDung;
-        }
-
-        // POST: api/NguoiDung
-        [HttpPost]
-        public async Task<ActionResult<NguoiDung>> ThemNguoiDung(
-            NguoiDung nguoiDung)
-        {
-            // Kiểm tra email đã tồn tại
-            var emailTonTai = await _context.NguoiDungs
-                .AnyAsync(x => x.Email == nguoiDung.Email);
-
-            if (emailTonTai)
-            {
-                return BadRequest(new
-                {
-                    message = "Email đã tồn tại"
-                });
-            }
-
-            _context.NguoiDungs.Add(nguoiDung);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetNguoiDung),
-                new { id = nguoiDung.MaNguoiDung },
-                nguoiDung
-            );
-        }
-
-        // PUT: api/NguoiDung/1
-        [HttpPut("{id}")]
-        public async Task<IActionResult> SuaNguoiDung(
-            int id,
-            NguoiDung nguoiDung)
-        {
-            if (id != nguoiDung.MaNguoiDung)
-            {
-                return BadRequest(new
-                {
-                    message = "Mã người dùng không khớp"
-                });
-            }
-
-            var nguoiDungCu = await _context.NguoiDungs
-                .FindAsync(id);
-
-            if (nguoiDungCu == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy người dùng"
-                });
-            }
-
-            nguoiDungCu.HoTen = nguoiDung.HoTen;
-            nguoiDungCu.Email = nguoiDung.Email;
-            nguoiDungCu.SoDienThoai = nguoiDung.SoDienThoai;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Cập nhật người dùng thành công",
-                data = nguoiDungCu
-            });
-        }
-
-        // DELETE: api/NguoiDung/1
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> XoaNguoiDung(int id)
-        {
-            var nguoiDung = await _context.NguoiDungs
-                .FindAsync(id);
-
-            if (nguoiDung == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy người dùng"
-                });
-            }
-
-            _context.NguoiDungs.Remove(nguoiDung);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Xóa người dùng thành công"
-            });
+            return Ok(user);
         }
     }
 }

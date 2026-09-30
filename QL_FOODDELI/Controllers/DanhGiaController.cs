@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Dapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QL_FOODDELI.Data;
 using QL_FOODDELI.Models;
+using System.Security.Claims;
 
 namespace QL_FOODDELI.Controllers
 {
@@ -8,31 +11,55 @@ namespace QL_FOODDELI.Controllers
     [ApiController]
     public class DanhGiaController : ControllerBase
     {
-        private readonly QLFoodDeliContext _context;
+        private readonly DapperContext _context;
 
-        public DanhGiaController(QLFoodDeliContext context)
+        public DanhGiaController(DapperContext context)
         {
             _context = context;
         }
 
+        // =====================================================
         // GET: api/DanhGia
+        // =====================================================
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDanhGias()
         {
-            var danhGias = await _context.DanhGia
-                .AsNoTracking()
-                .ToListAsync();
+            using var conn = _context.CreateConnection();
+
+            var danhGias = await conn.QueryAsync<DanhGia>(
+                @"SELECT *
+                  FROM DanhGia
+                  ORDER BY NgayDanhGia DESC");
 
             return Ok(danhGias);
         }
 
-        // GET: api/DanhGia/1
+        // =====================================================
+        // GET: api/DanhGia/{id}
+        // =====================================================
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDanhGia(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDanhGia(string id)
         {
-            var danhGia = await _context.DanhGia
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.MaDanhGia == id);
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(new
+                {
+                    message = "Ma danh gia khong hop le"
+                });
+            }
+
+            using var conn = _context.CreateConnection();
+
+            var danhGia = await conn.QueryFirstOrDefaultAsync<DanhGia>(
+                @"SELECT *
+                  FROM DanhGia
+                  WHERE MaDanhGia = @MaDanhGia",
+                new
+                {
+                    MaDanhGia = id
+                });
 
             if (danhGia == null)
             {
@@ -45,10 +72,18 @@ namespace QL_FOODDELI.Controllers
             return Ok(danhGia);
         }
 
+        // =====================================================
         // POST: api/DanhGia
+        // Khách hàng tạo đánh giá món ăn
+        // =====================================================
         [HttpPost]
-        public async Task<IActionResult> CreateDanhGia(DanhGia danhGia)
+        [Authorize]
+        public async Task<IActionResult> CreateDanhGia(
+            [FromBody] DanhGia danhGia)
         {
+            // -------------------------------------------------
+            // 1. Kiểm tra dữ liệu null trước
+            // -------------------------------------------------
             if (danhGia == null)
             {
                 return BadRequest(new
@@ -57,79 +92,177 @@ namespace QL_FOODDELI.Controllers
                 });
             }
 
-            danhGia.MaDanhGia = 0;
-            danhGia.NgayDanhGia = DateTime.Now;
-
-            _context.DanhGia.Add(danhGia);
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(
-                nameof(GetDanhGia),
-                new { id = danhGia.MaDanhGia },
-                danhGia
-            );
-        }
-
-        // PUT: api/DanhGia/1
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDanhGia(
-            int id,
-            DanhGia danhGia)
-        {
-            if (id != danhGia.MaDanhGia)
+            // -------------------------------------------------
+            // 2. Kiểm tra số sao
+            // -------------------------------------------------
+            if (danhGia.SoSao < 1 || danhGia.SoSao > 5)
             {
                 return BadRequest(new
                 {
-                    message = "Ma danh gia khong khop"
+                    message = "So sao phai tu 1 den 5"
                 });
             }
 
-            var danhGiaCu = await _context.DanhGia
-                .FirstOrDefaultAsync(x => x.MaDanhGia == id);
+            // -------------------------------------------------
+            // 3. Lấy MaNguoiDung từ JWT
+            // Không cho client tự gán người đánh giá
+            // -------------------------------------------------
+            var userId =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? User.FindFirst("MaNguoiDung")?.Value;
 
-            if (danhGiaCu == null)
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized(new
+                {
+                    message = "Chua xac dinh nguoi dung"
+                });
+            }
+
+            danhGia.MaNguoiDung = userId;
+
+            // -------------------------------------------------
+            // 4. Kiểm tra MaMonAn
+            // -------------------------------------------------
+            if (string.IsNullOrWhiteSpace(danhGia.MaMonAn))
+            {
+                return BadRequest(new
+                {
+                    message = "MaMonAn khong duoc de trong"
+                });
+            }
+
+            // -------------------------------------------------
+            // 5. Kiểm tra món ăn có tồn tại
+            // -------------------------------------------------
+            using var conn = _context.CreateConnection();
+
+            var monAnExists = await conn.ExecuteScalarAsync<int>(
+                @"SELECT COUNT(1)
+                  FROM MonAn
+                  WHERE MaMonAn = @MaMonAn",
+                new
+                {
+                    MaMonAn = danhGia.MaMonAn
+                });
+
+            if (monAnExists == 0)
             {
                 return NotFound(new
                 {
-                    message = "Khong tim thay danh gia"
+                    message = "Khong tim thay mon an"
                 });
             }
 
-            danhGiaCu.MaNguoiDung = danhGia.MaNguoiDung;
-            danhGiaCu.MaDonHang = danhGia.MaDonHang;
-            danhGiaCu.MaMonAn = danhGia.MaMonAn;
-            danhGiaCu.MaCuaHang = danhGia.MaCuaHang;
-            danhGiaCu.SoSao = danhGia.SoSao;
-            danhGiaCu.BinhLuan = danhGia.BinhLuan;
+            // -------------------------------------------------
+            // 6. Nếu có MaDonHang thì kiểm tra đơn hàng tồn tại
+            // -------------------------------------------------
+            if (!string.IsNullOrWhiteSpace(danhGia.MaDonHang))
+            {
+                var donHangExists = await conn.ExecuteScalarAsync<int>(
+                    @"SELECT COUNT(1)
+                      FROM DonHang
+                      WHERE MaDonHang = @MaDonHang",
+                    new
+                    {
+                        MaDonHang = danhGia.MaDonHang
+                    });
 
-            await _context.SaveChangesAsync();
+                if (donHangExists == 0)
+                {
+                    return NotFound(new
+                    {
+                        message = "Khong tim thay don hang"
+                    });
+                }
+            }
+
+            // -------------------------------------------------
+            // 7. Tạo mã đánh giá nếu client không truyền
+            // -------------------------------------------------
+            if (string.IsNullOrWhiteSpace(danhGia.MaDanhGia))
+            {
+                danhGia.MaDanhGia =
+                    "DG" + Guid.NewGuid().ToString("N")[..10];
+            }
+
+            danhGia.NgayDanhGia = DateTime.Now;
+
+            // -------------------------------------------------
+            // 8. Thêm đánh giá
+            // -------------------------------------------------
+            const string sql = @"
+                INSERT INTO DanhGia
+                (
+                    MaDanhGia,
+                    MaNguoiDung,
+                    MaMonAn,
+                    MaDonHang,
+                    SoSao,
+                    NoiDung,
+                    NgayDanhGia
+                )
+                VALUES
+                (
+                    @MaDanhGia,
+                    @MaNguoiDung,
+                    @MaMonAn,
+                    @MaDonHang,
+                    @SoSao,
+                    @NoiDung,
+                    @NgayDanhGia
+                )";
+
+            var rows = await conn.ExecuteAsync(sql, danhGia);
+
+            if (rows == 0)
+            {
+                return BadRequest(new
+                {
+                    message = "Khong the tao danh gia"
+                });
+            }
 
             return Ok(new
             {
-                message = "Cap nhat danh gia thanh cong",
-                data = danhGiaCu
+                message = "Danh gia thanh cong",
+                maDanhGia = danhGia.MaDanhGia
             });
         }
 
-        // DELETE: api/DanhGia/1
+        // =====================================================
+        // DELETE: api/DanhGia/{id}
+        // Chỉ Admin / QuanLy được xóa
+        // =====================================================
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDanhGia(int id)
+        [Authorize(Roles = "Admin,QuanLy")]
+        public async Task<IActionResult> DeleteDanhGia(string id)
         {
-            var danhGia = await _context.DanhGia
-                .FirstOrDefaultAsync(x => x.MaDanhGia == id);
-
-            if (danhGia == null)
+            if (string.IsNullOrWhiteSpace(id))
             {
-                return NotFound(new
+                return BadRequest(new
                 {
-                    message = "Khong tim thay danh gia"
+                    message = "Ma danh gia khong hop le"
                 });
             }
 
-            _context.DanhGia.Remove(danhGia);
+            using var conn = _context.CreateConnection();
 
-            await _context.SaveChangesAsync();
+            var rows = await conn.ExecuteAsync(
+                @"DELETE FROM DanhGia
+                  WHERE MaDanhGia = @MaDanhGia",
+                new
+                {
+                    MaDanhGia = id
+                });
+
+            if (rows == 0)
+            {
+                return NotFound(new
+                {
+                    message = "Khong tim thay danh gia de xoa"
+                });
+            }
 
             return Ok(new
             {

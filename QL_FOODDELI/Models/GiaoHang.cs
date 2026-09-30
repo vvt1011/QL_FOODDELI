@@ -1,25 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace QL_FOODDELI.Models;
-
-public partial class GiaoHang
+namespace QL_FOODDELI.Models
 {
-    public int MaGiaoHang { get; set; }
-
-    public int MaDonHang { get; set; }
-
-    public int? MaNguoiGiaoHang { get; set; }
-
-    public string TrangThaiGiaoHang { get; set; } = null!;
-
-    public DateTime? ThoiGianNhan { get; set; }
-
-    public DateTime? ThoiGianGiao { get; set; }
-
-    public string? GhiChu { get; set; }
-
-    public virtual DonHang MaDonHangNavigation { get; set; } = null!;
-
-    public virtual NguoiGiaoHang? MaNguoiGiaoHangNavigation { get; set; }
+    public class GiaoHang
+    {
+        public string MaGiaoHang { get; set; } = string.Empty;
+        public string? MaDonHang { get; set; }
+        public string? MaNguoiGiaoHang { get; set; }
+        public string? TrangThai { get; set; }
+        public DateTime? ThoiGianNhan { get; set; }
+        public DateTime? ThoiGianGiao { get; set; }
+        public string? GhiChu { get; set; }
+    }
 }
