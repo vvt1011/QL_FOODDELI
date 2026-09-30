@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# .NET
+**/bin/
+**/obj/
+
+# Publish
+**/publish/
+
+# Node / Next.js
+**/node_modules/
+**/.next/
+**/out/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
