@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Đăng ký - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <!-- Bên trái -->
+        <section class="login-intro">
+
+            <div>
+                <h1>FoodDeli</h1>
+
+                <h2>
+                    Tham gia FoodDeli
+                    <br>
+                    ngay hôm nay.
+                </h2>
+
+                <p>
+                    Tạo tài khoản và bắt đầu đặt món yêu thích.
+                </p>
+            </div>
+
+            <p class="login-copyright">
+                © 2026 FoodDeli
+            </p>
+
+        </section>
+
+
+        <!-- Bên phải -->
+        <section class="login-form-wrapper">
+
+            <div class="login-form">
+
+                <h2>Đăng ký</h2>
+
+                <p class="login-description">
+                    Tạo tài khoản FoodDeli của bạn
+                </p>
+
+                <form id="registerForm">
+
+                    <!-- Họ tên -->
+                    <div class="form-group">
+                        <label for="hoTen">
+                            Họ và tên
+                        </label>
+
+                        <input
+                            type="text"
+                            id="hoTen"
+                            name="hoTen"
+                            placeholder="Nhập họ và tên"
+                        >
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Nhập email của bạn"
+                        >
+                    </div>
+                    <!-- Số điện thoại -->
+<div class="form-group">
+    <label for="soDienThoai">
+        Số điện thoại
+    </label>
+
+    <input
+        type="tel"
+        id="soDienThoai"
+        name="soDienThoai"
+        placeholder="Nhập số điện thoại"
+    >
+</div>
+
+                    <!-- Mật khẩu -->
+                    <div class="form-group">
+                        <label for="password">
+                            Mật khẩu
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Nhập mật khẩu"
+                        >
+                    </div>
+
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="form-group">
+                        <label for="confirmPassword">
+                            Xác nhận mật khẩu
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Nhập lại mật khẩu"
+                        >
+                    </div>
+
+                    <!-- Nút đăng ký -->
+                    <button
+                        type="submit"
+                        class="btn login-button"
+                    >
+                        Đăng ký
+                    </button>
+
+                </form>
+
+                <p class="register-text">
+                    Đã có tài khoản?
+                    <a href="dang-nhap.html">
+                        Đăng nhập
+                    </a>
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+    <script src="../js/dang-ky.js"></script>
+
+</body>
+</html>
