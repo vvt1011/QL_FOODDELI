@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Quản lý người dùng - FoodDeli</title>
+
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="admin-layout">
+
+
+        <!-- ================================================= -->
+        <!-- SIDEBAR -->
+        <!-- ================================================= -->
+
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+
+                FoodDeli
+
+                <span>
+                    ADMIN
+                </span>
+
+            </div>
+
+
+            <nav class="admin-menu">
+
+
+                <a
+                    href="index.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        ▣
+                    </span>
+
+                    Dashboard
+
+                </a>
+
+
+                <a
+                    href="cua-hang.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        ⌂
+                    </span>
+
+                    Cửa hàng
+
+                </a>
+
+
+                <a
+                    href="danh-muc.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        ☷
+                    </span>
+
+                    Danh mục
+
+                </a>
+
+
+                <a
+                    href="mon-an.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        🍔
+                    </span>
+
+                    Món ăn
+
+                </a>
+
+
+                <a
+                    href="don-hang.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        ▤
+                    </span>
+
+                    Đơn hàng
+
+                </a>
+
+
+                <a
+                    href="giao-hang.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        🚚
+                    </span>
+
+                    Giao hàng
+
+                </a>
+
+
+                <a
+                    href="nguoi-dung.html"
+                    class="admin-menu-item active"
+                >
+
+                    <span>
+                        👤
+                    </span>
+
+                    Người dùng
+
+                </a>
+
+
+                <a
+                    href="voucher.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        🎟
+                    </span>
+
+                    Voucher
+
+                </a>
+
+
+                <a
+                    href="thong-ke.html"
+                    class="admin-menu-item"
+                >
+
+                    <span>
+                        ▥
+                    </span>
+
+                    Thống kê
+
+                </a>
+
+
+            </nav>
+
+
+            <div class="admin-sidebar-bottom">
+
+
+                <a
+                    href="../index.html"
+                    class="back-home"
+                >
+
+                    ← Về trang chủ
+
+                </a>
+
+
+                <button
+                    type="button"
+                    class="admin-logout"
+                >
+
+                    Đăng xuất
+
+                </button>
+
+
+            </div>
+
+
+        </aside>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN -->
+        <!-- ================================================= -->
+
+        <main class="admin-main">
+
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <header class="admin-header">
+
+
+                <div>
+
+                    <h1>
+                        Quản lý người dùng
+                    </h1>
+
+
+                    <p>
+                        Quản lý thông tin tài khoản trên hệ thống FoodDeli
+                    </p>
+
+                </div>
+
+
+            </header>
+
+
+            <!-- ================================================= -->
+            <!-- FILTER -->
+            <!-- ================================================= -->
+
+            <section class="admin-panel">
+
+
+                <div class="admin-filter">
+
+
+                    <!-- TÌM KIẾM -->
+
+                    <div class="filter-group">
+
+                        <label
+                            for="searchNguoiDung"
+                        >
+                            Tìm kiếm người dùng
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="searchNguoiDung"
+                            class="admin-input"
+                            placeholder="Mã, họ tên, email, số điện thoại, vai trò..."
+                        >
+
+                    </div>
+
+
+                    <!-- TRẠNG THÁI -->
+
+                    <div class="filter-group">
+
+                        <label
+                            for="filterTrangThai"
+                        >
+                            Trạng thái
+                        </label>
+
+
+                        <select
+                            id="filterTrangThai"
+                            class="admin-input"
+                        >
+
+                            <option value="">
+                                Tất cả
+                            </option>
+
+                            <option value="1">
+                                Hoạt động
+                            </option>
+
+                            <option value="0">
+                                Ngừng hoạt động
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- VAI TRÒ -->
+
+                    <div class="filter-group">
+
+                        <label
+                            for="filterVaiTro"
+                        >
+                            Vai trò
+                        </label>
+
+
+                        <select
+                            id="filterVaiTro"
+                            class="admin-input"
+                        >
+
+                            <option value="">
+                                Tất cả
+                            </option>
+
+
+                           
+
+                            <option value="quantrivien">
+                                Quản trị viên
+                            </option>
+
+
+                            
+
+                            <option value="chushop">
+                                Chủ shop
+                            </option>
+
+
+                            <option value="khachhang">
+                                Khách hàng
+                            </option>
+
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- RESET -->
+
+                    <button
+                        type="button"
+                        class="btn"
+                        id="btnLamMoi"
+                    >
+                        Làm mới
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- ================================================= -->
+            <!-- DANH SÁCH -->
+            <!-- ================================================= -->
+
+            <section class="admin-panel">
+
+
+                <div class="admin-panel-header">
+
+
+                    <div>
+
+                        <h2>
+                            Danh sách người dùng
+                        </h2>
+
+
+                        <p>
+                            Các tài khoản đang có trong hệ thống
+                        </p>
+
+                    </div>
+
+
+                    <span
+                        class="record-count"
+                        id="recordCount"
+                    >
+                        Đang tải...
+                    </span>
+
+
+                </div>
+
+
+                <div class="admin-table-wrapper">
+
+
+                    <table class="admin-table">
+
+
+                        <thead>
+
+
+                            <tr>
+
+
+                                <th>
+                                    STT
+                                </th>
+
+
+                                <th>
+                                    Mã người dùng
+                                </th>
+
+
+                                <th>
+                                    Họ tên
+                                </th>
+
+
+                                <th>
+                                    Email
+                                </th>
+
+
+                                <th>
+                                    Số điện thoại
+                                </th>
+
+
+                                <th>
+                                    Vai trò
+                                </th>
+
+
+                                <th>
+                                    Trạng thái
+                                </th>
+
+
+                                <th>
+                                    Ngày tạo
+                                </th>
+
+
+                                <th>
+                                    Thao tác
+                                </th>
+
+
+                            </tr>
+
+
+                        </thead>
+
+
+                        <tbody
+                            id="nguoiDungTableBody"
+                        >
+
+
+                            <tr>
+
+                                <td
+                                    colspan="9"
+                                    class="loading-cell"
+                                >
+
+                                    Đang tải dữ liệu...
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+                <div
+                    class="admin-pagination"
+                    id="pagination"
+                ></div>
+
+
+            </section>
+
+
+            <!-- ================================================= -->
+            <!-- CHI TIẾT -->
+            <!-- ================================================= -->
+
+            <section
+                class="admin-panel"
+                id="chiTietPanel"
+                style="display: none;"
+            >
+
+
+                <div class="admin-panel-header">
+
+
+                    <div>
+
+                        <h2>
+                            Chi tiết người dùng
+                        </h2>
+
+
+                        <p>
+                            Thông tin tài khoản được chọn
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Mã người dùng
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailMaNguoiDung"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Họ tên
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailHoTen"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Email
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailEmail"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Số điện thoại
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailSoDienThoai"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Vai trò
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailVaiTro"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Trạng thái
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailTrangThai"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Ngày tạo
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailNgayTao"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group full-width">
+
+                        <label>
+                            Ảnh đại diện
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="detailAnhDaiDien"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        id="btnDongChiTiet"
+                    >
+                        Đóng
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+    <script src="../js/nguoi-dung.js"></script>
+
+</body>
+
+</html>

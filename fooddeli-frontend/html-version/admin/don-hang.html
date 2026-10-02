@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý đơn hàng - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="admin-sidebar">
+
+        <div class="sidebar-logo">
+            <div class="logo-icon">🍔</div>
+
+            <div class="logo-text">
+                <strong>FoodDeli</strong>
+                <span>ADMIN PANEL</span>
+            </div>
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="index.html" class="sidebar-item">
+                <span class="sidebar-icon">📊</span>
+                <span>Tổng quan</span>
+            </a>
+
+            <a href="cua-hang.html" class="sidebar-item">
+                <span class="sidebar-icon">🏪</span>
+                <span>Cửa hàng</span>
+            </a>
+
+            <a href="danh-muc.html" class="sidebar-item">
+                <span class="sidebar-icon">📂</span>
+                <span>Danh mục</span>
+            </a>
+
+            <a href="mon-an.html" class="sidebar-item">
+                <span class="sidebar-icon">🍔</span>
+                <span>Món ăn</span>
+            </a>
+
+            <a href="don-hang.html" class="sidebar-item active">
+                <span class="sidebar-icon">🛒</span>
+                <span>Đơn hàng</span>
+            </a>
+
+            <a href="#" class="sidebar-item">
+                <span class="sidebar-icon">👤</span>
+                <span>Người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-item">
+                <span class="sidebar-icon">📈</span>
+                <span>Thống kê</span>
+            </a>
+
+        </nav>
+
+
+        <div class="admin-sidebar-bottom">
+
+            <a href="../index.html" class="back-home">
+                🏠 &nbsp; Về trang chủ
+            </a>
+
+            <button id="btnLogout" class="admin-logout">
+                🚪 &nbsp; Đăng xuất
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main class="admin-main">
+
+
+        <!-- HEADER -->
+        <header class="admin-header">
+
+            <div class="page-title">
+
+                <h1>Quản lý đơn hàng</h1>
+
+                <p>
+                    Theo dõi và quản lý các đơn hàng trong hệ thống
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             CONTENT
+        ========================== -->
+        <section class="admin-content">
+
+
+            <!-- TOOLBAR -->
+            <div class="admin-toolbar">
+
+
+                <!-- SEARCH -->
+                <div class="search-box">
+
+                    <input
+                        type="text"
+                        id="searchDonHang"
+                        placeholder="Tìm kiếm mã đơn hàng..."
+                    >
+
+                </div>
+
+
+                <!-- STATUS -->
+                <select id="filterTrangThai">
+
+                    <option value="">
+                        Tất cả trạng thái
+                    </option>
+
+                    <option value="1">
+                        Chờ xác nhận
+                    </option>
+
+                    <option value="2">
+                        Đã xác nhận
+                    </option>
+
+                    <option value="3">
+                        Đang giao
+                    </option>
+
+                    <option value="4">
+                        Hoàn thành
+                    </option>
+
+                    <option value="5">
+                        Đã hủy
+                    </option>
+
+                </select>
+
+
+                <!-- RESET -->
+                <button
+                    type="button"
+                    class="action-btn"
+                    id="btnResetFilter"
+                    title="Đặt lại bộ lọc">
+
+                    🔄
+
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 TABLE
+            ========================== -->
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">
+                                STT
+                            </th>
+
+                            <th style="width: 140px;">
+                                Mã đơn
+                            </th>
+
+                            <th>
+                                Khách hàng
+                            </th>
+
+                            <th style="width: 130px;">
+                                Tổng tiền
+                            </th>
+
+                            <th style="width: 150px;">
+                                Ngày đặt
+                            </th>
+
+                            <th style="width: 150px;">
+                                Trạng thái
+                            </th>
+
+                            <th style="width: 120px;">
+                                Thao tác
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="donHangTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="loading-row">
+
+                                Đang tải đơn hàng...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =========================
+                 FOOTER
+            ========================== -->
+            <div class="table-footer">
+
+                <div
+                    id="recordCount"
+                    class="record-count">
+
+                    Đang tải...
+
+                </div>
+
+
+                <div
+                    id="pagination"
+                    class="shop-pagination">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             CHI TIẾT ĐƠN HÀNG
+        ========================== -->
+        <section
+            id="donHangDetailPanel"
+            class="admin-content"
+            style="display: none; margin-top: 20px;">
+
+            <div class="admin-panel-header">
+
+                <div>
+
+                    <h2 id="detailTitle">
+                        Chi tiết đơn hàng
+                    </h2>
+
+                    <p>
+                        Thông tin chi tiết của đơn hàng
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="action-btn"
+                    id="btnDongChiTiet">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+
+            <!-- THÔNG TIN CƠ BẢN -->
+            <div class="form-grid">
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Mã đơn hàng
+                    </label>
+
+                    <input
+                        type="text"
+                        id="detailMaDonHang"
+                        class="admin-input"
+                        readonly>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Khách hàng
+                    </label>
+
+                    <input
+                        type="text"
+                        id="detailKhachHang"
+                        class="admin-input"
+                        readonly>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Ngày đặt
+                    </label>
+
+                    <input
+                        type="text"
+                        id="detailNgayDat"
+                        class="admin-input"
+                        readonly>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Trạng thái
+                    </label>
+
+                    <select
+                        id="detailTrangThai"
+                        class="admin-input">
+
+                        <option value="1">
+                            Chờ xác nhận
+                        </option>
+
+                        <option value="2">
+                            Đã xác nhận
+                        </option>
+
+                        <option value="3">
+                            Đang giao
+                        </option>
+
+                        <option value="4">
+                            Hoàn thành
+                        </option>
+
+                        <option value="5">
+                            Đã hủy
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group full-width">
+
+                    <label>
+                        Địa chỉ giao hàng
+                    </label>
+
+                    <input
+                        type="text"
+                        id="detailDiaChi"
+                        class="admin-input"
+                        readonly>
+
+                </div>
+
+
+                <div class="filter-group full-width">
+
+                    <label>
+                        Ghi chú
+                    </label>
+
+                    <textarea
+                        id="detailGhiChu"
+                        class="admin-input"
+                        readonly></textarea>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 CHI TIẾT MÓN ĂN
+            ========================== -->
+
+            <div style="margin-top: 25px;">
+
+                <h3 style="margin-bottom: 15px;">
+                    Danh sách món ăn
+                </h3>
+
+
+                <div class="admin-table-wrapper">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Món ăn
+                                </th>
+
+                                <th style="width: 100px;">
+                                    Số lượng
+                                </th>
+
+                                <th style="width: 130px;">
+                                    Đơn giá
+                                </th>
+
+                                <th style="width: 150px;">
+                                    Thành tiền
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="chiTietDonHangBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="loading-row">
+
+                                    Chưa có dữ liệu
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 TỔNG TIỀN
+            ========================== -->
+
+            <div
+                style="
+                    margin-top: 25px;
+                    display: flex;
+                    justify-content: flex-end;
+                ">
+
+                <div
+                    style="
+                        width: 350px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                    ">
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                        ">
+
+                        <span>
+                            Tổng tiền món:
+                        </span>
+
+                        <strong id="detailTongTien">
+                            0đ
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                        ">
+
+                        <span>
+                            Phí giao hàng:
+                        </span>
+
+                        <strong id="detailPhiGiaoHang">
+                            0đ
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                        ">
+
+                        <span>
+                            Giảm giá:
+                        </span>
+
+                        <strong id="detailGiamGia">
+                            0đ
+                        </strong>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 18px;
+                        ">
+
+                        <strong>
+                            Thành tiền:
+                        </strong>
+
+                        <strong id="detailThanhTien">
+                            0đ
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION -->
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="action-btn"
+                    id="btnHuyChiTiet">
+
+                    Đóng
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    id="btnCapNhatTrangThai">
+
+                    Cập nhật trạng thái
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- JS -->
+
+<script src="../js/don-hang.js"></script>
+
+</body>
+</html>

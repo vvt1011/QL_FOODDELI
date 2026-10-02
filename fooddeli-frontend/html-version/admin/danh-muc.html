@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý danh mục - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="admin-sidebar">
+
+        <div class="sidebar-logo">
+
+            <div class="logo-icon">
+                🍔
+            </div>
+
+            <div class="logo-text">
+                <strong>FoodDeli</strong>
+                <span>ADMIN PANEL</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="index.html" class="sidebar-item">
+                <span class="sidebar-icon">📊</span>
+                <span>Tổng quan</span>
+            </a>
+
+            <a href="cua-hang.html" class="sidebar-item">
+                <span class="sidebar-icon">🏪</span>
+                <span>Cửa hàng</span>
+            </a>
+
+            <a href="danh-muc.html" class="sidebar-item active">
+                <span class="sidebar-icon">📂</span>
+                <span>Danh mục</span>
+            </a>
+
+            <a href="mon-an.html" class="sidebar-item">
+                <span class="sidebar-icon">🍔</span>
+                <span>Món ăn</span>
+            </a>
+
+            <a href="#" class="sidebar-item">
+                <span class="sidebar-icon">🛒</span>
+                <span>Đơn hàng</span>
+            </a>
+
+            <a href="#" class="sidebar-item">
+                <span class="sidebar-icon">👤</span>
+                <span>Người dùng</span>
+            </a>
+
+            <a href="#" class="sidebar-item">
+                <span class="sidebar-icon">📈</span>
+                <span>Thống kê</span>
+            </a>
+
+        </nav>
+
+
+        <div class="admin-sidebar-bottom">
+
+            <a href="../index.html" class="back-home">
+                🏠 &nbsp; Về trang chủ
+            </a>
+
+            <button id="btnLogout" class="admin-logout">
+                🚪 &nbsp; Đăng xuất
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+    <main class="admin-main">
+
+        <!-- HEADER -->
+        <header class="admin-header">
+
+            <div class="page-title">
+
+                <h1>Quản lý danh mục</h1>
+
+                <p>
+                    Quản lý các danh mục món ăn trong hệ thống
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-primary"
+                id="btnThemDanhMuc">
+
+                <span>＋</span>
+                Thêm danh mục
+
+            </button>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+        <section class="admin-content">
+
+
+            <!-- TOOLBAR -->
+            <div class="admin-toolbar">
+
+                <div class="search-box">
+
+                    <input
+                        type="text"
+                        id="searchDanhMuc"
+                        placeholder="Tìm kiếm theo tên danh mục...">
+
+                </div>
+
+
+                <select id="filterDanhMuc">
+
+                    <option value="">Tất cả trạng thái</option>
+
+                    <option value="1">
+                        Hoạt động
+                    </option>
+
+                    <option value="0">
+                        Không hoạt động
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width: 60px;">
+                                STT
+                            </th>
+
+                            <th style="width: 150px;">
+                                Mã danh mục
+                            </th>
+
+                            <th>
+                                Tên danh mục
+                            </th>
+
+                            <th>
+                                Mô tả
+                            </th>
+
+                            <th style="width: 130px;">
+                                Trạng thái
+                            </th>
+
+                            <th style="width: 150px;">
+                                Thao tác
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="danhMucTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="loading-row">
+
+                                Đang tải danh mục...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- ================= FOOTER ================= -->
+            <div class="table-footer">
+
+                <div
+                    id="recordCount"
+                    class="record-count">
+
+                    Đang tải...
+
+                </div>
+
+
+                <div
+                    id="pagination"
+                    class="shop-pagination">
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FORM ================= -->
+        <section
+            id="danhMucFormPanel"
+            class="admin-content"
+            style="display: none; margin-top: 20px;">
+
+            <div class="admin-panel-header">
+
+                <div>
+
+                    <h2 id="formTitle">
+                        Thêm danh mục
+                    </h2>
+
+                    <p>
+                        Nhập thông tin danh mục
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="danhMucForm" class="admin-form">
+
+                <div class="form-grid">
+
+
+                    <!-- TÊN -->
+                    <div class="filter-group">
+
+                        <label for="tenDanhMuc">
+                            Tên danh mục
+                        </label>
+
+                        <input
+                            type="text"
+                            id="tenDanhMuc"
+                            class="admin-input"
+                            placeholder="Nhập tên danh mục"
+                            required>
+
+                    </div>
+
+
+                    <!-- TRẠNG THÁI -->
+                    <div class="filter-group">
+
+                        <label for="trangThai">
+                            Trạng thái
+                        </label>
+
+                        <select
+                            id="trangThai"
+                            class="admin-input">
+
+                            <option value="1">
+                                Hoạt động
+                            </option>
+
+                            <option value="0">
+                                Không hoạt động
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- MÔ TẢ -->
+                    <div class="filter-group full-width">
+
+                        <label for="moTa">
+                            Mô tả
+                        </label>
+
+                        <textarea
+                            id="moTa"
+                            class="admin-input"
+                            placeholder="Nhập mô tả danh mục..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM ACTIONS -->
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="action-btn"
+                        id="btnHuy">
+
+                        Hủy
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn-primary"
+                        id="btnLuu">
+
+                        Lưu danh mục
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="../js/danh-muc.js"></script>
+
+</body>
+</html>

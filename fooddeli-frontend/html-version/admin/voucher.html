@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Quản lý Voucher - FoodDeli</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                FoodDeli
+                <span>ADMIN</span>
+            </div>
+
+            <nav class="admin-menu">
+
+                <a
+                    href="index.html"
+                    class="admin-menu-item"
+                >
+                    <span>▣</span>
+                    Dashboard
+                </a>
+
+                <a
+                    href="cua-hang.html"
+                    class="admin-menu-item"
+                >
+                    <span>⌂</span>
+                    Cửa hàng
+                </a>
+
+                <a
+                    href="danh-muc.html"
+                    class="admin-menu-item"
+                >
+                    <span>☷</span>
+                    Danh mục
+                </a>
+
+                <a
+                    href="mon-an.html"
+                    class="admin-menu-item"
+                >
+                    <span>🍔</span>
+                    Món ăn
+                </a>
+
+                <a
+                    href="don-hang.html"
+                    class="admin-menu-item"
+                >
+                    <span>▤</span>
+                    Đơn hàng
+                </a>
+
+                <a
+                    href="giao-hang.html"
+                    class="admin-menu-item"
+                >
+                    <span>🚚</span>
+                    Giao hàng
+                </a>
+
+                <a
+                    href="nguoi-dung.html"
+                    class="admin-menu-item"
+                >
+                    <span>👤</span>
+                    Người dùng
+                </a>
+
+                <a
+                    href="voucher.html"
+                    class="admin-menu-item active"
+                >
+                    <span>🎟</span>
+                    Voucher
+                </a>
+
+                <a
+                    href="thong-ke.html"
+                    class="admin-menu-item"
+                >
+                    <span>▥</span>
+                    Thống kê
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="back-home"
+                >
+                    ← Về trang chủ
+                </a>
+
+                <button
+                    type="button"
+                    class="admin-logout"
+                >
+                    Đăng xuất
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <!-- HEADER -->
+            <header class="admin-header">
+
+                <div>
+
+                    <h1>
+                        Quản lý Voucher
+                    </h1>
+
+                    <p>
+                        Theo dõi và tạo mã giảm giá
+                    </p>
+
+                </div>
+
+            </header>
+
+
+            <!-- FILTER -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Tìm kiếm Voucher
+                        </h2>
+
+                        <p>
+                            Lọc danh sách voucher đang có hiệu lực
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-filter">
+
+                    <div class="filter-group">
+
+                        <label for="searchVoucher">
+                            Tìm kiếm
+                        </label>
+
+                        <input
+                            type="text"
+                            id="searchVoucher"
+                            class="admin-input"
+                            placeholder="Mã hoặc tên voucher..."
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label for="filterLoaiGiamGia">
+                            Loại giảm giá
+                        </label>
+
+                        <input
+                            type="text"
+                            id="filterLoaiGiamGia"
+                            class="admin-input"
+                            placeholder="VD: PhanTram, Tien..."
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="btnLamMoi"
+                        class="btn btn-outline"
+                    >
+                        Làm mới
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnMoForm"
+                        class="btn"
+                    >
+                        + Thêm Voucher
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- DANH SÁCH -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Danh sách Voucher
+                        </h2>
+
+                        <p>
+                            Các voucher đang có hiệu lực theo API
+                        </p>
+
+                    </div>
+
+                    <span
+                        class="record-count"
+                        id="recordCount"
+                    >
+                        Đang tải...
+                    </span>
+
+                </div>
+
+
+                <div class="admin-table-wrapper">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    STT
+                                </th>
+
+                                <th>
+                                    Mã voucher
+                                </th>
+
+                                <th>
+                                    Tên voucher
+                                </th>
+
+                                <th>
+                                    Loại
+                                </th>
+
+                                <th>
+                                    Giá trị
+                                </th>
+
+                                <th>
+                                    Giảm tối đa
+                                </th>
+
+                                <th>
+                                    Đơn tối thiểu
+                                </th>
+
+                                <th>
+                                    Bắt đầu
+                                </th>
+
+                                <th>
+                                    Kết thúc
+                                </th>
+
+                                <th>
+                                    Số lượng
+                                </th>
+
+                                <th>
+                                    Trạng thái
+                                </th>
+
+                                <th>
+                                    Thao tác
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="voucherTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="12"
+                                    class="loading-cell"
+                                >
+                                    Đang tải danh sách voucher...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div
+                    id="pagination"
+                    class="admin-pagination"
+                ></div>
+
+            </section>
+
+
+            <!-- FORM THÊM -->
+            <section
+                class="admin-panel"
+                id="formVoucherPanel"
+                style="display: none;"
+            >
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Thêm Voucher
+                        </h2>
+
+                        <p>
+                            Tạo mã giảm giá mới
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="voucherForm">
+
+                    <div class="form-grid">
+
+                        <!-- MÃ -->
+                        <div class="filter-group">
+
+                            <label for="maVoucher">
+                                Mã voucher *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="maVoucher"
+                                class="admin-input"
+                                maxlength="50"
+                                placeholder="VD: FOOD50K"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- TÊN -->
+                        <div class="filter-group">
+
+                            <label for="tenVoucher">
+                                Tên voucher *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="tenVoucher"
+                                class="admin-input"
+                                maxlength="150"
+                                placeholder="VD: Giảm 50K cho đơn hàng"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- LOẠI -->
+                        <div class="filter-group">
+
+                            <label for="loaiGiamGia">
+                                Loại giảm giá *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="loaiGiamGia"
+                                class="admin-input"
+                                maxlength="20"
+                                placeholder="Nhập đúng giá trị backend yêu cầu"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- GIÁ TRỊ -->
+                        <div class="filter-group">
+
+                            <label for="giaTri">
+                                Giá trị *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="giaTri"
+                                class="admin-input"
+                                min="0"
+                                step="0.01"
+                                placeholder="VD: 50000"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- GIẢM TỐI ĐA -->
+                        <div class="filter-group">
+
+                            <label for="giamToiDa">
+                                Giảm tối đa
+                            </label>
+
+                            <input
+                                type="number"
+                                id="giamToiDa"
+                                class="admin-input"
+                                min="0"
+                                step="0.01"
+                                placeholder="Để trống nếu không giới hạn"
+                            >
+
+                        </div>
+
+
+                        <!-- ĐƠN TỐI THIỂU -->
+                        <div class="filter-group">
+
+                            <label for="giaTriDonToiThieu">
+                                Giá trị đơn tối thiểu
+                            </label>
+
+                            <input
+                                type="number"
+                                id="giaTriDonToiThieu"
+                                class="admin-input"
+                                min="0"
+                                step="0.01"
+                                value="0"
+                            >
+
+                        </div>
+
+
+                        <!-- BẮT ĐẦU -->
+                        <div class="filter-group">
+
+                            <label for="ngayBatDau">
+                                Ngày bắt đầu *
+                            </label>
+
+                            <input
+                                type="datetime-local"
+                                id="ngayBatDau"
+                                class="admin-input"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- KẾT THÚC -->
+                        <div class="filter-group">
+
+                            <label for="ngayKetThuc">
+                                Ngày kết thúc *
+                            </label>
+
+                            <input
+                                type="datetime-local"
+                                id="ngayKetThuc"
+                                class="admin-input"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- SỐ LƯỢNG -->
+                        <div class="filter-group">
+
+                            <label for="soLuong">
+                                Số lượng *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="soLuong"
+                                class="admin-input"
+                                min="1"
+                                step="1"
+                                value="1"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="btn"
+                        >
+                            Lưu Voucher
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnHuyForm"
+                            class="btn btn-outline"
+                        >
+                            Hủy
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- CHI TIẾT -->
+            <section
+                class="admin-panel"
+                id="chiTietPanel"
+                style="display: none;"
+            >
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Chi tiết Voucher
+                        </h2>
+
+                        <p>
+                            Thông tin voucher được chọn
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="btnDongChiTiet"
+                        class="btn btn-outline"
+                    >
+                        Đóng
+                    </button>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="filter-group">
+
+                        <label>
+                            Mã voucher
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailMaVoucher"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Tên voucher
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailTenVoucher"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Loại giảm giá
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailLoaiGiamGia"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Giá trị
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailGiaTri"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Giảm tối đa
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailGiamToiDa"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Đơn tối thiểu
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailGiaTriDonToiThieu"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Ngày bắt đầu
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailNgayBatDau"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Ngày kết thúc
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailNgayKetThuc"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Số lượng
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailSoLuong"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            Trạng thái
+                        </label>
+
+                        <input
+                            type="text"
+                            id="detailTrangThai"
+                            class="admin-input"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="../js/voucher.js"></script>
+
+</body>
+
+</html>

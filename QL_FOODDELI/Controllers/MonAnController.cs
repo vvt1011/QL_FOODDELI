@@ -395,7 +395,7 @@ namespace QL_FOODDELI.Controllers
 
             return Ok(new
             {
-                message = "Xoa mon an thanh cong"
+                message = "Da ngung ban mon an thanh cong"
             });
         }
 

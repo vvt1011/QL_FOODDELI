@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Thống kê - FoodDeli Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+    <style>
+
+        /* ======================================================
+           THONG KE
+        ====================================================== */
+
+        .thong-ke-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .thong-ke-tab {
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 11px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #555;
+            transition: 0.2s;
+        }
+
+        .thong-ke-tab:hover {
+            border-color: #ff6b00;
+            color: #ff6b00;
+        }
+
+        .thong-ke-tab.active {
+            background: #ff6b00;
+            color: #fff;
+            border-color: #ff6b00;
+        }
+
+
+        /* ======================================================
+           STAT CARDS
+        ====================================================== */
+
+        .thong-ke-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .thong-ke-stat-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .thong-ke-stat-label {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .thong-ke-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #172033;
+        }
+
+
+        /* ======================================================
+           CONTENT GRID
+        ====================================================== */
+
+        .thong-ke-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+
+        /* ======================================================
+           REVENUE CHART
+        ====================================================== */
+
+        .revenue-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            min-height: 320px;
+            padding: 25px 10px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .revenue-column {
+            flex: 1;
+            min-width: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            height: 100%;
+        }
+
+        .revenue-bar-wrap {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .revenue-bar {
+            width: min(42px, 70%);
+            min-height: 4px;
+            border-radius: 8px 8px 0 0;
+            background: #ff6b00;
+            transition: height 0.3s ease;
+        }
+
+        .revenue-value {
+            font-size: 11px;
+            color: #555;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .revenue-label {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70px;
+        }
+
+
+        /* ======================================================
+           TOP MON
+        ====================================================== */
+
+        .top-mon-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .top-mon-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+        .top-mon-rank {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4f4f4;
+            font-weight: 700;
+            flex: 0 0 34px;
+        }
+
+        .top-mon-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .top-mon-name {
+            font-weight: 600;
+            color: #172033;
+            margin-bottom: 4px;
+        }
+
+        .top-mon-sub {
+            font-size: 13px;
+            color: #777;
+        }
+
+
+        /* ======================================================
+           TABLE
+        ====================================================== */
+
+        .thong-ke-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .thong-ke-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .thong-ke-table th,
+        .thong-ke-table td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .thong-ke-table th {
+            background: #fff7ee;
+            font-weight: 700;
+        }
+
+
+        /* ======================================================
+           STATE
+        ====================================================== */
+
+        .thong-ke-empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #777;
+        }
+
+        .thong-ke-error {
+            color: #b42318;
+            background: #fff3f2;
+            border: 1px solid #f5c2c0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+
+        /* ======================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1100px) {
+
+            .thong-ke-stat-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .thong-ke-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .thong-ke-stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .thong-ke-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .thong-ke-tab {
+                white-space: nowrap;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="admin-layout">
+
+
+    <!-- ======================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="admin-sidebar">
+
+        <div class="admin-logo">
+            FoodDeli
+            <span>ADMIN</span>
+        </div>
+
+
+        <nav class="admin-menu">
+
+            <a
+                href="index.html"
+                class="admin-menu-item"
+            >
+                <span>▣</span>
+                Dashboard
+            </a>
+
+
+            <a
+                href="cua-hang.html"
+                class="admin-menu-item"
+            >
+                <span>⌂</span>
+                Cửa hàng
+            </a>
+
+
+            <a
+                href="danh-muc.html"
+                class="admin-menu-item"
+            >
+                <span>☰</span>
+                Danh mục
+            </a>
+
+
+            <a
+                href="mon-an.html"
+                class="admin-menu-item"
+            >
+                <span>🍽</span>
+                Món ăn
+            </a>
+
+
+            <a
+                href="don-hang.html"
+                class="admin-menu-item"
+            >
+                <span>▤</span>
+                Đơn hàng
+            </a>
+
+
+            <a
+                href="giao-hang.html"
+                class="admin-menu-item"
+            >
+                <span>🚚</span>
+                Giao hàng
+            </a>
+
+
+            <a
+                href="nguoi-dung.html"
+                class="admin-menu-item"
+            >
+                <span>👤</span>
+                Người dùng
+            </a>
+
+
+            <a
+                href="voucher.html"
+                class="admin-menu-item"
+            >
+                <span>🎟</span>
+                Voucher
+            </a>
+
+
+            <a
+                href="thong-ke.html"
+                class="admin-menu-item active"
+            >
+                <span>▥</span>
+                Thống kê
+            </a>
+
+        </nav>
+
+
+        <div class="admin-sidebar-bottom">
+
+            <a
+                href="../index.html"
+                class="back-home"
+            >
+                ← Về trang chủ
+            </a>
+
+
+            <button
+                type="button"
+                class="admin-logout"
+            >
+                Đăng xuất
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ======================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="admin-main">
+
+
+        <!-- HEADER -->
+
+        <header class="admin-header">
+
+            <div>
+
+                <h1>
+                    Thống kê
+                </h1>
+
+                <p>
+                    Theo dõi doanh thu và món ăn bán chạy trên hệ thống FoodDeli
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- ==================================================
+             ERROR
+        ================================================== -->
+
+        <div
+            id="thongKeError"
+            class="thong-ke-error"
+            style="display:none;"
+        ></div>
+
+
+        <!-- ==================================================
+             TABS
+        ================================================== -->
+
+        <section class="admin-panel">
+
+            <div class="thong-ke-tabs">
+
+                <button
+                    type="button"
+                    class="thong-ke-tab active"
+                    data-tab="tong-quan"
+                >
+                    Tổng quan
+                </button>
+
+
+                <button
+                    type="button"
+                    class="thong-ke-tab"
+                    data-tab="doanh-thu"
+                >
+                    Doanh thu
+                </button>
+
+
+                <button
+                    type="button"
+                    class="thong-ke-tab"
+                    data-tab="top-mon"
+                >
+                    Top món ăn
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             TONG QUAN
+        ================================================== -->
+
+        <section
+            id="tabTongQuan"
+            class="thong-ke-tab-content"
+        >
+
+            <div class="thong-ke-stat-grid">
+
+                <div class="thong-ke-stat-card">
+
+                    <div class="thong-ke-stat-label">
+                        Tổng doanh thu
+                    </div>
+
+                    <div
+                        id="tongDoanhThu"
+                        class="thong-ke-stat-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="thong-ke-stat-card">
+
+                    <div class="thong-ke-stat-label">
+                        Tổng đơn hàng
+                    </div>
+
+                    <div
+                        id="tongDonHang"
+                        class="thong-ke-stat-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="thong-ke-stat-card">
+
+                    <div class="thong-ke-stat-label">
+                        Khách hàng
+                    </div>
+
+                    <div
+                        id="tongKhachHang"
+                        class="thong-ke-stat-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="thong-ke-stat-card">
+
+                    <div class="thong-ke-stat-label">
+                        Cửa hàng
+                    </div>
+
+                    <div
+                        id="tongCuaHang"
+                        class="thong-ke-stat-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="thong-ke-grid">
+
+
+                <!-- DOANH THU -->
+
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+
+                            <h2>
+                                Doanh thu theo thời gian
+                            </h2>
+
+                            <p>
+                                Dữ liệu từ API thống kê doanh thu
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="revenueChart"
+                        class="revenue-chart"
+                    >
+                        <div class="thong-ke-empty">
+                            Đang tải dữ liệu...
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- TOP MON -->
+
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+
+                            <h2>
+                                Top món ăn
+                            </h2>
+
+                            <p>
+                                Các món có số lượng bán cao
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="topMonListTongQuan"
+                        class="top-mon-list"
+                    >
+
+                        <div class="thong-ke-empty">
+                            Đang tải dữ liệu...
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             DOANH THU
+        ================================================== -->
+
+        <section
+            id="tabDoanhThu"
+            class="thong-ke-tab-content"
+            style="display:none;"
+        >
+
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Thống kê doanh thu
+                        </h2>
+
+                        <p>
+                            Chi tiết dữ liệu doanh thu từ API
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="btnTaiDoanhThu"
+                        class="btn"
+                    >
+                        Làm mới
+                    </button>
+
+                </div>
+
+
+                <div class="thong-ke-table-wrapper">
+
+                    <table class="thong-ke-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    STT
+                                </th>
+
+                                <th>
+                                    Thời gian
+                                </th>
+
+                                <th>
+                                    Doanh thu
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="doanhThuTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="thong-ke-empty"
+                                >
+                                    Đang tải dữ liệu...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <!-- ==================================================
+             TOP MON
+        ================================================== -->
+
+        <section
+            id="tabTopMon"
+            class="thong-ke-tab-content"
+            style="display:none;"
+        >
+
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Top món ăn
+                        </h2>
+
+                        <p>
+                            Danh sách món ăn theo dữ liệu thống kê
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="btnTaiTopMon"
+                        class="btn"
+                    >
+                        Làm mới
+                    </button>
+
+                </div>
+
+
+                <div class="thong-ke-table-wrapper">
+
+                    <table class="thong-ke-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    STT
+                                </th>
+
+                                <th>
+                                    Món ăn
+                                </th>
+
+                                <th>
+                                    Số lượng bán
+                                </th>
+
+                                <th>
+                                    Doanh thu
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="topMonTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="4"
+                                    class="thong-ke-empty"
+                                >
+                                    Đang tải dữ liệu...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script src="../js/thong-ke.js"></script>
+
+</body>
+
+</html>

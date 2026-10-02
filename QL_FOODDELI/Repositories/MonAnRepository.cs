@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using QL_FOODDELI.Data;
 using QL_FOODDELI.DTOs;
 using QL_FOODDELI.Models;
@@ -15,14 +15,25 @@ namespace QL_FOODDELI.Repositories
             _context = context;
         }
 
-        public async Task<MonAnSearchResponse> SearchAsync(MonAnSearchRequest request)
+        // =========================================================
+        // SEARCH
+        // =========================================================
+
+        public async Task<MonAnSearchResponse> SearchAsync(
+            MonAnSearchRequest request)
         {
             using var conn = _context.CreateConnection();
+
             var parameters = new DynamicParameters();
+
             parameters.Add("@page_index", request.PageIndex);
             parameters.Add("@page_size", request.PageSize);
-            parameters.Add("@TenMonAn", request.TenMonAn ?? string.Empty);
-            parameters.Add("@MaDanhMuc", request.MaDanhMuc ?? string.Empty);
+            parameters.Add(
+                "@TenMonAn",
+                request.TenMonAn ?? string.Empty);
+            parameters.Add(
+                "@MaDanhMuc",
+                request.MaDanhMuc ?? string.Empty);
 
             var items = (await conn.QueryAsync<MonAn>(
                 "sp_mon_an_search",
@@ -30,7 +41,8 @@ namespace QL_FOODDELI.Repositories
                 commandType: CommandType.StoredProcedure
             )).ToList();
 
-            long totalCount = items.FirstOrDefault()?.RecordCount ?? 0;
+            long totalCount =
+                items.FirstOrDefault()?.RecordCount ?? 0;
 
             return new MonAnSearchResponse
             {
@@ -41,43 +53,124 @@ namespace QL_FOODDELI.Repositories
             };
         }
 
+
+        // =========================================================
+        // GET ALL
+        // =========================================================
+
         public async Task<IEnumerable<MonAn>> GetAllAsync()
         {
-            const string sql = "SELECT * FROM MonAn ORDER BY NgayTao DESC";
+            const string sql = @"
+                SELECT *
+                FROM MonAn
+                ORDER BY NgayTao DESC";
+
             using var conn = _context.CreateConnection();
+
             return await conn.QueryAsync<MonAn>(sql);
         }
 
+
+        // =========================================================
+        // GET BY ID
+        // =========================================================
+
         public async Task<MonAn?> GetByIdAsync(string maMonAn)
         {
-            const string sql = "SELECT * FROM MonAn WHERE MaMonAn = @MaMonAn";
+            const string sql = @"
+                SELECT *
+                FROM MonAn
+                WHERE MaMonAn = @MaMonAn";
+
             using var conn = _context.CreateConnection();
-            return await conn.QueryFirstOrDefaultAsync<MonAn>(sql, new { MaMonAn = maMonAn });
+
+            return await conn.QueryFirstOrDefaultAsync<MonAn>(
+                sql,
+                new
+                {
+                    MaMonAn = maMonAn
+                });
         }
 
-        public async Task<IEnumerable<MonAn>> GetByCuaHangAsync(string maCuaHang)
+
+        // =========================================================
+        // GET BY CUA HANG
+        // =========================================================
+
+        public async Task<IEnumerable<MonAn>> GetByCuaHangAsync(
+            string maCuaHang)
         {
-            const string sql = "SELECT * FROM MonAn WHERE MaCuaHang = @MaCuaHang ORDER BY NgayTao DESC";
+            const string sql = @"
+                SELECT *
+                FROM MonAn
+                WHERE MaCuaHang = @MaCuaHang
+                ORDER BY NgayTao DESC";
+
             using var conn = _context.CreateConnection();
-            return await conn.QueryAsync<MonAn>(sql, new { MaCuaHang = maCuaHang });
+
+            return await conn.QueryAsync<MonAn>(
+                sql,
+                new
+                {
+                    MaCuaHang = maCuaHang
+                });
         }
+
+
+        // =========================================================
+        // CREATE
+        // =========================================================
 
         public async Task<bool> CreateAsync(MonAn monAn)
         {
             const string sql = @"
-                INSERT INTO MonAn (MaMonAn, MaCuaHang, MaDanhMuc, TenMonAn, MoTa, Gia, AnhMonAn, DanhGia, TrangThai, NgayTao)
-                VALUES (@MaMonAn, @MaCuaHang, @MaDanhMuc, @TenMonAn, @MoTa, @Gia, @AnhMonAn, @DanhGia, @TrangThai, GETDATE())";
+                INSERT INTO MonAn
+                (
+                    MaMonAn,
+                    MaCuaHang,
+                    MaDanhMuc,
+                    TenMonAn,
+                    MoTa,
+                    Gia,
+                    AnhMonAn,
+                    DanhGia,
+                    TrangThai,
+                    NgayTao
+                )
+                VALUES
+                (
+                    @MaMonAn,
+                    @MaCuaHang,
+                    @MaDanhMuc,
+                    @TenMonAn,
+                    @MoTa,
+                    @Gia,
+                    @AnhMonAn,
+                    @DanhGia,
+                    @TrangThai,
+                    GETDATE()
+                )";
 
             using var conn = _context.CreateConnection();
-            var rows = await conn.ExecuteAsync(sql, monAn);
+
+            var rows = await conn.ExecuteAsync(
+                sql,
+                monAn);
+
             return rows > 0;
         }
+
+
+        // =========================================================
+        // UPDATE
+        // =========================================================
 
         public async Task<bool> UpdateAsync(MonAn monAn)
         {
             const string sql = @"
-                UPDATE MonAn 
-                SET MaCuaHang = @MaCuaHang,
+                UPDATE MonAn
+                SET
+                    MaCuaHang = @MaCuaHang,
                     MaDanhMuc = @MaDanhMuc,
                     TenMonAn = @TenMonAn,
                     MoTa = @MoTa,
@@ -88,15 +181,47 @@ namespace QL_FOODDELI.Repositories
                 WHERE MaMonAn = @MaMonAn";
 
             using var conn = _context.CreateConnection();
-            var rows = await conn.ExecuteAsync(sql, monAn);
+
+            var rows = await conn.ExecuteAsync(
+                sql,
+                monAn);
+
             return rows > 0;
         }
 
+
+        // =========================================================
+        // DELETE / NGỪNG BÁN
+        // =========================================================
+
         public async Task<bool> DeleteAsync(string maMonAn)
         {
-            const string sql = "DELETE FROM MonAn WHERE MaMonAn = @MaMonAn";
+            /*
+             * Không DELETE vật lý khỏi bảng MonAn.
+             *
+             * Lý do:
+             * MonAn có thể đang được tham chiếu bởi:
+             * - ChiTietDonHang
+             * - ChiTietGioHang
+             *
+             * Vì vậy chuyển TrangThai = 0
+             * để món ngừng bán nhưng vẫn giữ dữ liệu.
+             */
+
+            const string sql = @"
+                UPDATE MonAn
+                SET TrangThai = 0
+                WHERE MaMonAn = @MaMonAn";
+
             using var conn = _context.CreateConnection();
-            var rows = await conn.ExecuteAsync(sql, new { MaMonAn = maMonAn });
+
+            var rows = await conn.ExecuteAsync(
+                sql,
+                new
+                {
+                    MaMonAn = maMonAn
+                });
+
             return rows > 0;
         }
     }

@@ -9,7 +9,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Quản lý cửa hàng - FoodDeli</title>
+    <title>Quản lý giao hàng - FoodDeli</title>
 
     <link
         rel="stylesheet"
@@ -46,7 +46,7 @@
 
                 <a
                     href="cua-hang.html"
-                    class="admin-menu-item active"
+                    class="admin-menu-item"
                 >
                     <span>⌂</span>
                     Cửa hàng
@@ -78,7 +78,7 @@
 
                 <a
                     href="giao-hang.html"
-                    class="admin-menu-item"
+                    class="admin-menu-item active"
                 >
                     <span>🚚</span>
                     Giao hàng
@@ -140,22 +140,21 @@
                 <div>
 
                     <h1>
-                        Quản lý cửa hàng
+                        Quản lý giao hàng
                     </h1>
 
                     <p>
-                        Quản lý toàn bộ cửa hàng trên hệ thống FoodDeli
+                        Theo dõi thông tin giao hàng của các đơn hàng
                     </p>
 
                 </div>
 
-                <!-- ĐÃ THÊM ID -->
                 <button
                     type="button"
-                    id="btnThemCuaHang"
                     class="btn"
+                    id="btnThemGiaoHang"
                 >
-                    + Thêm cửa hàng
+                    + Tạo giao hàng
                 </button>
 
             </header>
@@ -168,15 +167,15 @@
 
                     <div class="filter-group">
 
-                        <label for="searchShop">
-                            Tìm kiếm cửa hàng
+                        <label for="searchGiaoHang">
+                            Tìm kiếm giao hàng
                         </label>
 
                         <input
                             type="text"
-                            id="searchShop"
+                            id="searchGiaoHang"
                             class="admin-input"
-                            placeholder="Nhập tên cửa hàng..."
+                            placeholder="Mã giao hàng, mã đơn hàng, mã người giao..."
                         >
 
                     </div>
@@ -184,12 +183,12 @@
 
                     <div class="filter-group">
 
-                        <label for="shopStatus">
+                        <label for="filterTrangThai">
                             Trạng thái
                         </label>
 
                         <select
-                            id="shopStatus"
+                            id="filterTrangThai"
                             class="admin-input"
                         >
 
@@ -197,12 +196,16 @@
                                 Tất cả
                             </option>
 
-                            <option value="1">
-                                Hoạt động
+                            <option value="Cho giao">
+                                Chờ giao
                             </option>
 
-                            <option value="0">
-                                Ngừng hoạt động
+                            <option value="Dang giao">
+                                Đang giao
+                            </option>
+
+                            <option value="Da giao">
+                                Đã giao
                             </option>
 
                         </select>
@@ -213,9 +216,9 @@
                     <button
                         type="button"
                         class="btn"
-                        id="btnTimKiemCuaHang"
+                        id="btnLamMoi"
                     >
-                        Tìm kiếm
+                        Làm mới
                     </button>
 
                 </div>
@@ -231,18 +234,18 @@
                     <div>
 
                         <h2>
-                            Danh sách cửa hàng
+                            Danh sách giao hàng
                         </h2>
 
                         <p>
-                            Các cửa hàng đang có trong hệ thống
+                            Các thông tin giao hàng đang có trong hệ thống
                         </p>
 
                     </div>
 
                     <span
                         class="record-count"
-                        id="recordCount"
+                        id="paginationInfo"
                     >
                         Đang tải...
                     </span>
@@ -259,27 +262,27 @@
                             <tr>
 
                                 <th>
-                                    Mã cửa hàng
+                                    STT
                                 </th>
 
                                 <th>
-                                    Tên cửa hàng
+                                    Mã giao hàng
                                 </th>
 
                                 <th>
-                                    Chủ shop
+                                    Mã đơn hàng
                                 </th>
 
                                 <th>
-                                    Số điện thoại
-                                </th>
-
-                                <th>
-                                    Địa chỉ
+                                    Mã người giao
                                 </th>
 
                                 <th>
                                     Trạng thái
+                                </th>
+
+                                <th>
+                                    Thời gian nhận
                                 </th>
 
                                 <th>
@@ -291,7 +294,7 @@
                         </thead>
 
 
-                        <tbody id="shopTableBody">
+                        <tbody id="giaoHangTableBody">
 
                             <tr>
 
@@ -310,22 +313,31 @@
 
                 </div>
 
+
+                <div
+                    id="pagination"
+                    class="pagination"
+                ></div>
+
             </section>
 
 
-            <!-- FORM -->
-            <section class="admin-panel">
+            <!-- FORM TẠO GIAO HÀNG -->
+            <section
+                class="admin-panel"
+                id="formGiaoHangPanel"
+            >
 
                 <div class="admin-panel-header">
 
                     <div>
 
                         <h2>
-                            Thông tin cửa hàng
+                            Tạo thông tin giao hàng
                         </h2>
 
                         <p>
-                            Thêm mới hoặc cập nhật cửa hàng
+                            Tạo thông tin giao hàng cho đơn hàng chưa được phân công
                         </p>
 
                     </div>
@@ -334,133 +346,48 @@
 
 
                 <form
-                    id="shopForm"
+                    id="formGiaoHang"
                     class="admin-form"
                 >
 
                     <div class="form-grid">
 
-                        <!-- Mã cửa hàng -->
+                        <!-- Mã đơn hàng -->
                         <div class="filter-group">
 
-                            <label for="maCuaHang">
-                                Mã cửa hàng
+                            <label for="maDonHang">
+                                Mã đơn hàng
+                            </label>
+
+                            <select
+                                id="maDonHang"
+                                name="maDonHang"
+                                class="admin-input"
+                                required
+                            >
+
+                                <option value="">
+                                    -- Chọn đơn hàng --
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Mã người giao -->
+                        <div class="filter-group">
+
+                            <label for="maNguoiGiaoHang">
+                                Mã người giao hàng
                             </label>
 
                             <input
                                 type="text"
-                                id="maCuaHang"
-                                name="maCuaHang"
+                                id="maNguoiGiaoHang"
+                                name="maNguoiGiaoHang"
                                 class="admin-input"
-                                placeholder="VD: CH001"
-                            >
-
-                        </div>
-
-
-                        <!-- Mã chủ shop -->
-                        <div class="filter-group">
-
-                            <label for="maChuShop">
-                                Mã chủ shop
-                            </label>
-
-                            <input
-                                type="text"
-                                id="maChuShop"
-                                name="maChuShop"
-                                class="admin-input"
-                                placeholder="VD: ND_CHUSHOP01"
-                            >
-
-                        </div>
-
-
-                        <!-- Tên -->
-                        <div class="filter-group">
-
-                            <label for="tenCuaHang">
-                                Tên cửa hàng
-                            </label>
-
-                            <input
-                                type="text"
-                                id="tenCuaHang"
-                                name="tenCuaHang"
-                                class="admin-input"
-                                placeholder="Nhập tên cửa hàng"
-                            >
-
-                        </div>
-
-
-                        <!-- Số điện thoại -->
-                        <div class="filter-group">
-
-                            <label for="soDienThoai">
-                                Số điện thoại
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="soDienThoai"
-                                name="soDienThoai"
-                                class="admin-input"
-                                placeholder="Nhập số điện thoại"
-                            >
-
-                        </div>
-
-
-                        <!-- Địa chỉ -->
-                        <div class="filter-group full-width">
-
-                            <label for="diaChi">
-                                Địa chỉ
-                            </label>
-
-                            <input
-                                type="text"
-                                id="diaChi"
-                                name="diaChi"
-                                class="admin-input"
-                                placeholder="Nhập địa chỉ cửa hàng"
-                            >
-
-                        </div>
-
-
-                        <!-- Mô tả -->
-                        <div class="filter-group full-width">
-
-                            <label for="moTa">
-                                Mô tả
-                            </label>
-
-                            <textarea
-                                id="moTa"
-                                name="moTa"
-                                class="admin-input"
-                                rows="4"
-                                placeholder="Nhập mô tả cửa hàng"
-                            ></textarea>
-
-                        </div>
-
-
-                        <!-- Ảnh -->
-                        <div class="filter-group full-width">
-
-                            <label for="anhCuaHang">
-                                Link ảnh cửa hàng
-                            </label>
-
-                            <input
-                                type="url"
-                                id="anhCuaHang"
-                                name="anhCuaHang"
-                                class="admin-input"
-                                placeholder="https://..."
+                                placeholder="VD: NGH001"
                             >
 
                         </div>
@@ -479,15 +406,54 @@
                                 class="admin-input"
                             >
 
-                                <option value="1">
-                                    Hoạt động
+                                <option value="Cho giao">
+                                    Chờ giao
                                 </option>
 
-                                <option value="0">
-                                    Ngừng hoạt động
+                                <option value="Dang giao">
+                                    Đang giao
+                                </option>
+
+                                <option value="Da giao">
+                                    Đã giao
                                 </option>
 
                             </select>
+
+                        </div>
+
+
+                        <!-- Thời gian nhận -->
+                        <div class="filter-group">
+
+                            <label for="thoiGianNhan">
+                                Thời gian nhận
+                            </label>
+
+                            <input
+                                type="datetime-local"
+                                id="thoiGianNhan"
+                                name="thoiGianNhan"
+                                class="admin-input"
+                            >
+
+                        </div>
+
+
+                        <!-- Ghi chú -->
+                        <div class="filter-group full-width">
+
+                            <label for="ghiChu">
+                                Ghi chú
+                            </label>
+
+                            <textarea
+                                id="ghiChu"
+                                name="ghiChu"
+                                class="admin-input"
+                                rows="4"
+                                placeholder="Nhập ghi chú giao hàng..."
+                            ></textarea>
 
                         </div>
 
@@ -496,22 +462,19 @@
 
                     <div class="form-actions">
 
-                        <!-- ĐÃ THÊM ID -->
                         <button
                             type="reset"
-                            id="btnHuyCuaHang"
                             class="btn btn-outline"
+                            id="btnHuyThem"
                         >
                             Hủy
                         </button>
 
-                        <!-- ĐÃ THÊM ID -->
                         <button
                             type="submit"
-                            id="btnLuuCuaHang"
                             class="btn"
                         >
-                            Lưu cửa hàng
+                            Tạo giao hàng
                         </button>
 
                     </div>
@@ -525,7 +488,139 @@
     </div>
 
 
-    <script src="/fooddeli-frontend/html-version/js/cua-hang.js"></script>
+    <!-- MODAL CHI TIẾT -->
+    <div
+        class="admin-modal"
+        id="modalChiTiet"
+    >
+
+        <div class="admin-modal-content">
+
+            <div class="admin-modal-header">
+
+                <div>
+
+                    <h2>
+                        Chi tiết giao hàng
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="admin-modal-close"
+                    id="btnDongChiTiet"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="admin-modal-body">
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+
+                        <span>
+                            Mã giao hàng
+                        </span>
+
+                        <strong id="detailMaGiaoHang">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Mã đơn hàng
+                        </span>
+
+                        <strong id="detailMaDonHang">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Mã người giao hàng
+                        </span>
+
+                        <strong id="detailMaNguoiGiaoHang">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Trạng thái
+                        </span>
+
+                        <strong id="detailTrangThai">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Thời gian nhận
+                        </span>
+
+                        <strong id="detailThoiGianNhan">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item full-width">
+
+                        <span>
+                            Ghi chú
+                        </span>
+
+                        <strong id="detailGhiChu">
+                            -
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="admin-modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-outline"
+                    id="btnDongChiTiet2"
+                >
+                    Đóng
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="../js/giao-hang.js"></script>
 
 </body>
 
