@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Chi tiết cửa hàng - FoodDeli</title>
+
+    <link
+    rel="stylesheet"
+    href="/fooddeli-frontend/html-version/css/style.css"
+>
+
+</head>
+
+
+<body>
+
+    <main class="store-detail-page">
+
+        <div class="store-container">
+
+
+            <!-- ==========================================
+                 BREADCRUMB
+            =========================================== -->
+
+            <div class="breadcrumb">
+
+                <a href="cua-hang.html">
+                    Cửa hàng
+                </a>
+
+                <span>
+                    /
+                </span>
+
+                <span id="breadcrumbStore">
+                    Chi tiết cửa hàng
+                </span>
+
+            </div>
+
+
+
+            <!-- ==========================================
+                 LOADING
+            =========================================== -->
+
+            <section
+                id="loadingState"
+                class="page-state"
+            >
+
+                <div class="page-state-icon">
+                    🏪
+                </div>
+
+                <h3>
+                    Đang tải cửa hàng...
+                </h3>
+
+                <p>
+                    Vui lòng chờ trong giây lát.
+                </p>
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 ERROR
+            =========================================== -->
+
+            <section
+                id="errorState"
+                class="page-state"
+                hidden
+            >
+
+                <div class="page-state-icon">
+                    ⚠️
+                </div>
+
+                <h3>
+                    Không thể tải cửa hàng
+                </h3>
+
+                <p id="errorMessage">
+                    Đã xảy ra lỗi khi tải dữ liệu.
+                </p>
+
+                <div class="page-state-actions">
+
+                    <button
+                        type="button"
+                        id="retryBtn"
+                        class="btn-retry"
+                    >
+                        Thử lại
+                    </button>
+
+                    <button
+                        type="button"
+                        id="backBtn"
+                        class="btn-back"
+                    >
+                        ← Quay lại cửa hàng
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 NỘI DUNG CỬA HÀNG
+            =========================================== -->
+
+            <div
+                id="storeContent"
+                hidden
+            >
+
+
+                <!-- ======================================
+                     THÔNG TIN CỬA HÀNG
+                ======================================= -->
+
+                <section class="store-detail">
+
+
+                    <!-- ẢNH CỬA HÀNG -->
+
+                    <div class="store-image-box">
+
+                        <img
+                            id="storeImage"
+                            src=""
+                            alt="Ảnh cửa hàng"
+                        >
+
+                    </div>
+
+
+
+                    <!-- THÔNG TIN -->
+
+                    <div class="store-info">
+
+
+                        <!-- TÊN -->
+
+                        <h1 id="storeName">
+                            Tên cửa hàng
+                        </h1>
+
+
+
+                        <!-- ĐÁNH GIÁ -->
+
+                        <div
+                            id="storeRating"
+                            class="store-rating"
+                        >
+                            ★ Chưa có đánh giá
+                        </div>
+
+
+
+                        <!-- MÔ TẢ -->
+
+                        <p
+                            id="storeDescription"
+                            class="store-description"
+                        >
+                            Mô tả cửa hàng
+                        </p>
+
+
+
+                        <!-- THÔNG TIN CHI TIẾT -->
+
+                        <div class="store-meta">
+
+
+                            <!-- ĐỊA CHỈ -->
+
+                            <div class="store-meta-item">
+
+                                <strong>
+                                    Địa chỉ
+                                </strong>
+
+                                <span id="storeAddress">
+                                    —
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- SỐ ĐIỆN THOẠI -->
+
+                            <div class="store-meta-item">
+
+                                <strong>
+                                    Số điện thoại
+                                </strong>
+
+                                <span id="storePhone">
+                                    —
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- MÃ CỬA HÀNG -->
+
+                            <div class="store-meta-item">
+
+                                <strong>
+                                    Mã cửa hàng
+                                </strong>
+
+                                <span id="storeCode">
+                                    —
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- CHỦ SHOP -->
+
+                            <div class="store-meta-item">
+
+                                <strong>
+                                    Chủ shop
+                                </strong>
+
+                                <span id="storeOwner">
+                                    —
+                                </span>
+
+                            </div>
+
+
+
+                            <!-- TRẠNG THÁI -->
+
+                            <div class="store-meta-item">
+
+                                <strong>
+                                    Trạng thái
+                                </strong>
+
+                                <span id="storeStatus">
+                                    —
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ======================================
+                     THỰC ĐƠN
+                ======================================= -->
+
+                <section class="menu-section">
+
+
+                    <!-- HEADER THỰC ĐƠN -->
+
+                    <div class="menu-header">
+
+
+                        <div class="menu-title">
+
+                            <h2>
+                                Thực đơn
+                            </h2>
+
+                            <p id="foodCountText">
+                                Đang tải món ăn...
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- TÌM KIẾM MÓN -->
+
+                        <div class="food-search-box">
+
+                            <input
+                                type="search"
+                                id="foodSearch"
+                                class="food-search"
+                                placeholder="Tìm món ăn..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- ==================================
+                         DANH SÁCH MÓN
+                    =================================== -->
+
+                    <div
+                        id="foodGrid"
+                        class="food-grid"
+                    >
+
+                        <!--
+                            JS sẽ tự động hiển thị món ăn tại đây
+                        -->
+
+                    </div>
+
+
+                </section>
+
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ==============================================
+         JAVASCRIPT
+    =============================================== -->
+
+    <script src="/fooddeli-frontend/html-version/js/chitietcuahang.js"></script>
+
+
+</body>
+
+</html>

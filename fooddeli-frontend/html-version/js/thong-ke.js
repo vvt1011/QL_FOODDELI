@@ -804,9 +804,7 @@ function hienThiBieuDoDoanhThu(
 // BANG TOP MON
 // ======================================================
 
-function hienThiBangTopMon(
-    data
-) {
+function hienThiBangTopMon(data) {
 
     if (
         !Array.isArray(data) ||
@@ -834,45 +832,21 @@ function hienThiBangTopMon(
                 (item, index) => {
 
                     const tenMon =
-                        docGiaTri(
-                            item,
-                            [
-                                "tenMonAn",
-                                "TenMonAn",
-                                "monAn",
-                                "MonAn",
-                                "tenMon",
-                                "TenMon",
-                                "name",
-                                "Name"
-                            ]
-                        );
+                        item.tenMonAn ??
+                        item.TenMonAn ??
+                        "-";
 
 
                     const soLuong =
-                        docGiaTri(
-                            item,
-                            [
-                                "soLuong",
-                                "SoLuong",
-                                "soLuongBan",
-                                "SoLuongBan",
-                                "quantity",
-                                "Quantity"
-                            ]
-                        );
+                        item.tongSoLuongBan ??
+                        item.TongSoLuongBan ??
+                        0;
 
 
                     const doanhThu =
-                        docGiaTri(
-                            item,
-                            [
-                                "doanhThu",
-                                "DoanhThu",
-                                "revenue",
-                                "Revenue"
-                            ]
-                        );
+                        item.tongDoanhThu ??
+                        item.TongDoanhThu ??
+                        0;
 
 
                     return `
@@ -885,7 +859,7 @@ function hienThiBangTopMon(
                             <td>
                                 <strong>
                                     ${escapeHtml(
-                                        tenMon ?? "-"
+                                        tenMon
                                     )}
                                 </strong>
                             </td>

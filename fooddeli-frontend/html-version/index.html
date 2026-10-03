@@ -26,17 +26,32 @@
                     Trang chủ
                 </a>
 
-                <a href="pages/cua-hang.html" class="nav-link">
+                <a href="cua-hang.html" class="nav-link">
                     Cửa hàng
                 </a>
+                <a
+    href="giohang.html"
+    class="nav-link"
+    data-requires-login="true"
+>
+    Giỏ hàng
+</a>
 
-                <a href="#" class="nav-link">
-                    Món ăn
-                </a>
+               <a
+    href="#"
+    class="nav-link"
+    data-requires-login="true"
+>
+    Món ăn
+</a>
 
-                <a href="#" class="nav-link">
-                    Đơn hàng
-                </a>
+               <a
+    href="#"
+    class="nav-link"
+    data-requires-login="true"
+>
+    Đơn hàng
+</a>
 
             </nav>
 
@@ -107,7 +122,9 @@
 
 
         <!-- DANH MỤC -->
-        <section class="section">
+        <section
+    class="section homepage-login-section"
+    id="categorySection">
 
             <div class="container">
 
@@ -149,7 +166,9 @@
 
 
         <!-- CỬA HÀNG -->
-        <section class="section section-light">
+        <section
+    class="section section-light homepage-login-section"
+    id="featuredShopSection">
 
             <div class="container">
 
@@ -325,6 +344,28 @@
         </div>
 
     </footer>
+   <script>
+    // Chỉ xóa phiên cũ ở lần đầu tiên mở FoodDeli
+    // trong một phiên trình duyệt mới.
+    const foodDeliStarted =
+        sessionStorage.getItem("foodDeliStarted");
+
+    if (!foodDeliStarted) {
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("role");
+
+        sessionStorage.setItem(
+            "foodDeliStarted",
+            "1"
+        );
+    }
+</script>
+
+
+
 <script src="js/main.js"></script>
+
 </body>
 </html>

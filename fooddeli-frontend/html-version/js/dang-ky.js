@@ -99,7 +99,7 @@ form.addEventListener("submit", async function (event) {
 
         alert("Đăng ký tài khoản thành công!");
 
-        window.location.href = "dang-nhap.html";
+        window.location.href = "dang-nhap.html?registered=1";
 
     } catch (error) {
         console.error("Lỗi kết nối API:", error);

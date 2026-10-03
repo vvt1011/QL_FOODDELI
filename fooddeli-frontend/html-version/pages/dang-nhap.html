@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Đăng nhập - FoodDeli</title>
+    <title>Đăng nhập khách hàng - FoodDeli</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
@@ -13,11 +13,17 @@
 
     <main class="login-page">
 
-        <!-- Bên trái -->
+        <!-- Bên trái: Giới thiệu & Nhận diện thương hiệu -->
         <section class="login-intro">
 
             <div>
-                <h1>FoodDeli</h1>
+                <a href="../index.html" class="login-back-home" title="Trở về trang chủ FoodDeli">
+                    ← Về trang chủ
+                </a>
+
+                <a href="../index.html" class="login-brand-link">
+                    FoodDeli
+                </a>
 
                 <h2>
                     Đặt món ngon,
@@ -26,88 +32,196 @@
                 </h2>
 
                 <p>
-                    Nhanh chóng, tiện lợi và dễ dàng.
+                    Chào mừng bạn đến với FoodDeli! Đăng nhập để trải nghiệm đặt món nhanh chóng, nhận voucher ưu đãi và theo dõi trạng thái giao hàng thuận tiện nhất.
                 </p>
+
+                <div class="login-features">
+                    <div class="login-feature-item">
+                        <span class="login-feature-icon">⚡</span>
+                        <span>Giao đồ ăn siêu tốc nóng hổi tận tay</span>
+                    </div>
+
+                    <div class="login-feature-item">
+                        <span class="login-feature-icon">🎁</span>
+                        <span>Nhận hàng ngàn mã giảm giá mỗi ngày</span>
+                    </div>
+
+                    <div class="login-feature-item">
+                        <span class="login-feature-icon">🛵</span>
+                        <span>Theo dõi tài xế và lộ trình giao hàng trực tiếp</span>
+                    </div>
+                </div>
             </div>
 
             <p class="login-copyright">
-                © 2026 FoodDeli
+                © 2026 FoodDeli. Tất cả quyền được bảo lưu.
             </p>
 
         </section>
 
 
-        <!-- Bên phải -->
+        <!-- Bên phải: Form đăng nhập khách hàng -->
         <section class="login-form-wrapper">
 
-            <div class="login-form">
+            <div class="login-form" id="loginFormContainer">
+
+                <div class="login-role-badge">
+                    <span>👤 KHÁCH HÀNG</span>
+                </div>
 
                 <h2>Đăng nhập</h2>
 
                 <p class="login-description">
-                    Đăng nhập để tiếp tục sử dụng FoodDeli
+                    Đăng nhập tài khoản khách hàng để tiếp tục đặt món
                 </p>
 
-                <form id="loginForm">
+                <!-- Hộp thông báo tài khoản đã đăng nhập trước đó -->
+                <div id="alreadyLoggedInBox" class="already-logged-card" style="display: none;">
+                    <div class="user-avatar" id="alreadyUserAvatar">U</div>
+                    <h3 id="alreadyUserName">Xin chào!</h3>
+                    <p id="alreadyUserEmail">Bạn hiện đang đăng nhập với tài khoản này.</p>
+                    <div class="already-actions">
+                        <a href="../index.html" id="alreadyGoHomeBtn" class="btn" style="min-height: 40px; padding: 0 16px;">
+                            Vào trang chủ ngay
+                        </a>
+                        <button type="button" id="alreadyLogoutBtn" class="btn btn-outline" style="min-height: 40px; padding: 0 16px;">
+                            Đăng xuất tài khoản khác
+                        </button>
+                    </div>
+                </div>
 
-                    <div class="form-group">
+                <!-- Alert Thông báo trực tiếp (thay thế window.alert) -->
+                <div id="alertBox" class="login-alert" style="display: none;">
+                    <span id="alertIcon">⚠️</span>
+                    <span id="alertMessage" style="flex: 1;"></span>
+                    <button type="button" class="alert-close" id="alertCloseBtn" title="Đóng">&times;</button>
+                </div>
+
+                <form id="loginForm" novalidate>
+
+                    <!-- Email -->
+                    <div class="form-group" id="emailGroup">
                         <label for="email">
-                            Email
+                            Địa chỉ Email <span style="color: #ef4444;">*</span>
                         </label>
 
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Nhập email của bạn"
-                        >
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉️</span>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Nhập email của bạn (ví dụ: khachhang@gmail.com)"
+                                required
+                                autocomplete="email"
+                            >
+                        </div>
+                        <span class="field-error" id="emailError"></span>
                     </div>
 
-
-                    <div class="form-group">
+                    <!-- Mật khẩu -->
+                    <div class="form-group" id="passwordGroup">
                         <label for="password">
-                            Mật khẩu
+                            Mật khẩu <span style="color: #ef4444;">*</span>
                         </label>
 
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Nhập mật khẩu"
-                        >
+                        <div class="input-wrapper has-toggle">
+                            <span class="input-icon">🔒</span>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Nhập mật khẩu"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button
+                                type="button"
+                                id="togglePasswordBtn"
+                                class="toggle-password-btn"
+                                title="Hiện mật khẩu"
+                                aria-label="Hiện mật khẩu"
+                            >
+                                👁️
+                            </button>
+                        </div>
+                        <span class="field-error" id="passwordError"></span>
                     </div>
 
+                    <!-- Tùy chọn: Ghi nhớ & Quên mật khẩu -->
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Ghi nhớ đăng nhập</span>
+                        </label>
 
-                    <div class="forgot-password">
-                        <a href="#">
+                        <a href="javascript:void(0)" id="forgotPasswordBtn" class="forgot-password-link">
                             Quên mật khẩu?
                         </a>
                     </div>
 
-
+                    <!-- Nút Đăng nhập -->
                     <button
                         type="submit"
+                        id="submitBtn"
                         class="btn login-button"
                     >
-                        Đăng nhập
+                        <span class="btn-spinner" id="btnSpinner" style="display: none;"></span>
+                        <span id="btnText">Đăng nhập</span>
                     </button>
 
                 </form>
 
-
+                <!-- Đăng ký -->
                 <p class="register-text">
                     Chưa có tài khoản?
-
                     <a href="dang-ky.html">
-                        Đăng ký
+                        Đăng ký tài khoản mới
                     </a>
                 </p>
+
+                <!-- Lối tắt khám phá cửa hàng -->
+                <div class="login-guest-hint">
+                    Chưa muốn đăng nhập?
+                    <a href="../cua-hang.html">Khám phá thực đơn ngay →</a>
+                </div>
 
             </div>
 
         </section>
 
     </main>
+
+    <!-- Modal Hỗ trợ Quên mật khẩu -->
+    <div id="forgotPasswordModal" class="fooddeli-modal-backdrop" style="display: none;">
+        <div class="fooddeli-modal">
+            <button type="button" class="modal-close-btn" id="closeForgotModalBtn" aria-label="Đóng">&times;</button>
+            <h3>Quên mật khẩu?</h3>
+            <p>
+                Để bảo vệ an toàn cho tài khoản FoodDeli của bạn, vui lòng liên hệ bộ phận chăm sóc khách hàng hoặc gửi yêu cầu hỗ trợ cấp lại mật khẩu:
+            </p>
+
+            <div class="support-info">
+                <div class="support-item">
+                    <span>📞</span>
+                    <span>Tổng đài hỗ trợ: <strong>1900 6778</strong> (8:00 - 22:00)</span>
+                </div>
+                <div class="support-item">
+                    <span>📧</span>
+                    <span>Email: <strong>vutien10112005@gmail.com</strong></span>
+                </div>
+                <div class="support-item">
+                    <span>⏱️</span>
+                    <span>Thời gian phản hồi: <strong>5 - 15 phút</strong></span>
+                </div>
+            </div>
+
+            <button type="button" class="btn login-button" id="confirmForgotModalBtn" style="min-height: 42px;">
+                Đã hiểu
+            </button>
+        </div>
+    </div>
+
     <script src="../js/dang-nhap.js"></script>
 
 </body>
