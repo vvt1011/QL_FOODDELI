@@ -15,37 +15,78 @@
 <div class="admin-layout">
 
     <!-- SIDEBAR -->
-    <aside class="admin-sidebar">
+    <!-- SIDEBAR -->
+<aside class="admin-sidebar">
 
-        <div class="sidebar-logo">
-            <div class="logo-icon">🍔</div>
+    <div class="admin-logo">
+        FoodDeli <span>ADMIN</span>
+    </div>
 
-            <div class="logo-text">
-                <strong>FoodDeli</strong>
-                <span>Admin Panel</span>
-            </div>
-        </div>
+    <nav class="admin-menu">
 
-        <nav class="sidebar-menu">
+        <a href="index.html" class="admin-menu-item">
+            <span>▣</span>
+            Tổng quan
+        </a>
 
-            <a href="index.html" class="sidebar-item">
-                <span class="sidebar-icon">📊</span>
-                <span>Tổng quan</span>
-            </a>
+        <a href="cua-hang.html" class="admin-menu-item">
+            <span>⌂</span>
+            Cửa hàng
+        </a>
 
-            <a href="cua-hang.html" class="sidebar-item">
-                <span class="sidebar-icon">🏪</span>
-                <span>Cửa hàng</span>
-            </a>
+        <a href="danh-muc.html" class="admin-menu-item">
+            <span>☷</span>
+            Danh mục
+        </a>
 
-            <a href="mon-an.html" class="sidebar-item active">
-                <span class="sidebar-icon">🍔</span>
-                <span>Món ăn</span>
-            </a>
+        <a href="mon-an.html" class="admin-menu-item active">
+            <span>🍔</span>
+            Món ăn
+        </a>
 
-        </nav>
+        <a href="don-hang.html" class="admin-menu-item">
+            <span>▤</span>
+            Đơn hàng
+        </a>
 
-    </aside>
+        <a href="giao-hang.html" class="admin-menu-item">
+            <span>🚚</span>
+            Giao hàng
+        </a>
+
+        <a href="nguoi-dung.html" class="admin-menu-item">
+            <span>👤</span>
+            Người dùng
+        </a>
+
+        <a href="voucher.html" class="admin-menu-item">
+            <span>🎟</span>
+            Voucher
+        </a>
+
+        <a href="thong-ke.html" class="admin-menu-item">
+            <span>▥</span>
+            Thống kê
+        </a>
+
+    </nav>
+
+    <div class="admin-sidebar-bottom">
+
+        <a href="../index.html" class="back-home">
+            ← Về trang chủ
+        </a>
+
+        <button
+            type="button"
+            id="adminLogout"
+            class="admin-logout">
+            Đăng xuất
+        </button>
+
+    </div>
+
+</aside>
 
 
     <!-- MAIN -->
@@ -404,7 +445,7 @@
 
 
 <script
-    src="/fooddeli-frontend/html-version/js/mon-an.js">
+    src="/fooddeli-frontend/html-version/js/admin-monan.js">
 </script>
 
 </body>

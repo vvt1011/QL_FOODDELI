@@ -1,1949 +1,2695 @@
-// ==========================================
-// QUAN LY DON HANG - FOODDELI
-// ==========================================
+const API_BASE_URL =
+    "https://localhost:7135/api";
 
-const API_BASE_URL = "https://localhost:7135/api";
 
-let donHangs = [];
-let donHangsHienThi = [];
+let danhSachDonHang = [];
 
-let currentPage = 1;
-const pageSize = 10;
+let currentTab = "all";
 
-let donHangDangXem = null;
 
+// =====================================================
+// DOM
+// =====================================================
 
-// ==========================================
-// KHOI TAO
-// ==========================================
-
-document.addEventListener("DOMContentLoaded", () => {
-    khoiTaoSuKien();
-    loadDonHangs();
-});
-
-
-// ==========================================
-// SU KIEN
-// ==========================================
-
-function khoiTaoSuKien() {
-
-    document
-        .getElementById("searchDonHang")
-        ?.addEventListener("input", () => {
-            currentPage = 1;
-            locDonHang();
-        });
-
-
-    document
-        .getElementById("filterTrangThai")
-        ?.addEventListener("change", () => {
-            currentPage = 1;
-            locDonHang();
-        });
-
-
-    document
-        .getElementById("btnResetFilter")
-        ?.addEventListener("click", () => {
-
-            const search =
-                document.getElementById("searchDonHang");
-
-            const filter =
-                document.getElementById("filterTrangThai");
-
-            if (search) {
-                search.value = "";
-            }
-
-            if (filter) {
-                filter.value = "";
-            }
-
-            currentPage = 1;
-
-            locDonHang();
-        });
-
-
-    document
-        .getElementById("pagination")
-        ?.addEventListener("click", (e) => {
-
-            const button =
-                e.target.closest("[data-page]");
-
-            if (!button || button.disabled) {
-                return;
-            }
-
-            const page =
-                Number(button.dataset.page);
-
-            if (!page || page === currentPage) {
-                return;
-            }
-
-            currentPage = page;
-
-            renderDonHang();
-        });
-
-
-    // Xem chi tiet
-    document
-        .getElementById("donHangTableBody")
-        ?.addEventListener("click", (e) => {
-
-            const button =
-                e.target.closest("[data-action='view']");
-
-            if (!button) {
-                return;
-            }
-
-            const id =
-                button.dataset.id;
-
-            if (id) {
-                xemChiTietDonHang(id);
-            }
-        });
-
-
-    document
-        .getElementById("btnDongChiTiet")
-        ?.addEventListener("click", dongChiTiet);
-
-
-    document
-        .getElementById("btnHuyChiTiet")
-        ?.addEventListener("click", dongChiTiet);
-
-
-    document
-        .getElementById("btnCapNhatTrangThai")
-        ?.addEventListener("click", capNhatTrangThai);
-
-
-    // Dang xuat
-    document
-        .getElementById("btnLogout")
-        ?.addEventListener("click", () => {
-
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-
-            window.location.href = "../dang-nhap.html";
-        });
-}
-
-
-// ==========================================
-// LOAD DON HANG
-// ==========================================
-
-async function loadDonHangs() {
-
-    const tbody =
-        document.getElementById("donHangTableBody");
-
-    if (tbody) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="loading-row">
-                    Đang tải đơn hàng...
-                </td>
-            </tr>
-        `;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/DonHang`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                await getErrorMessage(response)
-            );
-        }
-
-
-        const data =
-            await response.json();
-
-
-        donHangs =
-            Array.isArray(data)
-                ? data
-                : Array.isArray(data?.data)
-                    ? data.data
-                    : [];
-
-
-        donHangs.sort((a, b) => {
-
-            const dateA =
-                new Date(layNgayDat(a) || 0);
-
-            const dateB =
-                new Date(layNgayDat(b) || 0);
-
-            return dateB - dateA;
-        });
-
-
-        currentPage = 1;
-
-        locDonHang();
-
-
-    } catch (error) {
-
-        console.error(
-            "Lỗi load đơn hàng:",
-            error
-        );
-
-
-        if (tbody) {
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="loading-row">
-                        Không thể tải danh sách đơn hàng.
-                    </td>
-                </tr>
-            `;
-        }
-
-
-        hienThongBao(
-            error.message ||
-            "Không thể tải danh sách đơn hàng.",
-            "error"
-        );
-    }
-}
-
-
-// ==========================================
-// LOC DON HANG
-// ==========================================
-
-function locDonHang() {
-
-    const searchInput =
-        document.getElementById("searchDonHang");
-
-    const filterInput =
-        document.getElementById("filterTrangThai");
-
-
-    const keyword =
-        (searchInput?.value || "")
-            .trim()
-            .toLowerCase();
-
-
-    const status =
-        filterInput?.value || "";
-
-
-    donHangsHienThi =
-        donHangs.filter(item => {
-
-            const maDon =
-                layMaDonHang(item)
-                    .toLowerCase();
-
-
-            const matchSearch =
-                maDon.includes(keyword);
-
-
-            const trangThai =
-                layTrangThai(item);
-
-
-            const matchStatus =
-                status === "" ||
-                String(trangThai) === String(status);
-
-
-            return matchSearch && matchStatus;
-        });
-
-
-    const totalPages =
-        Math.max(
-            1,
-            Math.ceil(
-                donHangsHienThi.length / pageSize
-            )
-        );
-
-
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
-    }
-
-
-    renderDonHang();
-}
-
-
-// ==========================================
-// RENDER TABLE
-// ==========================================
-
-function renderDonHang() {
-
-    const tbody =
-        document.getElementById("donHangTableBody");
-
-    if (!tbody) {
-        return;
-    }
-
-
-    const total =
-        donHangsHienThi.length;
-
-
-    if (total === 0) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="7" class="loading-row">
-                    Không tìm thấy đơn hàng nào.
-                </td>
-            </tr>
-        `;
-
-        capNhatRecordCount(0);
-        renderPagination(0);
-
-        return;
-    }
-
-
-    const start =
-        (currentPage - 1) * pageSize;
-
-
-    const end =
-        Math.min(
-            start + pageSize,
-            total
-        );
-
-
-    const pageData =
-        donHangsHienThi.slice(
-            start,
-            end
-        );
-
-
-    tbody.innerHTML =
-        pageData.map((item, index) => {
-
-            const maDon =
-                layMaDonHang(item);
-
-
-            const khachHang =
-                layKhachHang(item);
-
-
-            const thanhTien =
-                layThanhTien(item);
-
-
-            const ngayDat =
-                layNgayDat(item);
-
-
-            const trangThai =
-                layTrangThai(item);
-
-
-            const stt =
-                start + index + 1;
-
-
-            return `
-                <tr>
-
-                    <td>
-                        ${stt}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${escapeHtml(maDon || "—")}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            khachHang || "—"
-                        )}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${formatTien(thanhTien)}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${formatNgay(ngayDat)}
-                    </td>
-
-                    <td>
-                        ${renderTrangThai(trangThai)}
-                    </td>
-
-                    <td>
-
-                        <div class="table-actions">
-
-                            <button
-                                type="button"
-                                class="action-btn"
-                                data-action="view"
-                                data-id="${escapeAttribute(maDon)}"
-                                title="Xem chi tiết">
-
-                                👁️
-
-                            </button>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-            `;
-
-        }).join("");
-
-
-    capNhatRecordCount(
-        total,
-        start + 1,
-        end
+const ordersContent =
+    document.getElementById(
+        "ordersContent"
     );
 
 
-    renderPagination(total);
-}
+const ordersLoginState =
+    document.getElementById(
+        "ordersLoginState"
+    );
 
 
-// ==========================================
-// RENDER TRANG THAI
-// ==========================================
+const ordersLoadingState =
+    document.getElementById(
+        "ordersLoadingState"
+    );
 
-function renderTrangThai(trangThai) {
 
-    switch (Number(trangThai)) {
+const ordersErrorState =
+    document.getElementById(
+        "ordersErrorState"
+    );
 
-        case 1:
-            return `
-                <span class="status-badge pending">
-                    Chờ xác nhận
-                </span>
-            `;
 
-        case 2:
-            return `
-                <span class="status-badge active">
-                    Đã xác nhận
-                </span>
-            `;
+const ordersEmptyState =
+    document.getElementById(
+        "ordersEmptyState"
+    );
 
-        case 3:
-            return `
-                <span class="status-badge active">
-                    Đang giao
-                </span>
-            `;
 
-        case 4:
-            return `
-                <span class="status-badge active">
-                    Hoàn thành
-                </span>
-            `;
+const ordersErrorMessage =
+    document.getElementById(
+        "ordersErrorMessage"
+    );
 
-        case 5:
-            return `
-                <span class="status-badge inactive">
-                    Đã hủy
-                </span>
-            `;
 
-        default:
-            return `
-                <span class="status-badge">
-                    Không xác định
-                </span>
-            `;
+const btnRefreshOrders =
+    document.getElementById(
+        "btnRefreshOrders"
+    );
+
+
+const btnRetryOrders =
+    document.getElementById(
+        "btnRetryOrders"
+    );
+
+
+const orderDetailModal =
+    document.getElementById(
+        "orderDetailModal"
+    );
+
+
+const orderDetailBody =
+    document.getElementById(
+        "orderDetailBody"
+    );
+
+
+const orderDetailTitle =
+    document.getElementById(
+        "orderDetailTitle"
+    );
+
+
+const btnCloseOrderModal =
+    document.getElementById(
+        "btnCloseOrderModal"
+    );
+
+
+const orderTabs =
+    document.querySelectorAll(
+        ".orders-tab"
+    );
+
+
+
+// =====================================================
+// INIT
+// =====================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        ganSuKien();
+
+        khoiTaoDonHang();
+
     }
-}
+);
 
 
-// ==========================================
-// PHAN TRANG
-// ==========================================
 
-function renderPagination(total) {
+// =====================================================
+// EVENTS
+// =====================================================
 
-    const pagination =
-        document.getElementById("pagination");
-
-    if (!pagination) {
-        return;
-    }
+function ganSuKien() {
 
 
-    const totalPages =
-        Math.ceil(total / pageSize);
+    // TAB
+
+    orderTabs.forEach(
+        tab => {
+
+            tab.addEventListener(
+                "click",
+                () => {
+
+                    orderTabs.forEach(
+                        item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
 
 
-    if (totalPages <= 1) {
-
-        pagination.innerHTML = "";
-
-        return;
-    }
+                    tab.classList.add(
+                        "active"
+                    );
 
 
-    let html = "";
+                    currentTab =
+                        tab.dataset.tab ||
+                        "all";
 
 
-    html += `
-        <button
-            type="button"
-            class="pagination-btn"
-            data-page="${currentPage - 1}"
-            ${currentPage === 1 ? "disabled" : ""}>
+                    renderDanhSachDonHang();
 
-            ‹
+                }
+            );
 
-        </button>
-    `;
+        }
+    );
 
 
-    for (
-        let i = 1;
-        i <= totalPages;
-        i++
-    ) {
 
-        html += `
-            <button
-                type="button"
-                class="pagination-btn
-                    ${i === currentPage ? "active" : ""}"
-                data-page="${i}">
+    // LÀM MỚI
 
-                ${i}
-
-            </button>
-        `;
-    }
+    btnRefreshOrders?.addEventListener(
+        "click",
+        taiDanhSachDonHang
+    );
 
 
-    html += `
-        <button
-            type="button"
-            class="pagination-btn"
-            data-page="${currentPage + 1}"
-            ${currentPage === totalPages ? "disabled" : ""}>
 
-            ›
+    // THỬ LẠI
 
-        </button>
-    `;
+    btnRetryOrders?.addEventListener(
+        "click",
+        taiDanhSachDonHang
+    );
 
 
-    pagination.innerHTML = html;
-}
+
+    // ĐÓNG MODAL
+
+    btnCloseOrderModal?.addEventListener(
+        "click",
+        dongModalChiTiet
+    );
 
 
-// ==========================================
-// RECORD COUNT
-// ==========================================
 
-function capNhatRecordCount(
-    total,
-    start = 0,
-    end = 0
-) {
-
-    const element =
-        document.getElementById("recordCount");
-
-
-    if (!element) {
-        return;
-    }
-
-
-    if (total === 0) {
-
-        element.textContent =
-            "Không có đơn hàng";
-
-        return;
-    }
-
-
-    element.textContent =
-        `Hiển thị ${start} - ${end} trong ${total} đơn hàng`;
-}
-
-
-// ==========================================
-// XEM CHI TIET DON HANG
-// ==========================================
-
-async function xemChiTietDonHang(id) {
-
-    const panel =
-        document.getElementById(
-            "donHangDetailPanel"
+    document
+        .querySelector(
+            "[data-close-order-modal]"
+        )
+        ?.addEventListener(
+            "click",
+            dongModalChiTiet
         );
 
 
-    if (!panel) {
+
+    // ESC
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                orderDetailModal &&
+                !orderDetailModal.hidden
+            ) {
+
+                dongModalChiTiet();
+
+            }
+
+        }
+    );
+
+}
+
+
+
+// =====================================================
+// KHOI TAO
+// =====================================================
+
+function khoiTaoDonHang() {
+
+    const token =
+        localStorage.getItem(
+            "token"
+        );
+
+
+    const user =
+        localStorage.getItem(
+            "user"
+        );
+
+
+    if (
+        !token ||
+        !user
+    ) {
+
+        hienThiLoginState();
+
         return;
+
     }
 
 
-    panel.style.display = "block";
+    taiDanhSachDonHang();
+
+}
 
 
-    panel.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
+
+// =====================================================
+// GET DON HANG CUA TOI
+// GET /api/DonHang/user
+// =====================================================
+
+async function taiDanhSachDonHang() {
+
+    const token =
+        localStorage.getItem(
+            "token"
+        );
 
 
-    document.getElementById(
-        "detailTitle"
-    ).textContent =
-        `Chi tiết đơn hàng ${id}`;
+    const user =
+        localStorage.getItem(
+            "user"
+        );
 
 
-    document.getElementById(
-        "chiTietDonHangBody"
-    ).innerHTML = `
-        <tr>
-            <td colspan="4" class="loading-row">
-                Đang tải chi tiết...
-            </td>
-        </tr>
-    `;
+    if (
+        !token ||
+        !user
+    ) {
+
+        hienThiLoginState();
+
+        return;
+
+    }
+
+
+    hienThiLoading();
 
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/DonHang/${encodeURIComponent(id)}`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                await getErrorMessage(response)
-            );
-        }
-
-
         const data =
-            await response.json();
+            await apiRequest(
+                `${API_BASE_URL}/DonHang/user`
+            );
+
+
+        danhSachDonHang =
+            layMangDuLieu(
+                data
+            );
 
 
         console.log(
-            "CHI TIET DON HANG API:",
-            data
+            "Danh sách đơn hàng của tôi:",
+            danhSachDonHang
         );
 
 
-        donHangDangXem =
-            data?.data || data;
+        renderDanhSachDonHang();
 
 
-        await hienThiChiTiet(
-            donHangDangXem
-        );
-
-
-        loadLichSuTrangThai(id);
-
-
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
-            "Lỗi xem chi tiết đơn hàng:",
+            "Lỗi tải đơn hàng:",
             error
         );
 
 
-        hienThongBao(
+        if (
+            error.code ===
+            "UNAUTHORIZED"
+        ) {
+
+            hienThiLoginState();
+
+            return;
+
+        }
+
+
+        hienThiLoi(
             error.message ||
-            "Không thể tải chi tiết đơn hàng.",
-            "error"
+            "Không thể tải danh sách đơn hàng."
         );
+
     }
+
 }
 
 
-// ==========================================
-// HIEN THI CHI TIET
-// ==========================================
 
-async function hienThiChiTiet(item) {
+// =====================================================
+// API REQUEST
+// =====================================================
 
-    if (!item) {
-        return;
+async function apiRequest(
+    url,
+    options = {}
+) {
+
+    const token =
+        localStorage.getItem(
+            "token"
+        );
+
+
+    if (!token) {
+
+        const error =
+            new Error(
+                "Bạn cần đăng nhập để sử dụng chức năng này."
+            );
+
+
+        error.code =
+            "UNAUTHORIZED";
+
+
+        throw error;
+
     }
 
 
-    const maDon =
-        layMaDonHang(item);
+
+    const headers = {
+
+        "Accept":
+            "application/json",
+
+        ...(options.headers || {})
+
+    };
 
 
-    document.getElementById(
-        "detailTitle"
-    ).textContent =
-        `Chi tiết đơn hàng ${maDon}`;
+
+    if (
+        options.body &&
+        !headers["Content-Type"]
+    ) {
+
+        headers["Content-Type"] =
+            "application/json";
+
+    }
 
 
-    document.getElementById(
-        "detailMaDonHang"
-    ).value =
-        maDon;
+
+    headers["Authorization"] =
+        `Bearer ${token}`;
 
 
-    document.getElementById(
-        "detailKhachHang"
-    ).value =
-        layKhachHang(item);
 
-
-    document.getElementById(
-        "detailNgayDat"
-    ).value =
-        formatNgay(
-            layNgayDat(item)
+    const response =
+        await fetch(
+            url,
+            {
+                ...options,
+                headers
+            }
         );
 
 
-    document.getElementById(
-        "detailTrangThai"
-    ).value =
-        String(
-            layTrangThai(item)
+
+    let data = null;
+
+
+
+    const contentType =
+        response.headers.get(
+            "content-type"
+        ) || "";
+
+
+
+    if (
+        contentType.includes(
+            "application/json"
+        )
+    ) {
+
+        data =
+            await response
+                .json()
+                .catch(
+                    () => ({})
+                );
+
+    }
+    else {
+
+        data =
+            await response
+                .text()
+                .catch(
+                    () => ""
+                );
+
+    }
+
+
+
+    // TOKEN HẾT HẠN
+
+    if (
+        response.status === 401
+    ) {
+
+        localStorage.removeItem(
+            "token"
         );
 
 
-    document.getElementById(
-        "detailDiaChi"
-    ).value =
-        layDiaChi(item);
-
-
-    document.getElementById(
-        "detailGhiChu"
-    ).value =
-        layGhiChu(item);
-
-
-    document.getElementById(
-        "detailTongTien"
-    ).textContent =
-        formatTien(
-            layTongTien(item)
+        localStorage.removeItem(
+            "user"
         );
 
 
-    document.getElementById(
-        "detailPhiGiaoHang"
-    ).textContent =
-        formatTien(
-            layPhiGiaoHang(item)
+        localStorage.removeItem(
+            "role"
         );
 
 
-    document.getElementById(
-        "detailGiamGia"
-    ).textContent =
-        formatTien(
-            layGiamGia(item)
+        const error =
+            new Error(
+                "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+            );
+
+
+        error.code =
+            "UNAUTHORIZED";
+
+
+        throw error;
+
+    }
+
+
+
+    // API ERROR
+
+    if (!response.ok) {
+
+        const message =
+            data?.message ||
+            (
+                typeof data === "string" &&
+                data.trim()
+                    ? data
+                    : `HTTP ${response.status}`
+            );
+
+
+        throw new Error(
+            message
         );
 
-
-    document.getElementById(
-        "detailThanhTien"
-    ).textContent =
-        formatTien(
-            layThanhTien(item)
-        );
+    }
 
 
-    await hienThiChiTietMonAn(item);
+    return data;
+
 }
 
 
-// ==========================================
-// HIEN THI CHI TIET MON AN
-// ==========================================
 
-async function hienThiChiTietMonAn(item) {
+// =====================================================
+// RENDER DANH SACH
+// =====================================================
 
-    const tbody =
-        document.getElementById(
-            "chiTietDonHangBody"
+function renderDanhSachDonHang() {
+
+    const donHangLoc =
+        danhSachDonHang.filter(
+            donHang =>
+
+                currentTab === "all" ||
+
+                layTrangThaiDonHang(
+                    donHang
+                ) === currentTab
         );
 
 
-    if (!tbody) {
-        return;
-    }
 
+    if (
+        danhSachDonHang.length === 0
+    ) {
 
-    let chiTiet =
-        layChiTietDonHang(item);
-
-
-    console.log(
-        "CHI TIET MON AN:",
-        chiTiet
-    );
-
-
-    if (!Array.isArray(chiTiet)) {
-        chiTiet = [];
-    }
-
-
-    if (chiTiet.length === 0) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" class="loading-row">
-                    Không có dữ liệu món ăn trong đơn hàng.
-                </td>
-            </tr>
-        `;
+        hienThiEmpty();
 
         return;
+
     }
 
 
-    // Hiển thị tạm trong lúc lấy tên món
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="4" class="loading-row">
-                Đang tải thông tin món ăn...
-            </td>
-        </tr>
+
+    if (
+        donHangLoc.length === 0
+    ) {
+
+        hienThiEmpty();
+
+        return;
+
+    }
+
+
+
+    ordersLoginState.hidden =
+        true;
+
+
+    ordersLoadingState.hidden =
+        true;
+
+
+    ordersErrorState.hidden =
+        true;
+
+
+    ordersEmptyState.hidden =
+        true;
+
+
+    ordersContent.hidden =
+        false;
+
+
+
+    ordersContent.innerHTML =
+
+        donHangLoc
+
+            .map(
+                donHang =>
+                    renderOrderCard(
+                        donHang
+                    )
+            )
+
+            .join("");
+
+}
+
+
+
+// =====================================================
+// ORDER CARD
+// =====================================================
+
+function renderOrderCard(
+    donHang
+) {
+
+    const maDonHang =
+        layGiaTri(
+            donHang,
+            [
+                "maDonHang",
+                "MaDonHang"
+            ]
+        ) || "-";
+
+
+
+    const ngayDat =
+        layGiaTri(
+            donHang,
+            [
+                "ngayDat",
+                "NgayDat"
+            ]
+        );
+
+
+
+    const thanhTien =
+        Number(
+            layGiaTri(
+                donHang,
+                [
+                    "thanhTien",
+                    "ThanhTien",
+                    "tongTien",
+                    "TongTien"
+                ]
+            ) || 0
+        );
+
+
+
+    const statusInfo =
+        layThongTinTrangThai(
+            donHang
+        );
+
+
+
+    const tenCuaHang =
+        layGiaTri(
+            donHang,
+            [
+                "tenCuaHang",
+                "TenCuaHang"
+            ]
+        ) ||
+
+        layGiaTri(
+            donHang?.cuaHang,
+            [
+                "tenCuaHang",
+                "TenCuaHang"
+            ]
+        ) ||
+
+        "Đơn hàng FoodDeli";
+
+
+
+    const items =
+        layChiTiet(
+            donHang
+        );
+
+
+
+    const itemSummary =
+        taoTomTatMon(
+            items
+        );
+
+
+
+    return `
+
+        <article class="order-card">
+
+            <div class="order-card-top">
+
+                <div class="order-card-heading">
+
+                    <div class="order-code-label">
+                        Mã đơn hàng
+                    </div>
+
+                    <h2>
+                        ${
+                            escapeHtml(
+                                String(
+                                    maDonHang
+                                )
+                            )
+                        }
+                    </h2>
+
+                </div>
+
+
+                <span
+                    class="order-status ${statusInfo.className}"
+                >
+                    ${statusInfo.label}
+                </span>
+
+            </div>
+
+
+            <div class="order-card-meta">
+
+                <span>
+                    🏪
+                    ${
+                        escapeHtml(
+                            String(
+                                tenCuaHang
+                            )
+                        )
+                    }
+                </span>
+
+
+                <span>
+                    🕒
+                    ${
+                        escapeHtml(
+                            formatDate(
+                                ngayDat
+                            )
+                        )
+                    }
+                </span>
+
+            </div>
+
+
+            <div class="order-card-summary">
+
+                <div>
+
+                    <div class="order-summary-title">
+                        Món ăn
+                    </div>
+
+                    <p>
+                        ${
+                            escapeHtml(
+                                itemSummary
+                            )
+                        }
+                    </p>
+
+                </div>
+
+
+                <div class="order-total-wrap">
+
+                    <span>
+                        Tổng tiền
+                    </span>
+
+                    <strong>
+                        ${
+                            formatMoney(
+                                thanhTien
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-card-footer">
+
+                <button
+                    type="button"
+                    class="order-detail-btn"
+                    data-order-id="${
+                        escapeAttribute(
+                            String(
+                                maDonHang
+                            )
+                        )
+                    }"
+                >
+                    Xem chi tiết
+                </button>
+
+            </div>
+
+        </article>
+
     `;
 
-
-    /*
-     * Lấy thông tin từng món.
-     *
-     * ChiTietDonHang có thể chỉ chứa:
-     *
-     * MaMonAn
-     * SoLuong
-     * DonGia
-     *
-     * nên ta gọi API MonAn để lấy TenMonAn.
-     */
-
-    const danhSachMon =
-        await Promise.all(
-            chiTiet.map(async ct => {
-
-                const maMon =
-                    layMaMonAn(ct);
-
-
-                let monAn = null;
-
-
-                // Nếu API DonHang đã trả sẵn thông tin món
-                if (
-                    ct?.monAn ||
-                    ct?.MonAn
-                ) {
-
-                    monAn =
-                        ct.monAn ??
-                        ct.MonAn;
-                }
-
-
-                // Nếu chưa có tên món -> gọi API MonAn
-                if (
-                    !monAn &&
-                    maMon
-                ) {
-
-                    monAn =
-                        await layThongTinMonAn(
-                            maMon
-                        );
-                }
-
-
-                return {
-                    chiTiet: ct,
-                    monAn: monAn
-                };
-            })
-        );
-
-
-    tbody.innerHTML =
-        danhSachMon.map(itemMon => {
-
-            const ct =
-                itemMon.chiTiet;
-
-
-            const monAn =
-                itemMon.monAn;
-
-
-            const tenMon =
-                layTenMonTuChiTietVaMonAn(
-                    ct,
-                    monAn
-                );
-
-
-            const soLuong =
-                laySoLuong(ct);
-
-
-            const donGia =
-                layDonGia(ct);
-
-
-            const thanhTien =
-                layThanhTienChiTiet(
-                    ct,
-                    donGia,
-                    soLuong
-                );
-
-
-            return `
-                <tr>
-
-                    <td>
-                        <strong>
-                            ${escapeHtml(
-                                tenMon || "Không xác định"
-                            )}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${soLuong}
-                    </td>
-
-                    <td>
-                        ${formatTien(
-                            donGia
-                        )}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${formatTien(
-                                thanhTien
-                            )}
-                        </strong>
-                    </td>
-
-                </tr>
-            `;
-
-        }).join("");
 }
 
 
-// ==========================================
-// LAY THONG TIN MON AN
-// ==========================================
 
-async function layThongTinMonAn(maMonAn) {
+// =====================================================
+// CLICK XEM CHI TIET
+// =====================================================
 
-    try {
+document.addEventListener(
+    "click",
+    event => {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/MonAn/${encodeURIComponent(maMonAn)}`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
+        const button =
+            event.target.closest(
+                ".order-detail-btn"
             );
 
 
-        if (!response.ok) {
-
-            console.warn(
-                `Không lấy được món ${maMonAn}. Status: ${response.status}`
-            );
-
-            return null;
-        }
-
-
-        const data =
-            await response.json();
-
-
-        return data?.data || data;
-
-
-    } catch (error) {
-
-        console.warn(
-            `Lỗi lấy món ${maMonAn}:`,
-            error
-        );
-
-        return null;
-    }
-}
-
-
-// ==========================================
-// LAY MA MON AN
-// ==========================================
-
-function layMaMonAn(item) {
-
-    return String(
-        item?.maMonAn ??
-        item?.MaMonAn ??
-        item?.monAn?.maMonAn ??
-        item?.MonAn?.MaMonAn ??
-        ""
-    );
-}
-
-
-// ==========================================
-// LAY TEN MON
-// ==========================================
-
-function layTenMonTuChiTietVaMonAn(
-    chiTiet,
-    monAn
-) {
-
-    // Ưu tiên tên có sẵn trong ChiTiet
-    const tenTrongChiTiet =
-        chiTiet?.tenMonAn ??
-        chiTiet?.TenMonAn ??
-        chiTiet?.tenMon ??
-        chiTiet?.TenMon;
-
-
-    if (
-        tenTrongChiTiet &&
-        String(tenTrongChiTiet).trim() !== ""
-    ) {
-
-        return String(
-            tenTrongChiTiet
-        );
-    }
-
-
-    // Sau đó lấy từ object MonAn
-    const tenTuMonAn =
-        monAn?.tenMonAn ??
-        monAn?.TenMonAn ??
-        monAn?.tenMon ??
-        monAn?.TenMon ??
-        monAn?.ten;
-
-
-    if (
-        tenTuMonAn &&
-        String(tenTuMonAn).trim() !== ""
-    ) {
-
-        return String(
-            tenTuMonAn
-        );
-    }
-
-
-    // Không có tên thì dùng mã món
-    return layMaMonAn(chiTiet);
-}
-
-
-// ==========================================
-// CHI TIET DON HANG
-// ==========================================
-
-function layChiTietDonHang(item) {
-
-    let data =
-        item?.chiTietDonHangs ??
-        item?.ChiTietDonHangs ??
-        item?.chiTietDonHang ??
-        item?.ChiTietDonHang;
-
-
-    if (Array.isArray(data)) {
-        return data;
-    }
-
-
-    let json =
-        item?.listjson_chitiet ??
-        item?.ListjsonChitiet ??
-        item?.listJsonChiTiet;
-
-
-    if (Array.isArray(json)) {
-        return json;
-    }
-
-
-    if (typeof json === "string") {
-
-        try {
-
-            const parsed =
-                JSON.parse(json);
-
-
-            if (Array.isArray(parsed)) {
-                return parsed;
-            }
-
-
-        } catch (error) {
-
-            console.error(
-                "Không parse được listjson_chitiet:",
-                error
-            );
-        }
-    }
-
-
-    return [];
-}
-
-
-// ==========================================
-// SO LUONG
-// ==========================================
-
-function laySoLuong(item) {
-
-    return Number(
-        item?.soLuong ??
-        item?.SoLuong ??
-        0
-    );
-}
-
-
-// ==========================================
-// DON GIA
-// ==========================================
-
-function layDonGia(item) {
-
-    return Number(
-        item?.donGia ??
-        item?.DonGia ??
-        item?.gia ??
-        item?.Gia ??
-        0
-    );
-}
-
-
-// ==========================================
-// THANH TIEN CHI TIET
-// ==========================================
-
-function layThanhTienChiTiet(
-    item,
-    donGia,
-    soLuong
-) {
-
-    const value =
-        item?.thanhTien ??
-        item?.ThanhTien;
-
-
-    if (
-        value !== undefined &&
-        value !== null
-    ) {
-
-        return Number(value);
-    }
-
-
-    return Number(donGia) *
-        Number(soLuong);
-}
-
-
-// ==========================================
-// LOAD LICH SU TRANG THAI
-// ==========================================
-
-async function loadLichSuTrangThai(id) {
-
-    try {
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/DonHang/${encodeURIComponent(id)}/lich-su-trang-thai`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
-        if (!response.ok) {
+        if (!button) {
             return;
         }
 
 
-        const data =
-            await response.json();
+
+        const maDonHang =
+            button.dataset.orderId;
+
+
+
+        if (!maDonHang) {
+
+            alert(
+                "Không xác định được mã đơn hàng."
+            );
+
+
+            return;
+
+        }
+
+
+
+        moChiTietDonHang(
+            maDonHang
+        );
+
+    }
+);
+
+
+
+// =====================================================
+// CHI TIET DON HANG
+// GET /api/DonHang/{id}
+// GET /api/DonHang/{id}/lich-su-trang-thai
+// =====================================================
+
+async function moChiTietDonHang(
+    maDonHang
+) {
+
+    if (
+        !orderDetailModal ||
+        !orderDetailBody
+    ) {
+
+        console.error(
+            "Không tìm thấy modal chi tiết đơn hàng."
+        );
+
+        return;
+
+    }
+
+
+    orderDetailModal.hidden =
+        false;
+
+
+    document.body.classList.add(
+        "order-modal-open"
+    );
+
+
+
+    if (orderDetailTitle) {
+
+        orderDetailTitle.textContent =
+            `Đơn hàng ${maDonHang}`;
+
+    }
+
+
+
+    orderDetailBody.innerHTML = `
+
+        <div class="orders-detail-loading">
+
+            <div class="orders-spinner"></div>
+
+            Đang tải chi tiết đơn hàng...
+
+        </div>
+
+    `;
+
+
+
+    try {
+
+        const [
+            donHang,
+            lichSu
+        ] =
+
+            await Promise.all([
+
+                apiRequest(
+                    `${API_BASE_URL}/DonHang/${encodeURIComponent(maDonHang)}`
+                ),
+
+                apiRequest(
+                    `${API_BASE_URL}/DonHang/${encodeURIComponent(maDonHang)}/lich-su-trang-thai`
+                )
+
+            ]);
+
+
+
+        console.log(
+            "Chi tiết đơn hàng:",
+            donHang
+        );
 
 
         console.log(
             "Lịch sử trạng thái:",
-            data
+            lichSu
         );
 
 
-    } catch (error) {
 
-        console.warn(
-            "Không load được lịch sử:",
+        const detail =
+            donHang?.data ||
+            donHang;
+
+
+
+        const history =
+            layMangDuLieu(
+                lichSu
+            );
+
+
+
+        console.log(
+            "Lịch sử sau khi xử lý:",
+            history
+        );
+
+
+
+        hienThiChiTietDonHang(
+            detail,
+            history
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Lỗi tải chi tiết đơn hàng:",
             error
         );
+
+
+
+        if (
+            error.code ===
+            "UNAUTHORIZED"
+        ) {
+
+            dongModalChiTiet();
+
+            hienThiLoginState();
+
+            return;
+
+        }
+
+
+
+        orderDetailBody.innerHTML = `
+
+            <div class="orders-detail-error">
+
+                <div class="orders-state-icon">
+                    ⚠️
+                </div>
+
+                <h3>
+                    Không thể tải chi tiết
+                </h3>
+
+                <p>
+                    ${
+                        escapeHtml(
+                            error.message ||
+                            "Đã xảy ra lỗi."
+                        )
+                    }
+                </p>
+
+            </div>
+
+        `;
+
     }
+
 }
 
 
-// ==========================================
-// CAP NHAT TRANG THAI
-// ==========================================
 
-async function capNhatTrangThai() {
+// =====================================================
+// HIEN THI CHI TIET
+// =====================================================
 
-    if (!donHangDangXem) {
+function hienThiChiTietDonHang(
+    donHang,
+    history
+) {
 
-        hienThongBao(
-            "Chưa chọn đơn hàng.",
-            "error"
+    const maDonHang =
+        layGiaTri(
+            donHang,
+            [
+                "maDonHang",
+                "MaDonHang"
+            ]
+        ) || "-";
+
+
+
+    const maDiaChi =
+        layGiaTri(
+            donHang,
+            [
+                "maDiaChi",
+                "MaDiaChi"
+            ]
+        ) || "-";
+
+
+
+    const ngayDat =
+        layGiaTri(
+            donHang,
+            [
+                "ngayDat",
+                "NgayDat"
+            ]
         );
 
-        return;
-    }
 
 
-    const maDon =
-        layMaDonHang(
-            donHangDangXem
+    const ghiChu =
+        layGiaTri(
+            donHang,
+            [
+                "ghiChu",
+                "GhiChu"
+            ]
         );
 
 
-    const select =
-        document.getElementById(
-            "detailTrangThai"
-        );
 
-
-    const trangThaiMoi =
+    const tongTien =
         Number(
-            select?.value
+            layGiaTri(
+                donHang,
+                [
+                    "tongTien",
+                    "TongTien"
+                ]
+            ) || 0
         );
 
 
-    if (!maDon || !trangThaiMoi) {
 
-        hienThongBao(
-            "Dữ liệu trạng thái không hợp lệ.",
-            "error"
+    const phiGiaoHang =
+        Number(
+            layGiaTri(
+                donHang,
+                [
+                    "phiGiaoHang",
+                    "PhiGiaoHang"
+                ]
+            ) || 0
         );
 
-        return;
+
+
+    const giamGia =
+        Number(
+            layGiaTri(
+                donHang,
+                [
+                    "giamGia",
+                    "GiamGia"
+                ]
+            ) || 0
+        );
+
+
+
+    const thanhTien =
+        Number(
+            layGiaTri(
+                donHang,
+                [
+                    "thanhTien",
+                    "ThanhTien"
+                ]
+            ) || 0
+        );
+
+
+
+    const statusInfo =
+        layThongTinTrangThai(
+            donHang
+        );
+
+
+
+    const items =
+        layChiTiet(
+            donHang
+        );
+
+
+
+    const historyHtml =
+        renderLichSu(
+            history
+        );
+
+
+
+    orderDetailBody.innerHTML = `
+
+        <!-- TONG QUAN -->
+
+        <div class="order-detail-overview">
+
+            <div class="order-detail-main-info">
+
+                <div class="order-detail-label">
+                    Trạng thái hiện tại
+                </div>
+
+
+                <span
+                    class="order-status ${statusInfo.className}"
+                >
+                    ${statusInfo.label}
+                </span>
+
+            </div>
+
+
+            <div class="order-detail-grid">
+
+                <div>
+
+                    <span>
+                        Mã đơn
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                String(
+                                    maDonHang
+                                )
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Ngày đặt
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                formatDate(
+                                    ngayDat
+                                )
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Mã địa chỉ
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                String(
+                                    maDiaChi
+                                )
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MON AN -->
+
+        <section class="order-detail-section">
+
+            <div class="order-detail-section-heading">
+
+                <h3>
+                    Món ăn
+                </h3>
+
+                <span>
+                    ${items.length} món
+                </span>
+
+            </div>
+
+
+            <div class="order-detail-items">
+
+                ${
+                    items.length
+
+                        ? items
+                            .map(
+                                renderDetailItem
+                            )
+                            .join("")
+
+                        : `
+
+                            <div class="order-detail-empty">
+                                Không có dữ liệu chi tiết món ăn từ API.
+                            </div>
+
+                        `
+                }
+
+            </div>
+
+        </section>
+
+
+
+        <!-- THANH TOAN -->
+
+        <section class="order-detail-section">
+
+            <div class="order-detail-section-heading">
+
+                <h3>
+                    Tóm tắt thanh toán
+                </h3>
+
+            </div>
+
+
+            <div class="order-detail-money">
+
+                <div>
+
+                    <span>
+                        Tạm tính
+                    </span>
+
+                    <strong>
+                        ${
+                            formatMoney(
+                                tongTien
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Phí giao hàng
+                    </span>
+
+                    <strong>
+                        ${
+                            formatMoney(
+                                phiGiaoHang
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Giảm giá
+                    </span>
+
+                    <strong
+                        class="order-money-discount"
+                    >
+                        -
+                        ${
+                            formatMoney(
+                                Math.max(
+                                    0,
+                                    giamGia
+                                )
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div
+                    class="order-detail-money-total"
+                >
+
+                    <span>
+                        Thành tiền
+                    </span>
+
+                    <strong>
+                        ${
+                            formatMoney(
+                                thanhTien
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- LICHSU -->
+
+        <section class="order-detail-section">
+
+            <div class="order-detail-section-heading">
+
+                <h3>
+                    Lịch sử trạng thái
+                </h3>
+
+                <span>
+                    ${history.length} lần cập nhật
+                </span>
+
+            </div>
+
+
+            <div class="order-timeline">
+
+                ${historyHtml}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- GHI CHU -->
+
+        ${
+            ghiChu
+
+                ? `
+
+                    <section class="order-detail-note">
+
+                        <strong>
+                            Ghi chú
+                        </strong>
+
+                        <p>
+                            ${
+                                escapeHtml(
+                                    String(
+                                        ghiChu
+                                    )
+                                )
+                            }
+                        </p>
+
+                    </section>
+
+                `
+
+                : ""
+        }
+
+    `;
+
+}
+
+
+
+// =====================================================
+// CHI TIET MON
+// =====================================================
+
+function renderDetailItem(
+    item
+) {
+
+    const tenMon =
+        layGiaTri(
+            item,
+            [
+                "tenMonAn",
+                "TenMonAn"
+            ]
+        ) || "Món ăn";
+
+
+
+    const soLuong =
+        Number(
+            layGiaTri(
+                item,
+                [
+                    "soLuong",
+                    "SoLuong"
+                ]
+            ) || 0
+        );
+
+
+
+    const donGia =
+        Number(
+            layGiaTri(
+                item,
+                [
+                    "donGia",
+                    "DonGia"
+                ]
+            ) || 0
+        );
+
+
+
+    const thanhTien =
+        Number(
+            layGiaTri(
+                item,
+                [
+                    "thanhTien",
+                    "ThanhTien"
+                ]
+            ) || 0
+        );
+
+
+
+    const anhMonAn =
+        layGiaTri(
+            item,
+            [
+                "anhMonAn",
+                "AnhMonAn"
+            ]
+        );
+
+
+
+    const imageSrc =
+        anhMonAn
+            ? escapeAttribute(
+                String(
+                    anhMonAn
+                )
+            )
+            : "";
+
+
+
+    return `
+
+        <div class="order-detail-item">
+
+            <div class="order-detail-item-image">
+
+                ${
+                    imageSrc
+
+                        ? `
+
+                            <img
+                                src="${imageSrc}"
+                                alt="${escapeAttribute(
+                                    String(
+                                        tenMon
+                                    )
+                                )}"
+                                loading="lazy"
+                            >
+
+                        `
+
+                        : `
+
+                            <div class="order-detail-item-placeholder">
+                                🍔
+                            </div>
+
+                        `
+                }
+
+            </div>
+
+
+            <div class="order-detail-item-info">
+
+                <h4>
+                    ${
+                        escapeHtml(
+                            String(
+                                tenMon
+                            )
+                        )
+                    }
+                </h4>
+
+
+                <p>
+                    ${soLuong}
+                    ×
+                    ${formatMoney(
+                        donGia
+                    )}
+                </p>
+
+            </div>
+
+
+            <strong
+                class="order-detail-item-total"
+            >
+                ${
+                    formatMoney(
+                        thanhTien
+                    )
+                }
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+
+// =====================================================
+// LỊCH SỬ TRẠNG THÁI
+// =====================================================
+
+function renderLichSu(
+    history
+) {
+
+    if (
+        !Array.isArray(history) ||
+        history.length === 0
+    ) {
+
+        return `
+
+            <div class="order-detail-empty">
+
+                Chưa có lịch sử trạng thái.
+
+            </div>
+
+        `;
+
     }
 
 
-    const trangThaiCu =
-        layTrangThai(
-            donHangDangXem
+
+    return history
+        .map(
+            (
+                item,
+                index
+            ) => {
+
+
+                const rawStatus =
+                    layGiaTri(
+                        item,
+                        [
+                            "trangThaiMoi",
+                            "TrangThaiMoi",
+                            "trangThai",
+                            "TrangThai",
+                            "status",
+                            "Status"
+                        ]
+                    );
+
+
+
+                const status =
+                    layTenTrangThai(
+                        rawStatus
+                    );
+
+
+
+                const time =
+                    layGiaTri(
+                        item,
+                        [
+                            "thoiGian",
+                            "ThoiGian",
+                            "ngayTao",
+                            "NgayTao",
+                            "ngayCapNhat",
+                            "NgayCapNhat"
+                        ]
+                    );
+
+
+
+                const note =
+                    layGiaTri(
+                        item,
+                        [
+                            "ghiChu",
+                            "GhiChu",
+                            "moTa",
+                            "MoTa"
+                        ]
+                    );
+
+
+
+                return `
+
+                    <div
+                        class="order-timeline-item ${
+                            index ===
+                            history.length - 1
+                                ? "current"
+                                : ""
+                        }"
+                    >
+
+                        <span
+                            class="order-timeline-dot"
+                        ></span>
+
+
+                        <div
+                            class="order-timeline-content"
+                        >
+
+                            <strong>
+                                ${
+                                    escapeHtml(
+                                        String(
+                                            status
+                                        )
+                                    )
+                                }
+                            </strong>
+
+
+                            <span>
+                                ${
+                                    escapeHtml(
+                                        formatDate(
+                                            time
+                                        )
+                                    )
+                                }
+                            </span>
+
+
+                            ${
+                                note
+
+                                    ? `
+
+                                        <p>
+                                            ${
+                                                escapeHtml(
+                                                    String(
+                                                        note
+                                                    )
+                                                )
+                                            }
+                                        </p>
+
+                                    `
+
+                                    : ""
+                            }
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+
+// =====================================================
+// ĐỔI MÃ TRẠNG THÁI → TÊN TRẠNG THÁI
+// =====================================================
+
+function layTenTrangThai(
+    value
+) {
+
+    const text =
+        normalizeText(
+            value
         );
+
+
+    switch (text) {
+
+        case "1":
+            return "Chờ xác nhận";
+
+
+        case "2":
+            return "Đã xác nhận";
+
+
+        case "3":
+            return "Đang giao";
+
+
+        case "4":
+            return "Hoàn thành";
+
+
+        case "5":
+            return "Đã hủy";
+
+
+        default:
+
+            if (
+                value === null ||
+                value === undefined ||
+                value === ""
+            ) {
+
+                return "Cập nhật trạng thái";
+
+            }
+
+
+            return String(
+                value
+            );
+
+    }
+
+}
+
+
+
+// =====================================================
+// STATUS
+// =====================================================
+
+function layTrangThaiDonHang(
+    donHang
+) {
+
+    const raw =
+        layGiaTri(
+            donHang,
+            [
+                "trangThai",
+                "TrangThai"
+            ]
+        );
+
+
+    const text =
+        normalizeText(
+            raw
+        );
+
+
+    // 1 - CHỜ XÁC NHẬN
+
+    if (
+
+        text === "1" ||
+
+        text.includes(
+            "cho xac nhan"
+        ) ||
+
+        text.includes(
+            "cho duyet"
+        ) ||
+
+        text.includes(
+            "moi dat"
+        ) ||
+
+        text === "new" ||
+
+        text === "pending"
+
+    ) {
+
+        return "pending";
+
+    }
+
+
+
+    // 2 - ĐÃ XÁC NHẬN
+
+    if (
+
+        text === "2" ||
+
+        text.includes(
+            "da xac nhan"
+        ) ||
+
+        text === "confirmed"
+
+    ) {
+
+        return "confirmed";
+
+    }
+
+
+
+    // 3 - ĐANG GIAO
+
+    if (
+
+        text === "3" ||
+
+        text.includes(
+            "dang giao"
+        ) ||
+
+        text.includes(
+            "dang van chuyen"
+        ) ||
+
+        text.includes(
+            "van chuyen"
+        ) ||
+
+        text === "shipping" ||
+
+        text === "delivering"
+
+    ) {
+
+        return "shipping";
+
+    }
+
+
+
+    // 4 - HOÀN THÀNH
+
+    if (
+
+        text === "4" ||
+
+        text.includes(
+            "hoan thanh"
+        ) ||
+
+        text.includes(
+            "da giao"
+        ) ||
+
+        text === "completed" ||
+
+        text === "complete" ||
+
+        text === "delivered"
+
+    ) {
+
+        return "completed";
+
+    }
+
+
+
+    // 5 - ĐÃ HỦY
+
+    if (
+
+        text === "5" ||
+
+        text.includes(
+            "da huy"
+        ) ||
+
+        text === "huy" ||
+
+        text.includes(
+            "cancel"
+        )
+
+    ) {
+
+        return "cancelled";
+
+    }
+
+
+
+    return "other";
+
+}
+
+
+
+// =====================================================
+// LABEL STATUS
+// =====================================================
+
+function layThongTinTrangThai(
+    donHang
+) {
+
+    const key =
+        layTrangThaiDonHang(
+            donHang
+        );
+
+
+    const mapping = {
+
+        pending: {
+
+            label:
+                "Chờ xác nhận",
+
+            className:
+                "pending"
+
+        },
+
+
+        confirmed: {
+
+            label:
+                "Đã xác nhận",
+
+            className:
+                "shipping"
+
+        },
+
+
+        shipping: {
+
+            label:
+                "Đang giao",
+
+            className:
+                "shipping"
+
+        },
+
+
+        completed: {
+
+            label:
+                "Hoàn thành",
+
+            className:
+                "completed"
+
+        },
+
+
+        cancelled: {
+
+            label:
+                "Đã hủy",
+
+            className:
+                "cancelled"
+
+        },
+
+
+        other: {
+
+            label:
+                "Đang xử lý",
+
+            className:
+                "other"
+
+        }
+
+    };
+
+
+    return (
+        mapping[key] ||
+        mapping.other
+    );
+
+}
+
+
+
+// =====================================================
+// LẤY CHI TIẾT
+// =====================================================
+
+function layChiTiet(
+    donHang
+) {
+
+    const possible = [
+
+        donHang?.chiTietDonHangs,
+
+        donHang?.ChiTietDonHangs,
+
+        donHang?.chiTietDonHang,
+
+        donHang?.ChiTietDonHang,
+
+        donHang?.items,
+
+        donHang?.Items,
+
+        donHang?.danhSachMon,
+
+        donHang?.DanhSachMon
+
+    ];
+
+
+
+    for (
+        const value of possible
+    ) {
+
+        if (
+            Array.isArray(
+                value
+            )
+        ) {
+
+            return value;
+
+        }
+
+    }
+
+
+
+    const listJson =
+        layGiaTri(
+            donHang,
+            [
+                "listjson_chitiet",
+                "ListJsonChiTiet",
+                "listJsonChiTiet",
+                "listjsonChiTiet"
+            ]
+        );
+
 
 
     if (
-        trangThaiMoi === trangThaiCu
+        typeof listJson ===
+        "string"
     ) {
 
-        hienThongBao(
-            "Trạng thái chưa thay đổi.",
-            "error"
-        );
+        try {
 
-        return;
+            const parsed =
+                JSON.parse(
+                    listJson
+                );
+
+
+            if (
+                Array.isArray(
+                    parsed
+                )
+            ) {
+
+                return parsed;
+
+            }
+
+        }
+        catch (error) {
+
+            console.warn(
+                "Không parse được listjson_chitiet:",
+                error
+            );
+
+        }
+
     }
 
 
-    const btn =
-        document.getElementById(
-            "btnCapNhatTrangThai"
+
+    return [];
+
+}
+
+
+
+// =====================================================
+// TÓM TẮT MÓN
+// =====================================================
+
+function taoTomTatMon(
+    items
+) {
+
+    if (
+        !items.length
+    ) {
+
+        return (
+            "Xem chi tiết để xem danh sách món ăn."
         );
 
-
-    if (btn) {
-
-        btn.disabled = true;
-
-        btn.textContent =
-            "Đang cập nhật...";
     }
 
 
-    try {
 
-        const ghiChu =
-            `Cập nhật trạng thái đơn hàng thành: ${
-                tenTrangThai(trangThaiMoi)
-            }`;
+    const parts =
+        items
+            .slice(
+                0,
+                3
+            )
+            .map(
+                item => {
+
+                    const tenMon =
+                        layGiaTri(
+                            item,
+                            [
+                                "tenMonAn",
+                                "TenMonAn"
+                            ]
+                        ) ||
+                        "Món ăn";
 
 
-        const url =
-            `${API_BASE_URL}/DonHang/cap-nhat-trang-thai/` +
-            `${encodeURIComponent(maDon)}` +
-            `?trangThaiMoi=${trangThaiMoi}` +
-            `&ghiChu=${encodeURIComponent(ghiChu)}`;
+
+                    const soLuong =
+                        Number(
+                            layGiaTri(
+                                item,
+                                [
+                                    "soLuong",
+                                    "SoLuong"
+                                ]
+                            ) || 0
+                        );
 
 
-        const response =
-            await fetch(
-                url,
-                {
-                    method: "PUT",
-                    headers: getHeaders()
+
+                    return (
+                        `${tenMon} x${soLuong}`
+                    );
+
                 }
             );
 
 
-        if (!response.ok) {
 
-            throw new Error(
-                await getErrorMessage(response)
-            );
+    if (
+        items.length > 3
+    ) {
+
+        parts.push(
+            `+ ${items.length - 3} món khác`
+        );
+
+    }
+
+
+
+    return parts.join(
+        ", "
+    );
+
+}
+
+
+
+// =====================================================
+// STATES
+// =====================================================
+
+function anTatCaTrangThai() {
+
+    if (ordersLoginState) {
+
+        ordersLoginState.hidden =
+            true;
+
+    }
+
+
+    if (ordersLoadingState) {
+
+        ordersLoadingState.hidden =
+            true;
+
+    }
+
+
+    if (ordersErrorState) {
+
+        ordersErrorState.hidden =
+            true;
+
+    }
+
+
+    if (ordersEmptyState) {
+
+        ordersEmptyState.hidden =
+            true;
+
+    }
+
+
+    if (ordersContent) {
+
+        ordersContent.hidden =
+            true;
+
+    }
+
+}
+
+
+
+function hienThiLoginState() {
+
+    anTatCaTrangThai();
+
+
+    if (ordersLoginState) {
+
+        ordersLoginState.hidden =
+            false;
+
+    }
+
+}
+
+
+
+function hienThiLoading() {
+
+    anTatCaTrangThai();
+
+
+    if (ordersLoadingState) {
+
+        ordersLoadingState.hidden =
+            false;
+
+    }
+
+}
+
+
+
+function hienThiLoi(
+    message
+) {
+
+    anTatCaTrangThai();
+
+
+    if (ordersErrorState) {
+
+        ordersErrorState.hidden =
+            false;
+
+    }
+
+
+    if (ordersErrorMessage) {
+
+        ordersErrorMessage.textContent =
+            message ||
+            "Đã xảy ra lỗi khi tải đơn hàng.";
+
+    }
+
+}
+
+
+
+function hienThiEmpty() {
+
+    anTatCaTrangThai();
+
+
+    if (ordersEmptyState) {
+
+        ordersEmptyState.hidden =
+            false;
+
+    }
+
+}
+
+
+
+// =====================================================
+// MODAL
+// =====================================================
+
+function dongModalChiTiet() {
+
+    if (!orderDetailModal) {
+        return;
+    }
+
+
+    orderDetailModal.hidden =
+        true;
+
+
+    document.body.classList.remove(
+        "order-modal-open"
+    );
+
+}
+
+
+
+// =====================================================
+// UTIL
+// =====================================================
+
+function layMangDuLieu(
+    data
+) {
+
+    if (
+        Array.isArray(data)
+    ) {
+
+        return data;
+
+    }
+
+
+
+    const keys = [
+
+        "data",
+
+        "items",
+
+        "result",
+
+        "Data",
+
+        "Items",
+
+        "Result",
+
+        "donHangs",
+
+        "DonHangs"
+
+    ];
+
+
+
+    for (
+        const key of keys
+    ) {
+
+        if (
+            Array.isArray(
+                data?.[key]
+            )
+        ) {
+
+            return data[key];
+
         }
 
-
-        hienThongBao(
-            "Cập nhật trạng thái thành công.",
-            "success"
-        );
+    }
 
 
-        donHangDangXem.trangThai =
-            trangThaiMoi;
 
-        donHangDangXem.TrangThai =
-            trangThaiMoi;
+    return [];
 
-
-        await loadDonHangs();
+}
 
 
-        await hienThiChiTiet(
-            donHangDangXem
-        );
+
+// =====================================================
+// GET VALUE
+// =====================================================
+
+function layGiaTri(
+    object,
+    keys
+) {
+
+    if (
+
+        !object ||
+
+        typeof object !==
+            "object"
+
+    ) {
+
+        return null;
+
+    }
 
 
-    } catch (error) {
 
-        console.error(
-            "Lỗi cập nhật trạng thái:",
-            error
-        );
+    for (
+        const key of keys
+    ) {
 
+        if (
 
-        hienThongBao(
-            error.message ||
-            "Không thể cập nhật trạng thái.",
-            "error"
-        );
+            object[key] !==
+                undefined &&
 
+            object[key] !==
+                null
 
-    } finally {
+        ) {
 
-        if (btn) {
+            return object[key];
 
-            btn.disabled = false;
-
-            btn.textContent =
-                "Cập nhật trạng thái";
         }
-    }
-}
 
-
-// ==========================================
-// DONG CHI TIET
-// ==========================================
-
-function dongChiTiet() {
-
-    const panel =
-        document.getElementById(
-            "donHangDetailPanel"
-        );
-
-
-    if (panel) {
-        panel.style.display = "none";
     }
 
 
-    donHangDangXem = null;
+
+    return null;
+
 }
 
 
-// ==========================================
-// TEN TRANG THAI
-// ==========================================
 
-function tenTrangThai(trangThai) {
+// =====================================================
+// NORMALIZE TEXT
+// =====================================================
 
-    switch (Number(trangThai)) {
-
-        case 1:
-            return "Chờ xác nhận";
-
-        case 2:
-            return "Đã xác nhận";
-
-        case 3:
-            return "Đang giao";
-
-        case 4:
-            return "Hoàn thành";
-
-        case 5:
-            return "Đã hủy";
-
-        default:
-            return "Không xác định";
-    }
-}
-
-
-// ==========================================
-// LAY MA DON HANG
-// ==========================================
-
-function layMaDonHang(item) {
+function normalizeText(
+    value
+) {
 
     return String(
-        item?.maDonHang ??
-        item?.MaDonHang ??
-        ""
-    );
-}
+        value ?? ""
+    )
 
+        .trim()
 
-// ==========================================
-// LAY TRANG THAI
-// ==========================================
+        .toLowerCase()
 
-function layTrangThai(item) {
+        .normalize(
+            "NFD"
+        )
 
-    return Number(
-        item?.trangThai ??
-        item?.TrangThai ??
-        0
-    );
-}
-
-
-// ==========================================
-// LAY NGAY DAT
-// ==========================================
-
-function layNgayDat(item) {
-
-    return (
-        item?.ngayDat ??
-        item?.NgayDat ??
-        ""
-    );
-}
-
-
-// ==========================================
-// LAY GHI CHU
-// ==========================================
-
-function layGhiChu(item) {
-
-    return String(
-        item?.ghiChu ??
-        item?.GhiChu ??
-        ""
-    );
-}
-
-
-// ==========================================
-// LAY TONG TIEN
-// ==========================================
-
-function layTongTien(item) {
-
-    return Number(
-        item?.tongTien ??
-        item?.TongTien ??
-        0
-    );
-}
-
-
-// ==========================================
-// LAY PHI GIAO HANG
-// ==========================================
-
-function layPhiGiaoHang(item) {
-
-    return Number(
-        item?.phiGiaoHang ??
-        item?.PhiGiaoHang ??
-        0
-    );
-}
-
-
-// ==========================================
-// LAY GIAM GIA
-// ==========================================
-
-function layGiamGia(item) {
-
-    return Number(
-        item?.giamGia ??
-        item?.GiamGia ??
-        0
-    );
-}
-
-
-// ==========================================
-// LAY THANH TIEN
-// ==========================================
-
-function layThanhTien(item) {
-
-    return Number(
-        item?.thanhTien ??
-        item?.ThanhTien ??
-        0
-    );
-}
-
-
-// ==========================================
-// KHACH HANG
-// ==========================================
-
-function layKhachHang(item) {
-
-    const nguoiDung =
-        item?.nguoiDung ??
-        item?.NguoiDung;
-
-
-    if (nguoiDung) {
-
-        return String(
-            nguoiDung?.hoTen ??
-            nguoiDung?.HoTen ??
-            nguoiDung?.tenNguoiDung ??
-            nguoiDung?.TenNguoiDung ??
-            nguoiDung?.hoTenNguoiDung ??
-            nguoiDung?.HoTenNguoiDung ??
-            nguoiDung?.email ??
-            nguoiDung?.Email ??
+        .replace(
+            /[\u0300-\u036f]/g,
             ""
         );
-    }
 
-
-    return String(
-        item?.tenNguoiDung ??
-        item?.TenNguoiDung ??
-        item?.hoTen ??
-        item?.HoTen ??
-        item?.email ??
-        item?.Email ??
-        item?.maNguoiDung ??
-        item?.MaNguoiDung ??
-        ""
-    );
 }
 
 
-// ==========================================
-// DIA CHI
-// ==========================================
 
-function layDiaChi(item) {
+// =====================================================
+// MONEY
+// =====================================================
 
-    const diaChi =
-        item?.diaChi ??
-        item?.DiaChi;
-
-
-    if (diaChi) {
-
-        if (typeof diaChi === "string") {
-            return diaChi;
-        }
-
-
-        return [
-            diaChi?.diaChiChiTiet ??
-            diaChi?.DiaChiChiTiet,
-
-            diaChi?.soNha ??
-            diaChi?.SoNha,
-
-            diaChi?.duong ??
-            diaChi?.Duong,
-
-            diaChi?.phuong ??
-            diaChi?.Phuong,
-
-            diaChi?.quan ??
-            diaChi?.Quan,
-
-            diaChi?.tinh ??
-            diaChi?.Tinh
-        ]
-            .filter(Boolean)
-            .join(", ");
-    }
-
-
-    return String(
-        item?.diaChiGiaoHang ??
-        item?.DiaChiGiaoHang ??
-        item?.diaChiChiTiet ??
-        item?.DiaChiChiTiet ??
-        ""
-    );
-}
-
-
-// ==========================================
-// FORMAT TIEN
-// ==========================================
-
-function formatTien(value) {
+function formatMoney(
+    value
+) {
 
     const number =
-        Number(value) || 0;
+        Number(value);
 
 
-    return number.toLocaleString(
-        "vi-VN"
-    ) + "đ";
+
+    if (
+        !Number.isFinite(
+            number
+        )
+    ) {
+
+        return "0đ";
+
+    }
+
+
+
+    return (
+
+        number.toLocaleString(
+            "vi-VN"
+        ) +
+
+        "đ"
+
+    );
+
 }
 
 
-// ==========================================
-// FORMAT NGAY
-// ==========================================
 
-function formatNgay(value) {
+// =====================================================
+// DATE
+// =====================================================
+
+function formatDate(
+    value
+) {
 
     if (!value) {
-        return "—";
+
+        return "Chưa cập nhật";
+
     }
+
 
 
     const date =
-        new Date(value);
-
-
-    if (isNaN(date.getTime())) {
-
-        return escapeHtml(
-            String(value)
+        new Date(
+            value
         );
+
+
+
+    if (
+
+        Number.isNaN(
+            date.getTime()
+        )
+
+    ) {
+
+        return String(
+            value
+        );
+
     }
+
 
 
     return date.toLocaleString(
-        "vi-VN",
-        {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-        }
+        "vi-VN"
     );
+
 }
 
 
-// ==========================================
-// HEADER
-// ==========================================
 
-function getHeaders() {
-
-    const token =
-        localStorage.getItem("token");
-
-
-    const headers = {
-        "Accept": "application/json"
-    };
-
-
-    if (token) {
-
-        headers["Authorization"] =
-            `Bearer ${token}`;
-    }
-
-
-    return headers;
-}
-
-
-// ==========================================
-// DOC LOI API
-// ==========================================
-
-async function getErrorMessage(response) {
-
-    try {
-
-        const data =
-            await response.json();
-
-
-        if (data?.message) {
-            return data.message;
-        }
-
-
-        if (data?.Message) {
-            return data.Message;
-        }
-
-
-        if (data?.title) {
-            return data.title;
-        }
-
-
-        if (data?.detail) {
-            return data.detail;
-        }
-
-
-        if (typeof data === "string") {
-            return data;
-        }
-
-
-    } catch (error) {
-        // Khong parse duoc JSON
-    }
-
-
-    if (response.status === 400) {
-        return "Dữ liệu không hợp lệ.";
-    }
-
-
-    if (response.status === 401) {
-        return "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
-    }
-
-
-    if (response.status === 403) {
-        return "Bạn không có quyền thực hiện thao tác này.";
-    }
-
-
-    if (response.status === 404) {
-        return "Không tìm thấy dữ liệu.";
-    }
-
-
-    if (response.status === 500) {
-        return "Lỗi máy chủ. Không thể thực hiện thao tác.";
-    }
-
-
-    return `Thao tác thất bại. Mã lỗi: ${response.status}`;
-}
-
-
-// ==========================================
+// =====================================================
 // ESCAPE HTML
-// ==========================================
+// =====================================================
 
-function escapeHtml(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-
-function escapeAttribute(value) {
-
-    return escapeHtml(value);
-}
-
-
-// ==========================================
-// THONG BAO
-// ==========================================
-
-function hienThongBao(
-    message,
-    type = "success"
+function escapeHtml(
+    value
 ) {
 
-    const oldToast =
-        document.getElementById(
-            "adminToast"
+    return String(
+        value ?? ""
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
         );
 
-
-    if (oldToast) {
-        oldToast.remove();
-    }
+}
 
 
-    const toast =
-        document.createElement("div");
 
+// =====================================================
+// ESCAPE ATTRIBUTE
+// =====================================================
 
-    toast.id = "adminToast";
+function escapeAttribute(
+    value
+) {
 
-    toast.textContent = message;
+    return escapeHtml(
+        value
+    );
 
-
-    toast.style.position = "fixed";
-    toast.style.top = "24px";
-    toast.style.right = "24px";
-    toast.style.zIndex = "99999";
-    toast.style.padding = "14px 20px";
-    toast.style.borderRadius = "10px";
-    toast.style.fontSize = "14px";
-    toast.style.fontWeight = "600";
-    toast.style.boxShadow =
-        "0 8px 25px rgba(0,0,0,0.15)";
-    toast.style.maxWidth = "400px";
-    toast.style.transition =
-        "opacity 0.3s ease";
-
-
-    if (type === "error") {
-
-        toast.style.background =
-            "#fee2e2";
-
-        toast.style.color =
-            "#b91c1c";
-
-        toast.style.border =
-            "1px solid #fecaca";
-
-    } else {
-
-        toast.style.background =
-            "#dcfce7";
-
-        toast.style.color =
-            "#15803d";
-
-        toast.style.border =
-            "1px solid #bbf7d0";
-    }
-
-
-    document.body.appendChild(toast);
-
-
-    setTimeout(() => {
-
-        toast.style.opacity = "0";
-
-
-        setTimeout(() => {
-
-            toast.remove();
-
-        }, 300);
-
-    }, 2500);
 }

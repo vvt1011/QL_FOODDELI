@@ -52,19 +52,30 @@ const topMonTableBody =
 
 
 // ======================================================
+// LAY TOKEN
+// ======================================================
+
+function layToken() {
+
+    return localStorage.getItem("token");
+}
+
+
+// ======================================================
 // HEADERS
 // ======================================================
 
 function getHeaders() {
 
-    const token =
-        localStorage.getItem("token");
+    const token = layToken();
 
     const headers = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Accept": "application/json"
     };
 
     if (token) {
+
         headers["Authorization"] =
             `Bearer ${token}`;
     }
@@ -79,30 +90,59 @@ function getHeaders() {
 
 document.addEventListener(
     "DOMContentLoaded",
-    async () => {
+    async function () {
+
+        console.log("ThongKe JS da khoi tao");
 
         ganSuKienTabs();
 
-        document
-            .getElementById("btnTaiDoanhThu")
-            ?.addEventListener(
+        const btnTaiDoanhThu =
+            document.getElementById("btnTaiDoanhThu");
+
+        const btnTaiTopMon =
+            document.getElementById("btnTaiTopMon");
+
+        const btnDangXuat =
+            document.querySelector(".admin-logout");
+
+
+        if (btnTaiDoanhThu) {
+
+            btnTaiDoanhThu.addEventListener(
                 "click",
                 taiDoanhThu
             );
+        }
 
-        document
-            .getElementById("btnTaiTopMon")
-            ?.addEventListener(
+
+        if (btnTaiTopMon) {
+
+            btnTaiTopMon.addEventListener(
                 "click",
                 taiTopMon
             );
+        }
 
-        document
-            .querySelector(".admin-logout")
-            ?.addEventListener(
+
+        if (btnDangXuat) {
+
+            btnDangXuat.addEventListener(
                 "click",
                 dangXuat
             );
+        }
+
+
+        const token = layToken();
+
+        if (!token) {
+
+            hienThiLoi(
+                "Bạn chưa đăng nhập. Vui lòng đăng nhập lại."
+            );
+
+            return;
+        }
 
 
         await taiTatCa();
@@ -116,32 +156,40 @@ document.addEventListener(
 
 function ganSuKienTabs() {
 
-    document
-        .querySelectorAll(".thong-ke-tab")
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () => {
-
-                        const tab =
-                            button.dataset.tab;
-
-                        moTab(tab);
-                    }
-                );
-            }
+    const buttons =
+        document.querySelectorAll(
+            ".thong-ke-tab"
         );
+
+
+    buttons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const tab =
+                        button.dataset.tab;
+
+                    moTab(tab);
+                }
+            );
+        }
+    );
 }
 
+
+// ======================================================
+// MO TAB
+// ======================================================
 
 function moTab(tab) {
 
     document
         .querySelectorAll(".thong-ke-tab")
         .forEach(
-            button => {
+            function (button) {
 
                 button.classList.toggle(
                     "active",
@@ -151,43 +199,163 @@ function moTab(tab) {
         );
 
 
-    tabTongQuan.style.display =
-        tab === "tong-quan"
-            ? "block"
-            : "none";
+    if (tabTongQuan) {
+
+        tabTongQuan.style.display =
+            tab === "tong-quan"
+                ? "block"
+                : "none";
+    }
 
 
-    tabDoanhThu.style.display =
-        tab === "doanh-thu"
-            ? "block"
-            : "none";
+    if (tabDoanhThu) {
+
+        tabDoanhThu.style.display =
+            tab === "doanh-thu"
+                ? "block"
+                : "none";
+    }
 
 
-    tabTopMon.style.display =
-        tab === "top-mon"
-            ? "block"
-            : "none";
+    if (tabTopMon) {
+
+        tabTopMon.style.display =
+            tab === "top-mon"
+                ? "block"
+                : "none";
+    }
 }
 
 
 // ======================================================
-// LOAD ALL
+// TAI TAT CA
 // ======================================================
 
 async function taiTatCa() {
 
     anLoi();
 
-    await Promise.all([
-        taiTongQuan(),
-        taiDoanhThu(),
-        taiTopMon()
-    ]);
+
+    /*
+       Không dùng Promise.all trực tiếp để tránh trường hợp
+       một API lỗi làm ảnh hưởng các API còn lại.
+    */
+
+    await taiTongQuan();
+
+    await taiDoanhThu();
+
+    await taiTopMon();
 }
 
 
 // ======================================================
-// GET TONG QUAN
+// API REQUEST CHUNG
+// ======================================================
+
+async function apiGet(url) {
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "GET",
+                headers: getHeaders()
+            }
+        );
+
+
+    console.log(
+        "API:",
+        url,
+        "STATUS:",
+        response.status
+    );
+
+
+    if (response.status === 401) {
+
+        dangXuat();
+
+        throw new Error(
+            "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."
+        );
+    }
+
+
+    if (response.status === 403) {
+
+        throw new Error(
+            "Tài khoản không có quyền xem thống kê."
+        );
+    }
+
+
+    let data = null;
+
+    const contentType =
+        response.headers.get(
+            "content-type"
+        );
+
+
+    if (
+        contentType &&
+        contentType.includes("application/json")
+    ) {
+
+        data =
+            await response.json();
+
+    } else {
+
+        const text =
+            await response.text();
+
+        data = text;
+    }
+
+
+    if (!response.ok) {
+
+        let message =
+            `HTTP ${response.status}`;
+
+
+        if (data) {
+
+            if (
+                typeof data === "object"
+            ) {
+
+                message =
+                    data.message ||
+                    data.title ||
+                    message;
+
+            } else if (
+                typeof data === "string" &&
+                data.trim() !== ""
+            ) {
+
+                message =
+                    data;
+            }
+        }
+
+
+        throw new Error(
+            message
+        );
+    }
+
+
+    return data;
+}
+
+
+// ======================================================
+// TONG QUAN
 // GET /api/ThongKe/tong-quan
 // ======================================================
 
@@ -195,35 +363,15 @@ async function taiTongQuan() {
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/ThongKe/tong-quan`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
         console.log(
-            "GET /ThongKe/tong-quan ->",
-            response.status
+            "Dang tai tong quan..."
         );
 
 
-        await xuLyAuth(response);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                `Tong quan: HTTP ${response.status}`
-            );
-        }
-
-
         const data =
-            await response.json();
+            await apiGet(
+                `${API_BASE_URL}/ThongKe/tong-quan`
+            );
 
 
         console.log(
@@ -232,11 +380,14 @@ async function taiTongQuan() {
         );
 
 
-        tongQuanData = data;
+        tongQuanData =
+            data;
+
 
         hienThiTongQuan(
             data
         );
+
 
     } catch (error) {
 
@@ -244,6 +395,20 @@ async function taiTongQuan() {
             "Loi tong quan:",
             error
         );
+
+
+        tongDoanhThu.textContent =
+            "-";
+
+        tongDonHang.textContent =
+            "-";
+
+        tongKhachHang.textContent =
+            "-";
+
+        tongCuaHang.textContent =
+            "-";
+
 
         hienThiLoi(
             `Không tải được thống kê tổng quan: ${error.message}`
@@ -253,69 +418,48 @@ async function taiTongQuan() {
 
 
 // ======================================================
-// GET DOANH THU
+// DOANH THU
 // GET /api/ThongKe/doanh-thu
 // ======================================================
 
 async function taiDoanhThu() {
 
-    doanhThuTableBody.innerHTML = `
-        <tr>
-            <td
-                colspan="3"
-                class="thong-ke-empty"
-            >
+    if (doanhThuTableBody) {
+
+        doanhThuTableBody.innerHTML = `
+            <tr>
+                <td
+                    colspan="3"
+                    class="thong-ke-empty"
+                >
+                    Đang tải dữ liệu...
+                </td>
+            </tr>
+        `;
+    }
+
+
+    if (revenueChart) {
+
+        revenueChart.innerHTML = `
+            <div class="thong-ke-empty">
                 Đang tải dữ liệu...
-            </td>
-        </tr>
-    `;
-
-
-    revenueChart.innerHTML = `
-        <div class="thong-ke-empty">
-            Đang tải dữ liệu...
-        </div>
-    `;
+            </div>
+        `;
+    }
 
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/ThongKe/doanh-thu`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
         console.log(
-            "GET /ThongKe/doanh-thu ->",
-            response.status
+            "Dang tai doanh thu..."
         );
 
 
-        await xuLyAuth(response);
-
-
-        if (!response.ok) {
-
-            const errorText =
-                await response
-                    .text()
-                    .catch(
-                        () => ""
-                    );
-
-            throw new Error(
-                `Doanh thu: HTTP ${response.status} ${errorText}`
-            );
-        }
-
-
         const data =
-            await response.json();
+            await apiGet(
+                `${API_BASE_URL}/ThongKe/doanh-thu`
+            );
 
 
         console.log(
@@ -337,6 +481,7 @@ async function taiDoanhThu() {
             doanhThuData
         );
 
+
     } catch (error) {
 
         console.error(
@@ -345,96 +490,81 @@ async function taiDoanhThu() {
         );
 
 
-        doanhThuTableBody.innerHTML = `
-            <tr>
-                <td
-                    colspan="3"
-                    class="thong-ke-empty"
-                >
+        if (doanhThuTableBody) {
+
+            doanhThuTableBody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="3"
+                        class="thong-ke-empty"
+                    >
+                        Không tải được dữ liệu doanh thu.
+                    </td>
+                </tr>
+            `;
+        }
+
+
+        if (revenueChart) {
+
+            revenueChart.innerHTML = `
+                <div class="thong-ke-empty">
                     Không tải được dữ liệu doanh thu.
-                </td>
-            </tr>
-        `;
-
-
-        revenueChart.innerHTML = `
-            <div class="thong-ke-empty">
-                Không tải được dữ liệu doanh thu.
-            </div>
-        `;
+                </div>
+            `;
+        }
 
 
         hienThiLoi(
-            error.message
+            `Không tải được doanh thu: ${error.message}`
         );
     }
 }
 
 
 // ======================================================
-// GET TOP MON
+// TOP MON
 // GET /api/ThongKe/top-mon-an
 // ======================================================
 
 async function taiTopMon() {
 
-    topMonTableBody.innerHTML = `
-        <tr>
-            <td
-                colspan="4"
-                class="thong-ke-empty"
-            >
+    if (topMonTableBody) {
+
+        topMonTableBody.innerHTML = `
+            <tr>
+                <td
+                    colspan="4"
+                    class="thong-ke-empty"
+                >
+                    Đang tải dữ liệu...
+                </td>
+            </tr>
+        `;
+    }
+
+
+    if (topMonListTongQuan) {
+
+        topMonListTongQuan.innerHTML = `
+            <div class="thong-ke-empty">
                 Đang tải dữ liệu...
-            </td>
-        </tr>
-    `;
-
-
-    topMonListTongQuan.innerHTML = `
-        <div class="thong-ke-empty">
-            Đang tải dữ liệu...
-        </div>
-    `;
+            </div>
+        `;
+    }
 
 
     try {
 
-        const response =
-            await fetch(
-                `${API_BASE_URL}/ThongKe/top-mon-an`,
-                {
-                    method: "GET",
-                    headers: getHeaders()
-                }
-            );
-
-
         console.log(
-            "GET /ThongKe/top-mon-an ->",
-            response.status
+            "Dang tai top mon..."
         );
 
 
-        await xuLyAuth(response);
-
-
-        if (!response.ok) {
-
-            const errorText =
-                await response
-                    .text()
-                    .catch(
-                        () => ""
-                    );
-
-            throw new Error(
-                `Top món: HTTP ${response.status} ${errorText}`
-            );
-        }
-
-
         const data =
-            await response.json();
+            await apiGet(
+                `${API_BASE_URL}/ThongKe/top-mon-an`
+            );
 
 
         console.log(
@@ -456,6 +586,7 @@ async function taiTopMon() {
             topMonData
         );
 
+
     } catch (error) {
 
         console.error(
@@ -464,27 +595,33 @@ async function taiTopMon() {
         );
 
 
-        topMonTableBody.innerHTML = `
-            <tr>
-                <td
-                    colspan="4"
-                    class="thong-ke-empty"
-                >
+        if (topMonTableBody) {
+
+            topMonTableBody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="4"
+                        class="thong-ke-empty"
+                    >
+                        Không tải được dữ liệu top món.
+                    </td>
+                </tr>
+            `;
+        }
+
+
+        if (topMonListTongQuan) {
+
+            topMonListTongQuan.innerHTML = `
+                <div class="thong-ke-empty">
                     Không tải được dữ liệu top món.
-                </td>
-            </tr>
-        `;
-
-
-        topMonListTongQuan.innerHTML = `
-            <div class="thong-ke-empty">
-                Không tải được dữ liệu top món.
-            </div>
-        `;
+                </div>
+            `;
+        }
 
 
         hienThiLoi(
-            error.message
+            `Không tải được top món: ${error.message}`
         );
     }
 }
@@ -498,7 +635,14 @@ function hienThiTongQuan(data) {
 
     const tongQuan =
         data?.data ??
+        data?.Data ??
         data;
+
+
+    if (!tongQuan) {
+
+        return;
+    }
 
 
     const doanhThu =
@@ -586,9 +730,13 @@ function hienThiTongQuan(data) {
 // BANG DOANH THU
 // ======================================================
 
-function hienThiBangDoanhThu(
-    data
-) {
+function hienThiBangDoanhThu(data) {
+
+    if (!doanhThuTableBody) {
+
+        return;
+    }
+
 
     if (
         !Array.isArray(data) ||
@@ -613,7 +761,7 @@ function hienThiBangDoanhThu(
     doanhThuTableBody.innerHTML =
         data
             .map(
-                (item, index) => {
+                function (item, index) {
 
                     const thoiGian =
                         docGiaTri(
@@ -675,12 +823,16 @@ function hienThiBangDoanhThu(
 
 
 // ======================================================
-// BIEU DO
+// BIEU DO DOANH THU
 // ======================================================
 
-function hienThiBieuDoDoanhThu(
-    data
-) {
+function hienThiBieuDoDoanhThu(data) {
+
+    if (!revenueChart) {
+
+        return;
+    }
+
 
     if (
         !Array.isArray(data) ||
@@ -698,15 +850,14 @@ function hienThiBieuDoDoanhThu(
 
 
     const items =
-        data.slice(
-            -12
-        );
+        data.slice(-12);
 
 
     const values =
         items.map(
-            item =>
-                Number(
+            function (item) {
+
+                return Number(
                     docGiaTri(
                         item,
                         [
@@ -718,7 +869,8 @@ function hienThiBieuDoDoanhThu(
                             "TongDoanhThu"
                         ]
                     )
-                ) || 0
+                ) || 0;
+            }
         );
 
 
@@ -732,7 +884,7 @@ function hienThiBieuDoDoanhThu(
     revenueChart.innerHTML =
         items
             .map(
-                (item, index) => {
+                function (item, index) {
 
                     const thoiGian =
                         docGiaTri(
@@ -777,6 +929,7 @@ function hienThiBieuDoDoanhThu(
                                 )}
                             </div>
 
+
                             <div class="revenue-bar-wrap">
 
                                 <div
@@ -785,6 +938,7 @@ function hienThiBieuDoDoanhThu(
                                 ></div>
 
                             </div>
+
 
                             <div class="revenue-label">
                                 ${escapeHtml(
@@ -805,6 +959,12 @@ function hienThiBieuDoDoanhThu(
 // ======================================================
 
 function hienThiBangTopMon(data) {
+
+    if (!topMonTableBody) {
+
+        return;
+    }
+
 
     if (
         !Array.isArray(data) ||
@@ -829,24 +989,52 @@ function hienThiBangTopMon(data) {
     topMonTableBody.innerHTML =
         data
             .map(
-                (item, index) => {
+                function (item, index) {
 
                     const tenMon =
-                        item.tenMonAn ??
-                        item.TenMonAn ??
-                        "-";
+                        docGiaTri(
+                            item,
+                            [
+                                "tenMonAn",
+                                "TenMonAn",
+                                "monAn",
+                                "MonAn",
+                                "tenMon",
+                                "TenMon",
+                                "name",
+                                "Name"
+                            ]
+                        ) ?? "-";
 
 
                     const soLuong =
-                        item.tongSoLuongBan ??
-                        item.TongSoLuongBan ??
-                        0;
+                        docGiaTri(
+                            item,
+                            [
+                                "tongSoLuongBan",
+                                "TongSoLuongBan",
+                                "soLuongBan",
+                                "SoLuongBan",
+                                "soLuong",
+                                "SoLuong",
+                                "quantity",
+                                "Quantity"
+                            ]
+                        ) ?? 0;
 
 
                     const doanhThu =
-                        item.tongDoanhThu ??
-                        item.TongDoanhThu ??
-                        0;
+                        docGiaTri(
+                            item,
+                            [
+                                "tongDoanhThu",
+                                "TongDoanhThu",
+                                "doanhThu",
+                                "DoanhThu",
+                                "revenue",
+                                "Revenue"
+                            ]
+                        ) ?? 0;
 
 
                     return `
@@ -888,9 +1076,13 @@ function hienThiBangTopMon(data) {
 // TOP MON TONG QUAN
 // ======================================================
 
-function hienThiTopMonTongQuan(
-    data
-) {
+function hienThiTopMonTongQuan(data) {
+
+    if (!topMonListTongQuan) {
+
+        return;
+    }
+
 
     if (
         !Array.isArray(data) ||
@@ -909,12 +1101,9 @@ function hienThiTopMonTongQuan(
 
     topMonListTongQuan.innerHTML =
         data
-            .slice(
-                0,
-                5
-            )
+            .slice(0, 5)
             .map(
-                (item, index) => {
+                function (item, index) {
 
                     const tenMon =
                         docGiaTri(
@@ -929,21 +1118,23 @@ function hienThiTopMonTongQuan(
                                 "name",
                                 "Name"
                             ]
-                        );
+                        ) ?? "-";
 
 
                     const soLuong =
                         docGiaTri(
                             item,
                             [
-                                "soLuong",
-                                "SoLuong",
+                                "tongSoLuongBan",
+                                "TongSoLuongBan",
                                 "soLuongBan",
                                 "SoLuongBan",
+                                "soLuong",
+                                "SoLuong",
                                 "quantity",
                                 "Quantity"
                             ]
-                        );
+                        ) ?? 0;
 
 
                     return `
@@ -953,13 +1144,15 @@ function hienThiTopMonTongQuan(
                                 ${index + 1}
                             </div>
 
+
                             <div class="top-mon-info">
 
                                 <div class="top-mon-name">
                                     ${escapeHtml(
-                                        tenMon ?? "-"
+                                        tenMon
                                     )}
                                 </div>
+
 
                                 <div class="top-mon-sub">
                                     Đã bán:
@@ -979,58 +1172,49 @@ function hienThiTopMonTongQuan(
 
 
 // ======================================================
-// LAY ARRAY
+// LAY MANG DU LIEU
 // ======================================================
 
-function layMangDuLieu(
-    data
-) {
+function layMangDuLieu(data) {
 
-    if (
-        Array.isArray(data)
-    ) {
+    if (Array.isArray(data)) {
+
         return data;
     }
 
 
-    if (
-        Array.isArray(data?.data)
-    ) {
+    if (Array.isArray(data?.data)) {
+
         return data.data;
     }
 
 
-    if (
-        Array.isArray(data?.items)
-    ) {
-        return data.items;
-    }
+    if (Array.isArray(data?.Data)) {
 
-
-    if (
-        Array.isArray(data?.result)
-    ) {
-        return data.result;
-    }
-
-
-    if (
-        Array.isArray(data?.Data)
-    ) {
         return data.Data;
     }
 
 
-    if (
-        Array.isArray(data?.Items)
-    ) {
+    if (Array.isArray(data?.items)) {
+
+        return data.items;
+    }
+
+
+    if (Array.isArray(data?.Items)) {
+
         return data.Items;
     }
 
 
-    if (
-        Array.isArray(data?.Result)
-    ) {
+    if (Array.isArray(data?.result)) {
+
+        return data.result;
+    }
+
+
+    if (Array.isArray(data?.Result)) {
+
         return data.Result;
     }
 
@@ -1052,6 +1236,7 @@ function docGiaTri(
         !object ||
         typeof object !== "object"
     ) {
+
         return null;
     }
 
@@ -1075,47 +1260,10 @@ function docGiaTri(
 
 
 // ======================================================
-// AUTH
+// FORMAT MONEY
 // ======================================================
 
-async function xuLyAuth(
-    response
-) {
-
-    if (
-        response.status === 401
-    ) {
-
-        alert(
-            "Phiên đăng nhập đã hết. Vui lòng đăng nhập lại."
-        );
-
-        dangXuat();
-
-        throw new Error(
-            "401 Unauthorized"
-        );
-    }
-
-
-    if (
-        response.status === 403
-    ) {
-
-        throw new Error(
-            "Tài khoản không có quyền xem thống kê."
-        );
-    }
-}
-
-
-// ======================================================
-// FORMAT
-// ======================================================
-
-function formatMoney(
-    value
-) {
+function formatMoney(value) {
 
     if (
         value === null ||
@@ -1137,9 +1285,11 @@ function formatMoney(
 }
 
 
-function formatCompactMoney(
-    value
-) {
+// ======================================================
+// FORMAT MONEY COMPACT
+// ======================================================
+
+function formatCompactMoney(value) {
 
     const number =
         Number(value) || 0;
@@ -1181,9 +1331,11 @@ function formatCompactMoney(
 }
 
 
-function formatNumber(
-    value
-) {
+// ======================================================
+// FORMAT NUMBER
+// ======================================================
+
+function formatNumber(value) {
 
     if (
         value === null ||
@@ -1214,14 +1366,13 @@ function formatNumber(
 
 
 // ======================================================
-// ERROR
+// HIEN THI LOI
 // ======================================================
 
-function hienThiLoi(
-    message
-) {
+function hienThiLoi(message) {
 
     if (!thongKeError) {
+
         return;
     }
 
@@ -1235,9 +1386,14 @@ function hienThiLoi(
 }
 
 
+// ======================================================
+// AN LOI
+// ======================================================
+
 function anLoi() {
 
     if (!thongKeError) {
+
         return;
     }
 
@@ -1252,12 +1408,10 @@ function anLoi() {
 
 
 // ======================================================
-// ESCAPE
+// ESCAPE HTML
 // ======================================================
 
-function escapeHtml(
-    value
-) {
+function escapeHtml(value) {
 
     if (
         value === null ||
@@ -1298,7 +1452,7 @@ function escapeHtml(
 
 
 // ======================================================
-// LOGOUT
+// DANG XUAT
 // ======================================================
 
 function dangXuat() {

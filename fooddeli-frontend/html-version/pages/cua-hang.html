@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Cửa hàng - FoodDeli</title>
+
+    <!-- CSS CHÍNH -->
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <style>
+
+        /* ======================================================
+           RESET
+        ====================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            background: #f7f7f7;
+
+            color: #222;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        a {
+            text-decoration: none;
+
+            color: inherit;
+        }
+
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+
+        /* ======================================================
+           HEADER
+        ====================================================== */
+
+        .customer-header {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            background: #ffffff;
+
+            border-bottom:
+                1px solid #eeeeee;
+        }
+
+
+        .customer-header-inner {
+
+            width:
+                min(
+                    1180px,
+                    calc(100% - 32px)
+                );
+
+            margin: 0 auto;
+
+            min-height: 72px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            gap: 24px;
+        }
+
+
+        .customer-logo {
+
+            font-size: 26px;
+
+            font-weight: 800;
+
+            color: #ff6b00;
+
+            white-space: nowrap;
+        }
+
+
+        .customer-nav {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 24px;
+        }
+
+
+        .customer-nav a {
+
+            font-size: 15px;
+
+            color: #444;
+
+            font-weight: 500;
+
+            transition: 0.2s;
+        }
+
+
+        .customer-nav a:hover,
+        .customer-nav a.active {
+
+            color: #ff6b00;
+        }
+
+
+        .customer-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .customer-action-btn {
+
+            border:
+                1px solid #e4e4e4;
+
+            background: #fff;
+
+            border-radius: 9px;
+
+            padding: 9px 13px;
+
+            cursor: pointer;
+
+            color: #333;
+
+            transition: 0.2s;
+        }
+
+
+        .customer-action-btn:hover {
+
+            border-color:
+                #ff6b00;
+
+            color:
+                #ff6b00;
+        }
+
+
+        /* ======================================================
+           HERO
+        ====================================================== */
+
+        .shop-hero {
+
+            background:
+
+                linear-gradient(
+                    180deg,
+                    #fff7ef 0%,
+                    #ffffff 100%
+                );
+
+            padding:
+                55px 16px 42px;
+        }
+
+
+        .shop-hero-inner {
+
+            width:
+                min(1180px, 100%);
+
+            margin: 0 auto;
+
+            text-align: center;
+        }
+
+
+        .shop-hero h1 {
+
+            margin: 0 0 12px;
+
+            font-size:
+                clamp(
+                    30px,
+                    5vw,
+                    42px
+                );
+
+            color:
+                #1f2937;
+        }
+
+
+        .shop-hero p {
+
+            margin: 0 auto;
+
+            max-width: 700px;
+
+            color:
+                #6b7280;
+
+            line-height: 1.7;
+        }
+
+
+        /* ======================================================
+           MAIN
+        ====================================================== */
+
+        /*
+            QUAN TRỌNG:
+            Hero + nội dung cửa hàng đều nằm trong <main>
+            để SPA có thể thay toàn bộ phần này.
+        */
+
+        .shop-page-main {
+
+            min-height:
+                calc(100vh - 72px);
+
+            background:
+                #f7f7f7;
+        }
+
+
+        .shop-main {
+
+            width:
+                min(
+                    1180px,
+                    calc(100% - 32px)
+                );
+
+            margin:
+                0 auto 60px;
+        }
+
+
+        /* ======================================================
+           TOOLBAR
+        ====================================================== */
+
+        .shop-toolbar {
+
+            background:
+                #fff;
+
+            border:
+                1px solid #eeeeee;
+
+            border-radius:
+                14px;
+
+            padding:
+                18px;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                220px
+                auto;
+
+            gap:
+                12px;
+
+            margin-bottom:
+                24px;
+        }
+
+
+        .shop-search-wrap {
+
+            position:
+                relative;
+        }
+
+
+        .shop-search-icon {
+
+            position:
+                absolute;
+
+            left:
+                14px;
+
+            top:
+                50%;
+
+            transform:
+                translateY(-50%);
+
+            color:
+                #999;
+        }
+
+
+        .shop-input,
+        .shop-select {
+
+            width:
+                100%;
+
+            height:
+                46px;
+
+            border:
+                1px solid #dddddd;
+
+            border-radius:
+                9px;
+
+            outline:
+                none;
+
+            background:
+                #fff;
+
+            color:
+                #333;
+
+            padding:
+                0 14px;
+        }
+
+
+        .shop-input {
+
+            padding-left:
+                40px;
+        }
+
+
+        .shop-input:focus,
+        .shop-select:focus {
+
+            border-color:
+                #ff6b00;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    255,
+                    107,
+                    0,
+                    0.10
+                );
+        }
+
+
+        .shop-refresh-btn {
+
+            height:
+                46px;
+
+            padding:
+                0 18px;
+
+            border:
+                0;
+
+            border-radius:
+                9px;
+
+            background:
+                #ff6b00;
+
+            color:
+                #fff;
+
+            font-weight:
+                600;
+
+            cursor:
+                pointer;
+
+            transition:
+                0.2s;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .shop-refresh-btn:hover {
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* ======================================================
+           HEADER LIST
+        ====================================================== */
+
+        .shop-list-header {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                16px;
+
+            margin-bottom:
+                18px;
+        }
+
+
+        .shop-list-title {
+
+            margin:
+                0;
+
+            font-size:
+                23px;
+
+            color:
+                #1f2937;
+        }
+
+
+        .shop-count {
+
+            color:
+                #777;
+
+            font-size:
+                14px;
+        }
+
+
+        /* ======================================================
+           GRID
+        ====================================================== */
+
+        .shop-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(0, 1fr)
+                );
+
+            gap:
+                20px;
+        }
+
+
+        .shop-card {
+
+            background:
+                #fff;
+
+            border:
+                1px solid #ececec;
+
+            border-radius:
+                16px;
+
+            overflow:
+                hidden;
+
+            transition:
+
+                transform
+                0.2s ease,
+
+                box-shadow
+                0.2s ease;
+        }
+
+
+        .shop-card:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+
+                0 12px 28px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.08
+                );
+        }
+
+
+        .shop-image-wrap {
+
+            position:
+                relative;
+
+            height:
+                190px;
+
+            background:
+                #f0f0f0;
+
+            overflow:
+                hidden;
+        }
+
+
+        .shop-image {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            object-fit:
+                cover;
+
+            display:
+                block;
+        }
+
+
+        .shop-status {
+
+            position:
+                absolute;
+
+            top:
+                12px;
+
+            right:
+                12px;
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+
+            padding:
+                6px 10px;
+
+            border-radius:
+                999px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.94
+                );
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+        }
+
+
+        .shop-status-dot {
+
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                #b7b7b7;
+        }
+
+
+        .shop-status.active {
+
+            color:
+                #14804a;
+        }
+
+
+        .shop-status.active
+        .shop-status-dot {
+
+            background:
+                #1da56a;
+        }
+
+
+        .shop-status.inactive {
+
+            color:
+                #8b3b3b;
+        }
+
+
+        .shop-card-body {
+
+            padding:
+                18px;
+        }
+
+
+        .shop-name {
+
+            margin:
+                0 0 9px;
+
+            font-size:
+                19px;
+
+            line-height:
+                1.35;
+
+            color:
+                #1f2937;
+        }
+
+
+        .shop-rating {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+
+            margin-bottom:
+                10px;
+
+            font-size:
+                14px;
+        }
+
+
+        .shop-stars {
+
+            color:
+                #f59e0b;
+
+            letter-spacing:
+                1px;
+        }
+
+
+        .shop-rating-number {
+
+            font-weight:
+                700;
+        }
+
+
+        .shop-description {
+
+            color:
+                #666;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.55;
+
+            display:
+                -webkit-box;
+
+            -webkit-line-clamp:
+                2;
+
+            -webkit-box-orient:
+                vertical;
+
+            overflow:
+                hidden;
+
+            min-height:
+                44px;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .shop-info-row {
+
+            display:
+                flex;
+
+            align-items:
+                flex-start;
+
+            gap:
+                8px;
+
+            color:
+                #666;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.5;
+
+            margin-bottom:
+                8px;
+        }
+
+
+        .shop-info-icon {
+
+            flex:
+                0 0 18px;
+
+            text-align:
+                center;
+        }
+
+
+        .shop-phone {
+
+            white-space:
+                nowrap;
+
+            overflow:
+                hidden;
+
+            text-overflow:
+                ellipsis;
+        }
+
+
+        .shop-card-footer {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                flex-end;
+
+            margin-top:
+                16px;
+        }
+
+
+        .shop-view-btn {
+
+            width:
+                100%;
+
+            height:
+                43px;
+
+            border:
+                0;
+
+            border-radius:
+                9px;
+
+            background:
+                #ff6b00;
+
+            color:
+                #fff;
+
+            font-weight:
+                700;
+
+            cursor:
+                pointer;
+
+            transition:
+                0.2s;
+        }
+
+
+        .shop-view-btn:hover {
+
+            background:
+                #e85f00;
+        }
+
+
+        .shop-view-btn.disabled {
+
+            background:
+                #cfcfcf;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        /* ======================================================
+           EMPTY / ERROR / LOADING
+        ====================================================== */
+
+        .shop-state {
+
+            grid-column:
+                1 / -1;
+
+            text-align:
+                center;
+
+            background:
+                #fff;
+
+            border:
+                1px solid #eeeeee;
+
+            border-radius:
+                14px;
+
+            padding:
+                60px 20px;
+
+            color:
+                #777;
+        }
+
+
+        .shop-error {
+
+            color:
+                #b42318;
+        }
+
+
+        .shop-loading-spinner {
+
+            width:
+                38px;
+
+            height:
+                38px;
+
+            margin:
+                0 auto 14px;
+
+            border:
+                4px solid #eeeeee;
+
+            border-top-color:
+                #ff6b00;
+
+            border-radius:
+                50%;
+
+            animation:
+                shopSpin
+                0.8s
+                linear
+                infinite;
+        }
+
+
+        @keyframes shopSpin {
+
+            to {
+
+                transform:
+                    rotate(360deg);
+
+            }
+
+        }
+
+
+        /* ======================================================
+           PAGINATION
+        ====================================================== */
+
+        .shop-pagination {
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            margin-top:
+                30px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .shop-page-btn {
+
+            min-width:
+                40px;
+
+            height:
+                40px;
+
+            border:
+                1px solid #ddd;
+
+            background:
+                #fff;
+
+            border-radius:
+                8px;
+
+            cursor:
+                pointer;
+
+            color:
+                #444;
+
+            transition:
+                0.2s;
+        }
+
+
+        .shop-page-btn:hover:not(:disabled) {
+
+            border-color:
+                #ff6b00;
+
+            color:
+                #ff6b00;
+        }
+
+
+        .shop-page-btn.active {
+
+            background:
+                #ff6b00;
+
+            border-color:
+                #ff6b00;
+
+            color:
+                #fff;
+
+            font-weight:
+                700;
+        }
+
+
+        .shop-page-btn:disabled {
+
+            opacity:
+                0.45;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        /* ======================================================
+           FOOTER
+        ====================================================== */
+
+        .customer-footer {
+
+            background:
+                #1f2937;
+
+            color:
+                #fff;
+
+            margin-top:
+                70px;
+        }
+
+
+        .customer-footer-inner {
+
+            width:
+                min(
+                    1180px,
+                    calc(100% - 32px)
+                );
+
+            margin:
+                0 auto;
+
+            padding:
+                38px 0;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1.4fr 1fr 1fr;
+
+            gap:
+                35px;
+        }
+
+
+        .footer-brand {
+
+            font-size:
+                22px;
+
+            font-weight:
+                800;
+
+            margin-bottom:
+                10px;
+        }
+
+
+        .footer-text {
+
+            color:
+                #cbd5e1;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.7;
+        }
+
+
+        .footer-title {
+
+            font-size:
+                16px;
+
+            font-weight:
+                700;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .footer-link {
+
+            display:
+                block;
+
+            color:
+                #cbd5e1;
+
+            margin-bottom:
+                8px;
+
+            font-size:
+                14px;
+        }
+
+
+        .footer-link:hover {
+
+            color:
+                #fff;
+        }
+
+
+        /* ======================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 980px) {
+
+            .shop-grid {
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
+            }
+
+
+            .customer-nav {
+
+                gap:
+                    14px;
+            }
+
+
+            .customer-footer-inner {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 680px) {
+
+            .customer-header-inner {
+
+                min-height:
+                    64px;
+
+                gap:
+                    12px;
+            }
+
+
+            .customer-nav {
+
+                display:
+                    none;
+            }
+
+
+            .customer-actions {
+
+                display:
+                    flex;
+
+                flex-wrap:
+                    wrap;
+
+                justify-content:
+                    flex-end;
+            }
+
+
+            .shop-toolbar {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .shop-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .customer-footer-inner {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .shop-list-header {
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ======================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="customer-header">
+
+        <div class="customer-header-inner">
+
+
+            <!-- LOGO -->
+
+            <a
+                href="../index.html"
+                class="customer-logo"
+                data-spa-route="home"
+            >
+                FoodDeli
+            </a>
+
+
+            <!-- NAVBAR -->
+
+            <nav class="navbar">
+
+    <a href="index.html" class="nav-link">
+        Trang chủ
+    </a>
+
+    <a href="pages/cua-hang.html" class="nav-link">
+        Cửa hàng
+    </a>
+
+    <a href="pages/mon-an.html" class="nav-link">
+        Món ăn
+    </a>
+
+    <a href="pages/don-hang.html" class="nav-link">
+        Đơn hàng
+    </a>
+
+</nav>
+
+
+            <!-- HEADER ACTIONS -->
+            <!-- main.js sẽ render Giỏ hàng / tài khoản -->
+
+            <div
+                class="customer-actions header-actions"
+                id="headerActions"
+            >
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <!-- ======================================================
+         CUSTOMER MAIN
+         Hero + nội dung cửa hàng đều nằm trong MAIN
+    ====================================================== -->
+
+    <main class="shop-page-main">
+
+
+        <!-- ==================================================
+             HERO
+        ================================================== -->
+
+        <section class="shop-hero">
+
+            <div class="shop-hero-inner">
+
+                <h1>
+                    Khám phá cửa hàng
+                </h1>
+
+                <p>
+                    Tìm cửa hàng yêu thích và khám phá những món ăn
+                    đang có trên FoodDeli.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             DANH SÁCH CỬA HÀNG
+        ================================================== -->
+
+        <section class="shop-main">
+
+
+            <!-- TOOLBAR -->
+
+            <section class="shop-toolbar">
+
+
+                <div class="shop-search-wrap">
+
+                    <span class="shop-search-icon">
+                        🔎
+                    </span>
+
+
+                    <input
+                        type="search"
+                        id="shopSearch"
+                        class="shop-input"
+                        placeholder="Tìm kiếm cửa hàng..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <select
+                    id="shopStatusFilter"
+                    class="shop-select"
+                >
+
+                    <option value="all">
+                        Tất cả cửa hàng
+                    </option>
+
+
+                    <option value="active">
+                        Đang hoạt động
+                    </option>
+
+
+                    <option value="inactive">
+                        Ngừng hoạt động
+                    </option>
+
+                </select>
+
+
+                <button
+                    type="button"
+                    id="btnRefreshShop"
+                    class="shop-refresh-btn"
+                >
+                    Làm mới
+                </button>
+
+            </section>
+
+
+            <!-- HEADER LIST -->
+
+            <section class="shop-list-header">
+
+                <h2 class="shop-list-title">
+                    Danh sách cửa hàng
+                </h2>
+
+
+                <span
+                    id="shopCount"
+                    class="shop-count"
+                >
+                    Đang tải...
+                </span>
+
+            </section>
+
+
+            <!-- GRID -->
+
+            <section
+                id="shopGrid"
+                class="shop-grid"
+            >
+
+                <div class="shop-state">
+
+                    <div class="shop-loading-spinner"></div>
+
+                    Đang tải cửa hàng...
+
+                </div>
+
+            </section>
+
+
+            <!-- PAGINATION -->
+
+            <div
+                id="shopPagination"
+                class="shop-pagination"
+            ></div>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- ======================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="customer-footer">
+
+        <div class="customer-footer-inner">
+
+
+            <!-- GIỚI THIỆU -->
+
+            <div>
+
+                <div class="footer-brand">
+                    FoodDeli
+                </div>
+
+
+                <div class="footer-text">
+                    Nền tảng đặt đồ ăn trực tuyến,
+                    kết nối khách hàng với các cửa hàng.
+                </div>
+
+            </div>
+
+
+            <!-- KHÁM PHÁ -->
+
+            <div>
+
+                <div class="footer-title">
+                    Khám phá
+                </div>
+
+
+                <a
+                    href="../index.html"
+                    class="footer-link"
+                    data-spa-route="home"
+                >
+                    Trang chủ
+                </a>
+
+
+                <a
+                    href="cua-hang.html"
+                    class="footer-link"
+                    data-spa-route="shops"
+                >
+                    Cửa hàng
+                </a>
+
+
+                <a
+                    href="mon-an.html"
+                    class="footer-link"
+                    data-spa-route="food"
+                    data-requires-login="true"
+                >
+                    Món ăn
+                </a>
+
+
+                <a
+                    href="don-hang.html"
+                    class="footer-link"
+                    data-spa-route="orders"
+                    data-requires-login="true"
+                >
+                    Đơn hàng
+                </a>
+
+            </div>
+
+
+            <!-- TÀI KHOẢN -->
+
+            <div>
+
+                <div class="footer-title">
+                    Tài khoản
+                </div>
+
+
+                <a
+                    href="dang-nhap.html"
+                    class="footer-link"
+                >
+                    Đăng nhập
+                </a>
+
+
+                <a
+                    href="dang-ky.html"
+                    class="footer-link"
+                >
+                    Đăng ký
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </footer>
+
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../js/main.js"></script>
+
+    <script src="../js/cua-hang-khach.js"></script>
+
+
+</body>
+
+</html>

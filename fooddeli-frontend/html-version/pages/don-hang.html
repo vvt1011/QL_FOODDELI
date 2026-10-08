@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Đơn hàng - FoodDeli</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header customer-header">
+
+        <div class="container header-container">
+
+
+            <!-- LOGO -->
+
+            <a
+                href="index.html"
+                class="logo"
+            >
+                FoodDeli
+            </a>
+
+
+            <!-- MENU -->
+
+            <nav class="navbar">
+
+    <a href="index.html" class="nav-link">
+        Trang chủ
+    </a>
+
+    <a href="pages/cua-hang.html" class="nav-link">
+        Cửa hàng
+    </a>
+
+    <a href="pages/mon-an.html" class="nav-link">
+        Món ăn
+    </a>
+
+    <a href="pages/don-hang.html" class="nav-link">
+        Đơn hàng
+    </a>
+
+</nav>
+
+
+            <!-- HEADER ACTIONS -->
+
+            <div
+                class="header-actions"
+                id="headerActions"
+            ></div>
+
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="orders-page">
+
+
+        <div class="orders-container">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+
+            <section class="orders-page-header">
+
+                <div>
+
+                    <p class="orders-eyebrow">
+                        FOODDELI
+                    </p>
+
+
+                    <h1>
+                        Đơn hàng của tôi
+                    </h1>
+
+
+                    <p class="orders-subtitle">
+                        Theo dõi và xem lại các đơn hàng bạn đã đặt.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnRefreshOrders"
+                    class="orders-refresh-btn"
+                >
+                    ↻ Làm mới
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 TABS
+            ================================================== -->
+
+            <section class="orders-tabs">
+
+                <button
+                    type="button"
+                    class="orders-tab active"
+                    data-tab="all"
+                >
+                    Tất cả
+                </button>
+
+
+                <button
+                    type="button"
+                    class="orders-tab"
+                    data-tab="pending"
+                >
+                    Chờ xác nhận
+                </button>
+
+
+                <button
+                    type="button"
+                    class="orders-tab"
+                    data-tab="shipping"
+                >
+                    Đang giao
+                </button>
+
+
+                <button
+                    type="button"
+                    class="orders-tab"
+                    data-tab="completed"
+                >
+                    Hoàn thành
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CHƯA ĐĂNG NHẬP
+            ================================================== -->
+
+            <section
+                id="ordersLoginState"
+                class="orders-state"
+                hidden
+            >
+
+                <div class="orders-state-icon">
+                    🔐
+                </div>
+
+
+                <h2>
+                    Bạn chưa đăng nhập
+                </h2>
+
+
+                <p>
+                    Vui lòng đăng nhập để xem các đơn hàng của bạn.
+                </p>
+
+
+                <a
+                    href="pages/dang-nhap.html"
+                    class="orders-primary-btn"
+                >
+                    Đăng nhập
+                </a>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 LOADING
+            ================================================== -->
+
+            <section
+                id="ordersLoadingState"
+                class="orders-state"
+                hidden
+            >
+
+                <div class="orders-spinner"></div>
+
+
+                <h2>
+                    Đang tải đơn hàng...
+                </h2>
+
+
+                <p>
+                    Vui lòng chờ trong giây lát.
+                </p>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ERROR
+            ================================================== -->
+
+            <section
+                id="ordersErrorState"
+                class="orders-state orders-state-error"
+                hidden
+            >
+
+                <div class="orders-state-icon">
+                    ⚠️
+                </div>
+
+
+                <h2>
+                    Không thể tải đơn hàng
+                </h2>
+
+
+                <p id="ordersErrorMessage">
+                    Đã xảy ra lỗi khi tải dữ liệu.
+                </p>
+
+
+                <button
+                    type="button"
+                    id="btnRetryOrders"
+                    class="orders-primary-btn"
+                >
+                    Thử lại
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EMPTY
+            ================================================== -->
+
+            <section
+                id="ordersEmptyState"
+                class="orders-state"
+                hidden
+            >
+
+                <div class="orders-state-icon">
+                    📦
+                </div>
+
+
+                <h2>
+                    Chưa có đơn hàng
+                </h2>
+
+
+                <p>
+                    Bạn chưa có đơn hàng nào trong danh sách này.
+                </p>
+
+
+                <a
+                    href="cua-hang.html"
+                    class="orders-primary-btn"
+                >
+                    Khám phá cửa hàng
+                </a>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ORDER LIST
+            ================================================== -->
+
+            <section
+                id="ordersContent"
+                class="orders-list"
+                hidden
+            ></section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         MODAL CHI TIẾT ĐƠN HÀNG
+    ====================================================== -->
+
+    <div
+        id="orderDetailModal"
+        class="order-modal"
+        hidden
+    >
+
+
+        <!-- BACKDROP -->
+
+        <div
+            class="order-modal-backdrop"
+            data-close-order-modal
+        ></div>
+
+
+
+        <!-- DIALOG -->
+
+        <div
+            class="order-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="orderDetailTitle"
+        >
+
+
+            <!-- MODAL HEADER -->
+
+            <div class="order-modal-header">
+
+                <div>
+
+                    <p class="orders-eyebrow">
+                        FOODDELI
+                    </p>
+
+
+                    <h2 id="orderDetailTitle">
+                        Chi tiết đơn hàng
+                    </h2>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnCloseOrderModal"
+                    class="order-modal-close"
+                    aria-label="Đóng"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <!-- MODAL BODY -->
+
+            <div
+                id="orderDetailBody"
+                class="order-modal-body"
+            >
+
+                <div class="order-detail-loading">
+
+                    Đang tải chi tiết đơn hàng...
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+   <script src="../js/main.js"></script>
+<script src="../js/don-hang.js"></script>>
+
+
+</body>
+
+</html>

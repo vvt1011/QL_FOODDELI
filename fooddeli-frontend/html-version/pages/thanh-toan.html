@@ -1,0 +1,745 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Thanh toán - FoodDeli</title>
+
+    <!-- CSS chung -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="checkout-page">
+
+
+    <!-- =========================================================
+         HEADER - GIỐNG TRANG CHỦ
+    ========================================================== -->
+    <header class="header">
+
+        <div class="container header-container">
+
+            <a href="../index.html" class="logo">
+                FoodDeli
+            </a>
+
+
+            <nav class="navbar">
+
+                <a
+                    href="../index.html"
+                    class="nav-link"
+                >
+                    Trang chủ
+                </a>
+
+
+                <a
+                    href="cua-hang.html"
+                    class="nav-link"
+                >
+                    Cửa hàng
+                </a>
+
+
+                <a
+                    href="mon-an.html"
+                    class="nav-link"
+                    data-requires-login="true"
+                >
+                    Món ăn
+                </a>
+
+
+                <a
+                    href="don-hang.html"
+                    class="nav-link"
+                    data-requires-login="true"
+                >
+                    Đơn hàng
+                </a>
+
+            </nav>
+
+
+            <!-- HEADER ACTIONS -->
+            <div
+                class="header-actions"
+                id="headerActions">
+
+                <a
+                    href="dang-nhap.html"
+                    class="btn btn-outline"
+                >
+                    Đăng nhập
+                </a>
+
+
+                <a
+                    href="dang-ky.html"
+                    class="btn"
+                >
+                    Đăng ký
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+    <main class="checkout-container">
+
+
+        <!-- =====================================================
+             TIÊU ĐỀ
+        ====================================================== -->
+        <div class="checkout-title">
+
+            <h1>
+                Thanh toán
+            </h1>
+
+
+            <p class="checkout-subtitle">
+                Kiểm tra thông tin đơn hàng và hoàn tất thanh toán
+            </p>
+
+        </div>
+
+
+
+        <!-- =====================================================
+             TIẾN TRÌNH
+        ====================================================== -->
+        <div class="checkout-progress">
+
+
+            <div class="checkout-progress-step">
+
+                <span class="checkout-progress-number">
+                    1
+                </span>
+
+                <span>
+                    Giỏ hàng
+                </span>
+
+            </div>
+
+
+            <span class="checkout-progress-line"></span>
+
+
+            <div class="checkout-progress-step active">
+
+                <span class="checkout-progress-number">
+                    2
+                </span>
+
+                <span>
+                    Thanh toán
+                </span>
+
+            </div>
+
+
+            <span class="checkout-progress-line"></span>
+
+
+            <div class="checkout-progress-step">
+
+                <span class="checkout-progress-number">
+                    3
+                </span>
+
+                <span>
+                    Hoàn tất
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =====================================================
+             LAYOUT
+        ====================================================== -->
+        <div class="checkout-layout">
+
+
+            <!-- =================================================
+                 CỘT TRÁI
+            ================================================== -->
+            <section class="checkout-left">
+
+
+                <!-- =================================================
+                     ĐỊA CHỈ GIAO HÀNG
+                ================================================== -->
+                <div class="checkout-section">
+
+
+                    <div class="checkout-section-title">
+
+                        <span>
+                            Địa chỉ giao hàng
+                        </span>
+
+
+                        <button
+                            type="button"
+                            id="btnAddAddress"
+                            class="checkout-btn"
+                        >
+                            + Thêm địa chỉ
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="addressList"
+                        class="address-list"
+                    >
+
+                        <div class="loading-address">
+                            Đang tải địa chỉ...
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     ĐƠN HÀNG
+                ================================================== -->
+                <div class="checkout-section">
+
+
+                    <div class="checkout-section-title">
+
+                        <span>
+                            Đơn hàng của bạn
+                        </span>
+
+
+                        <a
+                            href="giohang.html"
+                            class="checkout-btn checkout-btn-secondary"
+                        >
+                            Sửa giỏ hàng
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        id="checkoutItems"
+                        class="checkout-items"
+                    >
+
+                        <div class="checkout-loading">
+                            Đang tải sản phẩm...
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     VOUCHER
+                ================================================== -->
+                <div class="checkout-section">
+
+
+                    <div class="checkout-section-title">
+
+                        <span>
+                            Ưu đãi
+                        </span>
+
+                    </div>
+
+
+                    <div class="voucher-box">
+
+
+                        <input
+                            type="text"
+                            id="voucherCode"
+                            placeholder="Nhập mã giảm giá"
+                            autocomplete="off"
+                        >
+
+
+                        <button
+                            type="button"
+                            id="btnApplyVoucher"
+                            class="checkout-btn"
+                        >
+                            Áp dụng
+                        </button>
+
+
+                    </div>
+
+
+                    <div
+                        id="voucherMessage"
+                        class="voucher-message"
+                    >
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     GHI CHÚ
+                ================================================== -->
+                <div class="checkout-section">
+
+
+                    <div class="checkout-section-title">
+
+                        <span>
+                            Ghi chú đơn hàng
+                        </span>
+
+                    </div>
+
+
+                    <textarea
+                        id="orderNote"
+                        rows="4"
+                        placeholder="Ví dụ: Giao hàng vào buổi tối, gọi trước khi giao..."
+                    ></textarea>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PHƯƠNG THỨC THANH TOÁN
+                ================================================== -->
+                <div class="checkout-section">
+
+
+                    <div class="checkout-section-title">
+
+                        <span>
+                            Phương thức thanh toán
+                        </span>
+
+                    </div>
+
+
+                    <div class="payment-methods">
+
+
+                        <!-- COD -->
+                        <label
+                            class="payment-option selected"
+                            for="paymentCOD"
+                        >
+
+
+                            <input
+                                type="radio"
+                                id="paymentCOD"
+                                name="paymentMethod"
+                                value="COD"
+                                checked
+                            >
+
+
+                            <div class="payment-option-content">
+
+                                <div class="payment-option-title">
+                                    Thanh toán khi nhận hàng
+                                </div>
+
+
+                                <div class="payment-option-description">
+                                    Thanh toán tiền mặt khi nhận được món
+                                </div>
+
+                            </div>
+
+
+                        </label>
+
+
+
+                        <!-- MOMO -->
+                        <label
+                            class="payment-option"
+                            for="paymentMoMo"
+                        >
+
+
+                            <input
+                                type="radio"
+                                id="paymentMoMo"
+                                name="paymentMethod"
+                                value="MOMO"
+                            >
+
+
+                            <div class="payment-option-content">
+
+                                <div class="payment-option-title">
+                                    Thanh toán qua MoMo
+                                </div>
+
+
+                                <div class="payment-option-description">
+                                    Thanh toán trực tuyến qua ví MoMo
+                                </div>
+
+                            </div>
+
+
+                        </label>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CỘT PHẢI
+            ================================================== -->
+            <aside class="checkout-right">
+
+
+                <div class="checkout-summary">
+
+
+                    <h2 class="checkout-summary-title">
+                        Chi tiết thanh toán
+                    </h2>
+
+
+
+                    <!-- TẠM TÍNH -->
+                    <div class="summary-row">
+
+                        <span>
+                            Tạm tính
+                        </span>
+
+
+                        <strong id="subtotal">
+                            0₫
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- PHÍ GIAO HÀNG -->
+                    <div class="summary-row">
+
+                        <span>
+                            Phí giao hàng
+                        </span>
+
+
+                        <strong id="shippingFee">
+                            0₫
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- GIẢM GIÁ -->
+                    <div
+                        class="summary-row discount"
+                        id="discountRow"
+                        style="display: none;"
+                    >
+
+                        <span>
+                            Giảm giá
+                        </span>
+
+
+                        <strong id="discountAmount">
+                            -0₫
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="summary-divider"></div>
+
+
+
+                    <!-- TỔNG -->
+                    <div class="summary-total">
+
+                        <span>
+                            Tổng thanh toán
+                        </span>
+
+
+                        <strong id="totalAmount">
+                            0₫
+                        </strong>
+
+                    </div>
+
+
+
+                    <p class="payment-note">
+
+                        Bằng việc đặt hàng, bạn đồng ý với các điều khoản
+                        sử dụng của FoodDeli.
+
+                    </p>
+
+
+
+                    <!-- ĐẶT HÀNG -->
+                    <button
+                        type="button"
+                        id="btnPlaceOrder"
+                        class="place-order-btn"
+                    >
+                        Đặt hàng
+                    </button>
+
+
+
+                    <div
+                        id="checkoutMessage"
+                        class="checkout-message"
+                    >
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- QUAY LẠI GIỎ HÀNG -->
+                <a
+                    href="giohang.html"
+                    class="checkout-btn checkout-btn-secondary"
+                    style="
+                        width: 100%;
+                        margin-top: 12px;
+                        box-sizing: border-box;
+                    "
+                >
+                    ← Quay lại giỏ hàng
+                </a>
+
+
+            </aside>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =========================================================
+         MODAL THÊM ĐỊA CHỈ
+    ========================================================== -->
+    <div
+        id="addressModal"
+        style="display: none;"
+    >
+
+
+        <div class="address-modal">
+
+
+            <!-- HEADER MODAL -->
+            <div class="address-modal-header">
+
+
+                <h2 class="address-modal-title">
+                    Thêm địa chỉ giao hàng
+                </h2>
+
+
+                <button
+                    type="button"
+                    id="btnCloseAddressModal"
+                    class="address-modal-close"
+                >
+                    ×
+                </button>
+
+
+            </div>
+
+
+
+            <!-- FORM -->
+            <form id="addressForm">
+
+
+                <!-- TÊN -->
+                <div class="address-form-group">
+
+                    <label for="addressName">
+                        Tên người nhận
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="addressName"
+                        required
+                        placeholder="Nhập tên người nhận"
+                    >
+
+                </div>
+
+
+
+                <!-- SĐT -->
+                <div class="address-form-group">
+
+                    <label for="addressPhone">
+                        Số điện thoại
+                    </label>
+
+
+                    <input
+                        type="tel"
+                        id="addressPhone"
+                        required
+                        placeholder="Nhập số điện thoại"
+                    >
+
+                </div>
+
+
+
+                <!-- ĐỊA CHỈ -->
+                <div class="address-form-group">
+
+                    <label for="addressDetail">
+                        Địa chỉ
+                    </label>
+
+
+                    <textarea
+                        id="addressDetail"
+                        rows="3"
+                        required
+                        placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố"
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- MẶC ĐỊNH -->
+                <div class="address-form-group address-default">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            id="addressDefault"
+                        >
+
+                        Đặt làm địa chỉ mặc định
+
+                    </label>
+
+                </div>
+
+
+
+                <!-- THÔNG BÁO -->
+                <div
+                    id="addressFormMessage"
+                    class="address-form-message"
+                >
+                </div>
+
+
+
+                <!-- BUTTON -->
+                <div class="address-form-actions">
+
+
+                    <button
+                        type="button"
+                        id="btnCancelAddress"
+                        class="checkout-btn checkout-btn-secondary"
+                    >
+                        Hủy
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="checkout-btn"
+                    >
+                        Lưu địa chỉ
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <!-- Config -->
+    <script src="../js/main.js"></script>
+
+    <!-- Thanh toán -->
+    <script src="../js/thanh-toan.js"></script>
+
+
+</body>
+</html>
+```

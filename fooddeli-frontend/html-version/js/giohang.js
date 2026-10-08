@@ -724,10 +724,31 @@ function escapeHtml(value) {
 
 function goToStores() {
 
+    // Nếu đang có navbar và main.js đang chạy,
+    // dùng nút Cửa hàng của navbar để SPA xử lý.
+    const storeLink =
+        document.querySelector(
+            '.navbar a[data-spa-route="shops"]'
+        ) ||
+        document.querySelector(
+            '.navbar a[href="pages/cua-hang.html"]'
+        ) ||
+        document.querySelector(
+            '.navbar a[href="cua-hang.html"]'
+        );
+
+    if (storeLink) {
+
+        storeLink.click();
+
+        return;
+    }
+
+    // Nếu mở giohang.html trực tiếp
+    // và chưa có navbar thì chuyển về cửa hàng.
     window.location.href =
         "cua-hang.html";
 }
-
 
 // =========================
 // SỰ KIỆN
@@ -764,6 +785,9 @@ clearCartBtn?.addEventListener(
 );
 
 
+
+
+
 // =========================
 // THANH TOÁN
 // =========================
@@ -772,7 +796,9 @@ checkoutBtn?.addEventListener(
     "click",
     function () {
 
+        // Kiểm tra giỏ hàng
         if (
+            !currentCartItems ||
             currentCartItems.length === 0
         ) {
             alert(
@@ -782,12 +808,20 @@ checkoutBtn?.addEventListener(
             return;
         }
 
-        // Chưa chuyển trang checkout ở bước này
-        alert(
-            "Giỏ hàng đã sẵn sàng. Phần thanh toán sẽ được nối ở bước tiếp theo."
+        // Lưu dữ liệu giỏ hàng
+        // ĐÚNG KEY mà thanh-toan.js đang đọc
+        sessionStorage.setItem(
+            "foodDeliCheckoutItems",
+            JSON.stringify(currentCartItems)
         );
+
+        // Chuyển sang trang thanh toán
+        window.location.href =
+            "thanh-toan.html";
     }
 );
+
+
 
 
 // =========================

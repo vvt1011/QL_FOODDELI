@@ -294,19 +294,23 @@ namespace QL_FOODDELI.Controllers
         [HttpPut("cap-nhat-trang-thai/{id}")]
         [Authorize(Roles = "ChuShop,Admin,QuanLy")]
         public async Task<IActionResult> CapNhatTrangThai(
-            string id,
-            [FromQuery] string trangThaiMoi,
-            [FromQuery] string? ghiChu = null)
+     string id,
+     [FromBody] CapNhatTrangThaiDonHangRequest request)
         {
-            if (string.IsNullOrWhiteSpace(trangThaiMoi))
+            if (request == null || request.TrangThaiMoi < 1 || request.TrangThaiMoi > 5)
             {
                 return BadRequest(new
                 {
-                    message = "Trạng thái mới không được để trống"
+                    message = "Trạng thái không hợp lệ"
                 });
             }
 
+            string trangThaiMoi = request.TrangThaiMoi.ToString();
+            string? ghiChu = request.GhiChu;
+
             var donHang = await _donHangRepo.GetByIdAsync(id);
+
+            // phần còn lại giữ nguyên
 
             if (donHang == null)
             {
@@ -327,16 +331,14 @@ namespace QL_FOODDELI.Controllers
                 });
             }
 
-            // =====================================================
-            // KIỂM TRA QUYỀN CỦA CHUSHOP
-            // Admin và QuanLy được phép cập nhật tất cả đơn
-            // ChuShop chỉ được cập nhật đơn có món thuộc cửa hàng mình
-            // =====================================================
+            // ChuShop chỉ được cập nhật đơn thuộc cửa hàng của mình
+            // Admin và QuanLy được cập nhật tất cả
             if (User.IsInRole("ChuShop"))
             {
-                var coQuyen = await _donHangRepo.ChuShopCoQuyenCapNhatDonHangAsync(
-                    userId,
-                    id);
+                var coQuyen =
+                    await _donHangRepo.ChuShopCoQuyenCapNhatDonHangAsync(
+                        userId,
+                        id);
 
                 if (!coQuyen)
                 {
@@ -344,11 +346,12 @@ namespace QL_FOODDELI.Controllers
                 }
             }
 
-            var success = await _donHangRepo.UpdateTrangThaiAsync(
-                id,
-                trangThaiMoi,
-                userId,
-                ghiChu);
+            var success =
+                await _donHangRepo.UpdateTrangThaiAsync(
+                    id,
+                    trangThaiMoi,
+                    userId,
+                    ghiChu);
 
             if (!success)
             {
@@ -358,7 +361,7 @@ namespace QL_FOODDELI.Controllers
                 });
             }
 
-            // Bắn SignalR thời gian thực cho Khách hàng
+            // SignalR
             try
             {
                 var payload = new
@@ -407,7 +410,7 @@ namespace QL_FOODDELI.Controllers
                 maDonHang = id,
                 trangThaiMoi
             });
-        }
+        }        
         // ==========================================
         // DELETE: api/DonHang/{id}
         // Chỉ Admin được xóa

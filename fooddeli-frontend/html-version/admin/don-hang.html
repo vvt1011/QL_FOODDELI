@@ -17,71 +17,80 @@
     <!-- =========================
          SIDEBAR
     ========================== -->
-    <aside class="admin-sidebar">
+    <!-- =========================
+     SIDEBAR
+========================== -->
+<aside class="admin-sidebar">
 
-        <div class="sidebar-logo">
-            <div class="logo-icon">🍔</div>
+    <div class="admin-logo">
+        FoodDeli <span>ADMIN</span>
+    </div>
 
-            <div class="logo-text">
-                <strong>FoodDeli</strong>
-                <span>ADMIN PANEL</span>
-            </div>
-        </div>
+    <nav class="admin-menu">
 
+        <a href="index.html" class="admin-menu-item">
+            <span>▣</span>
+            Tổng quan
+        </a>
 
-        <nav class="sidebar-menu">
+        <a href="cua-hang.html" class="admin-menu-item">
+            <span>⌂</span>
+            Cửa hàng
+        </a>
 
-            <a href="index.html" class="sidebar-item">
-                <span class="sidebar-icon">📊</span>
-                <span>Tổng quan</span>
-            </a>
+        <a href="danh-muc.html" class="admin-menu-item">
+            <span>☷</span>
+            Danh mục
+        </a>
 
-            <a href="cua-hang.html" class="sidebar-item">
-                <span class="sidebar-icon">🏪</span>
-                <span>Cửa hàng</span>
-            </a>
+        <a href="mon-an.html" class="admin-menu-item">
+            <span>🍔</span>
+            Món ăn
+        </a>
 
-            <a href="danh-muc.html" class="sidebar-item">
-                <span class="sidebar-icon">📂</span>
-                <span>Danh mục</span>
-            </a>
+        <a href="don-hang.html" class="admin-menu-item active">
+            <span>▤</span>
+            Đơn hàng
+        </a>
 
-            <a href="mon-an.html" class="sidebar-item">
-                <span class="sidebar-icon">🍔</span>
-                <span>Món ăn</span>
-            </a>
+        <a href="giao-hang.html" class="admin-menu-item">
+            <span>🚚</span>
+            Giao hàng
+        </a>
 
-            <a href="don-hang.html" class="sidebar-item active">
-                <span class="sidebar-icon">🛒</span>
-                <span>Đơn hàng</span>
-            </a>
+        <a href="nguoi-dung.html" class="admin-menu-item">
+            <span>👤</span>
+            Người dùng
+        </a>
 
-            <a href="#" class="sidebar-item">
-                <span class="sidebar-icon">👤</span>
-                <span>Người dùng</span>
-            </a>
+        <a href="voucher.html" class="admin-menu-item">
+            <span>🎟</span>
+            Voucher
+        </a>
 
-            <a href="#" class="sidebar-item">
-                <span class="sidebar-icon">📈</span>
-                <span>Thống kê</span>
-            </a>
+        <a href="thong-ke.html" class="admin-menu-item">
+            <span>▥</span>
+            Thống kê
+        </a>
 
-        </nav>
+    </nav>
 
+    <div class="admin-sidebar-bottom">
 
-        <div class="admin-sidebar-bottom">
+        <a href="../index.html" class="back-home">
+            ← Về trang chủ
+        </a>
 
-            <a href="../index.html" class="back-home">
-                🏠 &nbsp; Về trang chủ
-            </a>
+        <button
+            type="button"
+            id="adminLogout"
+            class="admin-logout">
+            Đăng xuất
+        </button>
 
-            <button id="btnLogout" class="admin-logout">
-                🚪 &nbsp; Đăng xuất
-            </button>
+    </div>
 
-        </div>
-
-    </aside>
+</aside>
 
 
     <!-- =========================
@@ -604,7 +613,7 @@
 
 <!-- JS -->
 
-<script src="../js/don-hang.js"></script>
+<script src="../js/admin-donhang.js"></script>
 
 </body>
 </html>

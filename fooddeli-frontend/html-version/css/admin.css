@@ -2828,3 +2828,377 @@ select option {
     opacity: 0.5;
     cursor: not-allowed;
 }
+/* =========================================================
+   FIX FORM ADMIN - FOODDELI
+   ========================================================= */
+
+.admin-form {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Khung các ô nhập */
+
+.admin-form .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 28px;
+    row-gap: 24px;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Mỗi ô */
+
+.admin-form .filter-group {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/* Ô full dòng */
+
+.admin-form .filter-group.full-width {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+
+/* Label */
+
+.admin-form .filter-group > label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #333333;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+}
+
+
+/* Tất cả input */
+
+.admin-form .admin-input {
+    display: block;
+
+    width: 100%;
+    max-width: 100%;
+
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    height: 48px;
+
+    padding: 0 16px;
+
+    border: 1px solid #d6d6d6;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    color: #222222;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    line-height: 48px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Textarea */
+
+.admin-form textarea.admin-input {
+    height: auto;
+
+    min-height: 110px;
+
+    padding: 14px 16px;
+
+    line-height: 1.5;
+
+    resize: vertical;
+}
+
+
+/* Select */
+
+.admin-form select.admin-input {
+    height: 48px;
+
+    line-height: normal;
+
+    cursor: pointer;
+}
+
+
+/* Khi focus */
+
+.admin-form .admin-input:focus {
+    border-color: #f97316;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(249, 115, 22, 0.12);
+}
+
+
+/* Placeholder */
+
+.admin-form .admin-input::placeholder {
+    color: #999999;
+
+    opacity: 1;
+}
+
+
+/* Small text dưới input */
+
+.admin-form .filter-group small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #888888;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+/* Các nút form */
+
+.admin-form .form-actions {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    grid-column: 1 / -1;
+
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .admin-form .form-grid {
+        grid-template-columns: 1fr;
+
+        column-gap: 0;
+
+        row-gap: 20px;
+    }
+
+
+    .admin-form .filter-group.full-width {
+        grid-column: auto;
+    }
+
+
+    .admin-form .form-actions {
+        grid-column: auto;
+    }
+}
+/* =========================================================
+   FIX ADMIN SIDEBAR - KHONG ANH HUONG CAC PHAN KHAC
+   ========================================================= */
+
+.admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 240px;
+    min-width: 240px;
+    z-index: 9999;
+    box-sizing: border-box;
+}
+
+.admin-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.admin-menu-item {
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    min-height: 46px;
+    box-sizing: border-box;
+    padding: 12px 18px;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.admin-menu-item > span {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    min-width: 28px;
+    margin-right: 12px;
+}
+
+.admin-menu-item:hover {
+    cursor: pointer;
+}
+
+/* Không để CSS select/input chung làm ảnh hưởng menu */
+.admin-sidebar a,
+.admin-sidebar button {
+    cursor: pointer;
+}
+
+/* Nội dung bên phải không đè lên sidebar */
+.admin-main {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    box-sizing: border-box;
+    min-height: 100vh;
+}
+
+/* Mobile */
+@media (max-width: 800px) {
+    .admin-sidebar {
+        width: 220px;
+        min-width: 220px;
+    }
+
+    .admin-main {
+        margin-left: 220px;
+        width: calc(100% - 220px);
+    }
+}
+/* =========================================================
+   FIX FORM ADMIN - KHÔNG CHO CÁC Ô INPUT CHỒNG LÊN NHAU
+   ========================================================= */
+
+.admin-panel .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-panel .form-group {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-panel .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.admin-panel label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.admin-panel input,
+.admin-panel select,
+.admin-panel textarea,
+.admin-panel .admin-input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.admin-panel textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.admin-panel input,
+.admin-panel select,
+.admin-panel .admin-input {
+    min-height: 42px;
+}
+
+.admin-panel .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   FIX FILTER
+   ========================================================= */
+
+.admin-filter {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-filter input,
+.admin-filter select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FIX SELECT GLOBAL BỊ OVERRIDE
+   ========================================================= */
+
+.admin-panel select,
+.admin-filter select {
+    cursor: pointer;
+    appearance: auto;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-panel .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-panel .form-group.full-width {
+        grid-column: auto;
+    }
+
+}
