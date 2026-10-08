@@ -638,12 +638,9 @@ function hienThiTongQuan(data) {
         data?.Data ??
         data;
 
-
     if (!tongQuan) {
-
         return;
     }
-
 
     const doanhThu =
         docGiaTri(
@@ -652,77 +649,60 @@ function hienThiTongQuan(data) {
                 "tongDoanhThu",
                 "TongDoanhThu",
                 "doanhThu",
-                "DoanhThu",
-                "totalRevenue",
-                "TotalRevenue"
+                "DoanhThu"
             ]
         );
-
 
     const donHang =
         docGiaTri(
             tongQuan,
             [
+                "tongSoDonHang",
+                "TongSoDonHang",
                 "tongDonHang",
                 "TongDonHang",
                 "soDonHang",
-                "SoDonHang",
-                "totalOrders",
-                "TotalOrders"
+                "SoDonHang"
             ]
         );
-
 
     const khachHang =
         docGiaTri(
             tongQuan,
             [
+                "tongSoKhachHang",
+                "TongSoKhachHang",
                 "tongKhachHang",
                 "TongKhachHang",
                 "soKhachHang",
-                "SoKhachHang",
-                "totalCustomers",
-                "TotalCustomers"
+                "SoKhachHang"
             ]
         );
-
 
     const cuaHang =
         docGiaTri(
             tongQuan,
             [
+                "tongSoCuaHang",
+                "TongSoCuaHang",
                 "tongCuaHang",
                 "TongCuaHang",
                 "soCuaHang",
-                "SoCuaHang",
-                "totalStores",
-                "TotalStores"
+                "SoCuaHang"
             ]
         );
 
-
     tongDoanhThu.textContent =
-        formatMoney(
-            doanhThu
-        );
-
+        formatMoney(doanhThu);
 
     tongDonHang.textContent =
-        formatNumber(
-            donHang
-        );
-
+        formatNumber(donHang);
 
     tongKhachHang.textContent =
-        formatNumber(
-            khachHang
-        );
-
+        formatNumber(khachHang);
 
     tongCuaHang.textContent =
-        formatNumber(
-            cuaHang
-        );
+        formatNumber(cuaHang);
 }
 
 

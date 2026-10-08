@@ -9,6 +9,30 @@ namespace QL_FOODDELI.Repositories
 {
     public class DonHangRepository : IDonHangRepository
     {
+        public async Task<IEnumerable<DonHang>> GetByChuShopAsync(
+    string maNguoiDung)
+        {
+            const string sql = @"
+        SELECT DISTINCT dh.*
+        FROM DonHang dh
+        INNER JOIN ChiTietDonHang ct
+            ON dh.MaDonHang = ct.MaDonHang
+        INNER JOIN MonAn m
+            ON ct.MaMonAn = m.MaMonAn
+        INNER JOIN CuaHang ch
+            ON m.MaCuaHang = ch.MaCuaHang
+        WHERE ch.MaChuShop = @MaNguoiDung
+        ORDER BY dh.NgayDat DESC";
+
+            using var conn = _context.CreateConnection();
+
+            return await conn.QueryAsync<DonHang>(
+                sql,
+                new
+                {
+                    MaNguoiDung = maNguoiDung
+                });
+        }
         private readonly DapperContext _context;
 
         public DonHangRepository(DapperContext context)
