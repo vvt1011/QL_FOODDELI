@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doanh thu - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/chushop.css">
+
+    <style>
+        .doanh-thu-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .doanh-thu-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .doanh-thu-card h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .doanh-thu-card .gia-tri {
+            font-size: 26px;
+            font-weight: 700;
+            color: #e85d04;
+        }
+
+        .doanh-thu-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .doanh-thu-filter input {
+            padding: 9px 12px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+        }
+
+        .doanh-thu-filter button {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .doanh-thu-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .doanh-thu-table th,
+        .doanh-thu-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .doanh-thu-table th {
+            background: #f8f8f8;
+        }
+
+        .doanh-thu-empty {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+        }
+
+        @media (max-width: 900px) {
+            .doanh-thu-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                <h2>FoodDeli</h2>
+                <span>CHỦ SHOP</span>
+            </div>
+
+            <nav class="admin-nav">
+
+                <a href="../chushop.html" class="admin-nav-item">
+                    <span>▣</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="chushop-cuahang.html" class="admin-nav-item">
+                    <span>⌂</span>
+                    <span>Cửa hàng của tôi</span>
+                </a>
+
+                <a href="chushop-danhmuc.html" class="admin-nav-item">
+                    <span>☷</span>
+                    <span>Danh mục</span>
+                </a>
+
+                <a href="chushop-monan.html" class="admin-nav-item">
+                    <span>🍔</span>
+                    <span>Món ăn</span>
+                </a>
+
+                <a href="chushop-donhang.html" class="admin-nav-item">
+                    <span>▤</span>
+                    <span>Đơn hàng</span>
+                </a>
+
+                <a href="chushop-doanh-thu.html"
+                   class="admin-nav-item active">
+                    <span>▥</span>
+                    <span>Doanh thu</span>
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+
+                <a href="../index.html" class="back-home">
+                    ← Về trang chủ
+                </a>
+
+               
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <header class="admin-header">
+
+                <div>
+                    <h1>Doanh thu</h1>
+
+                    <p>
+                        Theo dõi doanh thu và tình hình kinh doanh của cửa hàng
+                    </p>
+                </div>
+
+            </header>
+
+
+            <section class="admin-content">
+
+                <!-- THỐNG KÊ -->
+                <div class="doanh-thu-cards">
+
+                    <div class="doanh-thu-card">
+                        <h3>Tổng doanh thu</h3>
+                        <div id="tongDoanhThu"
+                             class="gia-tri">
+                            0 đ
+                        </div>
+                    </div>
+
+                    <div class="doanh-thu-card">
+                        <h3>Doanh thu hôm nay</h3>
+                        <div id="doanhThuHomNay"
+                             class="gia-tri">
+                            0 đ
+                        </div>
+                    </div>
+
+                    <div class="doanh-thu-card">
+                        <h3>Đơn hoàn thành</h3>
+                        <div id="donHoanThanh"
+                             class="gia-tri">
+                            0
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- BẢNG -->
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>Chi tiết doanh thu</h2>
+
+                            <p>
+                                Các đơn hàng đã hoàn thành
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-table-wrapper">
+
+                        <table class="doanh-thu-table">
+
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã đơn</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tiền hàng</th>
+                                    <th>Phí giao</th>
+                                    <th>Giảm giá</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="doanhThuTableBody">
+
+                                <tr>
+                                    <td colspan="7"
+                                        class="doanh-thu-empty">
+                                        Đang tải dữ liệu...
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="../js/chushop-doanhthu.js"></script>
+
+</body>
+
+</html>

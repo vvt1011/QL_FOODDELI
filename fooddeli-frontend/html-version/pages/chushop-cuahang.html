@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cửa hàng của tôi - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/chushop.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- =====================================================
+             SIDEBAR CHU SHOP
+             ===================================================== -->
+        <aside class="admin-sidebar">
+
+            <!-- LOGO -->
+            <div class="admin-logo">
+
+                <h2>FoodDeli</h2>
+
+                <span>CHỦ SHOP</span>
+
+            </div>
+
+
+            <!-- MENU -->
+            <nav class="admin-nav">
+
+                <!-- DASHBOARD -->
+                <a href="../chushop.html"
+                   class="admin-nav-item">
+
+                    <span>▣</span>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <!-- CỬA HÀNG -->
+                <a href="chushop-cuahang.html"
+                   class="admin-nav-item active">
+
+                    <span>⌂</span>
+
+                    <span>Cửa hàng của tôi</span>
+
+                </a>
+
+
+                <!-- DANH MỤC -->
+                <a href="chushop-danhmuc.html"
+                   class="admin-nav-item">
+
+                    <span>☷</span>
+
+                    <span>Danh mục</span>
+
+                </a>
+
+
+                <!-- MÓN ĂN -->
+                <a href="chushop-monan.html"
+                   class="admin-nav-item">
+
+                    <span>🍔</span>
+
+                    <span>Món ăn</span>
+
+                </a>
+
+
+                <!-- ĐƠN HÀNG -->
+                <a href="chushop-donhang.html"
+                   class="admin-nav-item">
+
+                    <span>▤</span>
+
+                    <span>Đơn hàng</span>
+
+                </a>
+
+
+                <!-- DOANH THU -->
+                <a href="../chushop.html"
+                   class="admin-nav-item">
+
+                    <span>▥</span>
+
+                    <span>Doanh thu</span>
+
+                </a>
+
+            </nav>
+            
+
+
+            <!-- ĐĂNG XUẤT -->
+            <div class="admin-sidebar-bottom">
+                
+                <a
+                    href="../index.html"
+                    class="back-home"
+                >
+                    ← Về trang chủ
+                </a>
+
+                
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             MAIN
+             ===================================================== -->
+        <main class="admin-main">
+
+
+            <!-- HEADER -->
+            <header class="admin-header">
+
+                <div>
+
+                    <h1>Cửa hàng của tôi</h1>
+
+                    <p>
+                        Quản lý thông tin cửa hàng của bạn
+                    </p>
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
+            <section class="admin-content">
+
+
+                <!-- THÔNG BÁO -->
+                <div id="messageBox"
+                     class="shop-message"
+                     style="display:none;">
+                </div>
+
+
+                <!-- =================================================
+                     THÔNG TIN CỬA HÀNG
+                     ================================================= -->
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+
+                            <h2>Thông tin cửa hàng</h2>
+
+                            <p>
+                                Cập nhật thông tin hiển thị của cửa hàng
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form id="cuaHangForm">
+
+
+                        <!-- GRID -->
+                        <div class="detail-grid">
+
+
+                            <!-- MÃ CỬA HÀNG -->
+                            <div class="form-group">
+
+                                <label for="maCuaHang">
+                                    Mã cửa hàng
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="maCuaHang"
+                                    readonly
+                                >
+
+                            </div>
+
+
+                            <!-- MÃ CHỦ SHOP -->
+                            <div class="form-group">
+
+                                <label for="maChuShop">
+                                    Mã chủ shop
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="maChuShop"
+                                    readonly
+                                >
+
+                            </div>
+
+
+                            <!-- TÊN CỬA HÀNG -->
+                            <div class="form-group">
+
+                                <label for="tenCuaHang">
+
+                                    Tên cửa hàng
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="tenCuaHang"
+                                    placeholder="Nhập tên cửa hàng"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- SỐ ĐIỆN THOẠI -->
+                            <div class="form-group">
+
+                                <label for="soDienThoai">
+
+                                    Số điện thoại
+
+                                    <span class="required">
+                                        *
+                                    </span>
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="soDienThoai"
+                                    placeholder="Nhập số điện thoại"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- TRẠNG THÁI -->
+                            <div class="form-group">
+
+                                <label for="trangThai">
+                                    Trạng thái
+                                </label>
+
+                                <select id="trangThai">
+
+                                    <option value="1">
+                                        Đang hoạt động
+                                    </option>
+
+                                    <option value="0">
+                                        Tạm đóng
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- ĐỊA CHỈ -->
+                            <div class="form-group">
+
+                                <label for="diaChi">
+                                    Địa chỉ
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="diaChi"
+                                    placeholder="Nhập địa chỉ cửa hàng"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             MÔ TẢ
+                             ================================================= -->
+                        <div class="form-group full-width">
+
+                            <label for="moTa">
+                                Mô tả cửa hàng
+                            </label>
+
+                            <textarea
+                                id="moTa"
+                                rows="5"
+                                placeholder="Nhập mô tả về cửa hàng..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             ẢNH CỬA HÀNG
+                             ================================================= -->
+                        <div class="form-group full-width">
+
+                            <label for="anhCuaHang">
+                                Ảnh cửa hàng
+                            </label>
+
+                            <input
+                                type="text"
+                                id="anhCuaHang"
+                                placeholder="Nhập đường dẫn ảnh cửa hàng"
+                            >
+
+                        </div>
+
+
+                        <!-- PREVIEW ẢNH -->
+                        <div
+                            id="imagePreview"
+                            class="shop-image-preview"
+                            style="display:none;">
+
+                            <img
+                                id="previewImage"
+                                src=""
+                                alt="Ảnh cửa hàng"
+                            >
+
+                        </div>
+
+
+                        <!-- =================================================
+                             BUTTON
+                             ================================================= -->
+                        <div class="form-actions">
+
+                            <button
+                                type="button"
+                                id="btnQuayLai"
+                                class="admin-btn secondary">
+
+                                Quay lại
+
+                            </button>
+
+
+                            <button
+                                type="submit"
+                                id="btnLuu"
+                                class="admin-btn primary">
+
+                                Lưu thay đổi
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================================
+                     XEM TRƯỚC CỬA HÀNG
+                     ================================================= -->
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+
+                            <h2>Xem trước cửa hàng</h2>
+
+                            <p>
+                                Thông tin cửa hàng hiện tại
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="shop-preview-card">
+
+
+                        <!-- ẢNH -->
+                        <div class="shop-preview-image">
+
+                            <img
+                                id="previewCardImage"
+                                src=""
+                                alt="Cửa hàng"
+                                style="display:none;"
+                            >
+
+
+                            <div
+                                id="previewNoImage"
+                                class="preview-no-image">
+
+                                🏪
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- THÔNG TIN -->
+                        <div class="shop-preview-info">
+
+                            <h3 id="previewTenCuaHang">
+                                Cửa hàng của tôi
+                            </h3>
+
+
+                            <p id="previewSoDienThoai">
+                                Chưa có số điện thoại
+                            </p>
+
+
+                            <p id="previewDiaChi">
+                                Chưa có địa chỉ
+                            </p>
+
+
+                            <span
+                                id="previewTrangThai"
+                                class="shop-status">
+
+                                Đang hoạt động
+
+                            </span>
+
+
+                            <p
+                                id="previewMoTa"
+                                class="shop-preview-description">
+
+                                Chưa có mô tả.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+    <script src="../js/chushop-cuahang.js"></script>
+
+</body>
+
+</html>

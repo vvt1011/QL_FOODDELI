@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Đơn hàng - FoodDeli</title>
+
+    <link rel="stylesheet" href="../css/chushop.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                <h2>FoodDeli</h2>
+                <span>CHỦ SHOP</span>
+            </div>
+
+            <nav class="admin-nav">
+
+                <a href="../chushop.html" class="admin-nav-item">
+                    <span>▣</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="chushop-cuahang.html" class="admin-nav-item">
+                    <span>⌂</span>
+                    <span>Cửa hàng của tôi</span>
+                </a>
+
+                <a href="chushop-danhmuc.html" class="admin-nav-item">
+                    <span>☷</span>
+                    <span>Danh mục</span>
+                </a>
+
+                <a href="chushop-monan.html" class="admin-nav-item">
+                    <span>🍔</span>
+                    <span>Món ăn</span>
+                </a>
+
+                <a href="chushop-donhang.html"
+                   class="admin-nav-item active">
+                    <span>▤</span>
+                    <span>Đơn hàng</span>
+                </a>
+
+                <a href="chushop-doanhthu.html" class="admin-nav-item">
+                    <span>▥</span>
+                    <span>Doanh thu</span>
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+                
+                <a
+                    href="../index.html"
+                    class="back-home"
+                >
+                    ← Về trang chủ
+                </a>
+
+               
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <header class="admin-header">
+
+                <div>
+                    <h1>Đơn hàng</h1>
+
+                    <p>
+                        Quản lý đơn hàng của cửa hàng
+                    </p>
+                </div>
+
+            </header>
+
+
+            <section class="admin-content">
+
+                <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>Danh sách đơn hàng</h2>
+
+                            <p>
+                                Theo dõi và xử lý đơn hàng
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-table-wrapper">
+
+                        <table class="admin-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="donHangTableBody">
+
+                                <tr>
+
+                                    <td>DH001</td>
+
+                                    <td>Nguyễn Văn A</td>
+
+                                    <td>08/10/2026</td>
+
+                                    <td>135.000 đ</td>
+
+                                    <td>
+                                        <span class="shop-status active">
+                                            Chờ xác nhận
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        <button class="admin-btn secondary">
+                                            Xem
+                                        </button>
+
+                                        <button class="admin-btn primary">
+                                            Xác nhận
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+<script src="../js/chushop-donhang.js"></script>
+</body>
+
+</html>

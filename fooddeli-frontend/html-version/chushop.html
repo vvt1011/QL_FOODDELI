@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ChuShop - FoodDeli</title>
+
+ <link rel="stylesheet" href="css/chushop.css">
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-logo">
+                FoodDeli
+                <span>CHUSHOP</span>
+            </div>
+
+            <nav class="admin-menu">
+
+                <a
+                    href="index.html"
+                    class="admin-menu-item active"
+                >
+                    <span>▣</span>
+                    Dashboard
+                </a>
+
+                <a
+                    href="pages/chushop-cuahang.html"
+                    class="admin-menu-item"
+                >
+                    <span>⌂</span>
+                    Cửa hàng của tôi
+                </a>
+
+                <a
+                    href="pages/chushop-danhmuc.html"
+                    class="admin-menu-item"
+                >
+                    <span>☷</span>
+                    Danh mục
+                </a>
+
+                <a
+                    href="pages/chushop-monan.html"
+                    class="admin-menu-item"
+                >
+                    <span>🍔</span>
+                    Món ăn
+                </a>
+
+                <a
+                    href="pages/chushop-donhang.html"
+                    class="admin-menu-item"
+                >
+                    <span>▤</span>
+                    Đơn hàng
+                </a>
+
+                <a
+                    href="pages/chushop-doanhthu.html"
+                    class="admin-menu-item"
+                >
+                    <span>▥</span>
+                    Doanh thu
+                </a>
+
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+
+                <a
+                    href="index.html"
+                    class="back-home"
+                >
+                    ← Về trang chủ
+                </a>
+
+               
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN -->
+        <main class="admin-main">
+
+            <!-- HEADER -->
+            <header class="admin-header">
+
+                <div>
+
+                    <h1>
+                        Dashboard ChuShop
+                    </h1>
+
+                    <p>
+                        Tổng quan hoạt động cửa hàng của bạn
+                    </p>
+
+                </div>
+
+            </header>
+
+
+            <!-- THỐNG KÊ -->
+            <section class="admin-stats-grid">
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-label">
+                        Tổng đơn hàng
+                    </div>
+
+                    <div
+                        class="admin-stat-value"
+                        id="tongSoDonHang"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-label">
+                        Đơn chờ xác nhận
+                    </div>
+
+                    <div
+                        class="admin-stat-value"
+                        id="donChoXacNhan"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-label">
+                        Đang giao
+                    </div>
+
+                    <div
+                        class="admin-stat-value"
+                        id="donDangGiao"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-label">
+                        Đã hoàn thành
+                    </div>
+
+                    <div
+                        class="admin-stat-value"
+                        id="donHoanThanh"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stat-card">
+
+                    <div class="admin-stat-label">
+                        Doanh thu
+                    </div>
+
+                    <div
+                        class="admin-stat-value"
+                        id="doanhThu"
+                    >
+                        0 ₫
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- THÔNG TIN CỬA HÀNG -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Cửa hàng của tôi
+                        </h2>
+
+                        <p>
+                            Thông tin cửa hàng đang quản lý
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+
+                        <span>
+                            Mã cửa hàng
+                        </span>
+
+                        <strong id="maCuaHang">
+                            Đang tải...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Tên cửa hàng
+                        </span>
+
+                        <strong id="tenCuaHang">
+                            Đang tải...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Số điện thoại
+                        </span>
+
+                        <strong id="soDienThoai">
+                            Đang tải...
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Trạng thái
+                        </span>
+
+                        <strong id="trangThaiCuaHang">
+                            Đang tải...
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ĐƠN HÀNG GẦN ĐÂY -->
+            <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                    <div>
+
+                        <h2>
+                            Đơn hàng gần đây
+                        </h2>
+
+                        <p>
+                            Các đơn hàng mới nhất của cửa hàng
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="don-hang.html"
+                        class="btn"
+                    >
+                        Xem tất cả
+                    </a>
+
+                </div>
+
+
+                <div class="admin-table-wrapper">
+
+                    <table class="admin-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Mã đơn
+                                </th>
+
+                                <th>
+                                    Khách hàng
+                                </th>
+
+                                <th>
+                                    Thành tiền
+                                </th>
+
+                                <th>
+                                    Trạng thái
+                                </th>
+
+                                <th>
+                                    Ngày đặt
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="donHangGanDay">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="loading-cell"
+                                >
+                                    Đang tải dữ liệu...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/chushop.js"></script>
+
+</body>
+
+</html>
